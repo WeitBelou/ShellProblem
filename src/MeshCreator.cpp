@@ -15,9 +15,14 @@
 using namespace MeshCreators;
 using namespace dealii;
 
-void MeshCreators::create_shell_mesh(Triangulation<3> &tria,
-                                     const double r, const double d, const double L)
+void MeshCreators::create_shell_mesh(dealii::Triangulation<3> &tria, const TaskReader::GeometryProperties &geometry)
 {
+    const double L = geometry.L;
+    const double r = geometry.r;
+    const double d = geometry.d;
+
+    const int n_global_refinements = geometry.n_global_refinements;
+
     Triangulation<3> head(Triangulation<3>::patch_level_1);
     GridGenerator::half_hyper_shell(head, Point<3>(0, 0, 0), r, r + d);
 
@@ -72,7 +77,7 @@ void MeshCreators::create_shell_mesh(Triangulation<3> &tria,
         }
     }
 
-    tria.refine_global(1);
+    tria.refine_global(n_global_refinements);
 }
 
 void MeshCreators::write_mesh(const Triangulation<3, 3> &tria,

@@ -2,12 +2,13 @@
 #define SHELL_PROBLEM_MESHCREATOR_HPP
 
 #include "deal.II/grid/tria.h"
+#include "TaskReader.hpp"
 
 namespace MeshCreators
 {
 
 void create_shell_mesh(dealii::Triangulation<3> &tria,
-                       const double r, const double d, const double L);
+                       const TaskReader::GeometryProperties &geometry);
 
 void write_mesh(const dealii::Triangulation<3> &tria,
                 const std::string &output_file);
