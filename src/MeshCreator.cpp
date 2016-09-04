@@ -53,30 +53,26 @@ void MeshCreators::create_shell_mesh(Triangulation<3> &tria,
             cell->set_all_manifold_ids(1);
         }
     }
-    tria.refine_global(3);
 
     for (auto cell : tria.active_cell_iterators())
     {
-        for (size_t f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
+        if (cell->manifold_id() == 1)
         {
-            if (cell->face(f)->at_boundary())
+            for (size_t f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
             {
-                const Point<3> face_center = cell->face(f)->center();
-                if ((face_center[0] > 0) & (face_center.norm_square() > r * r))
+                if (cell->face(f)->at_boundary())
                 {
-                    cell->face(f)->set_all_boundary_ids(2); // Fairing's boundary
-                }
-                else if (face_center.norm_square() > r * r)
-                {
-                    cell->face(f)->set_all_boundary_ids(1); // External boundary
-                }
-                else
-                {
-                    cell->face(f)->set_all_boundary_ids(0); // Internal boundary
+                    const Point<3> face_center = cell->face(f)->center(true);
+                    if (face_center.norm_square() > (r + d / 2) * (r + d / 2))
+                    {
+                        cell->face(f)->set_all_boundary_ids(1);
+                    }
                 }
             }
         }
     }
+
+    tria.refine_global(1);
 }
 
 void MeshCreators::write_mesh(const Triangulation<3, 3> &tria,
