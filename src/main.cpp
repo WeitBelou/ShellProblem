@@ -2,8 +2,10 @@
 #include <boost/program_options.hpp>
 
 #include "TaskReader.hpp"
+#include "MeshCreator.hpp"
 #include "solvers/ElasticitySolver.hpp"
 #include "solvers/HeatSolver.hpp"
+#include "solvers/BoundaryConditions.hpp"
 
 namespace po = boost::program_options;
 
@@ -48,9 +50,19 @@ int main(int argc, char **argv)
 
     TaskReader::ParametersParser parameters(task_file);
 
+    dealii::Triangulation<3> mesh;
+    MeshCreators::create_shell_mesh(mesh, parameters.geometry);
+    MeshCreators::write_mesh(mesh, "mesh.msh");
+
     try
     {
-        ElasticitySolver::SimpleSolver solver;
+        const BoundaryConditions::SinSquareFunction temperature_function(2200);
+        const dealii::ZeroFunction<3> rhs_function(1);
+
+        const double a_square = 9.0e-6;
+
+        HeatSolver::SimpleSolver
+            solver{mesh, rhs_function, temperature_function, a_square};
         solver.run(output_dir);
     }
     catch (std::exception &exc)
@@ -59,18 +71,5 @@ int main(int argc, char **argv)
                   << exc.what() << std::endl;
         return 1;
     }
-
-    try
-    {
-        HeatSolver::SimpleSolver solver;
-        solver.run(output_dir);
-    }
-    catch (std::exception &exc)
-    {
-        std::cerr << "Error during solving elasticity problem"
-                  << exc.what() << std::endl;
-        return 1;
-    }
-
     return 0;
 }
