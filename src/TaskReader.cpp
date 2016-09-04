@@ -14,9 +14,9 @@ ParametersParser::ParametersParser(const boost::filesystem::path &input_file)
 
 void ParametersParser::declare_parameters(dealii::ParameterHandler &prm)
 {
-    GeometryProperties::declare_parameters(prm);
-    ElasticityProperties::declare_parameters(prm);
-    HeatProperties::declare_parameters(prm);
+    geometry.declare_parameters(prm);
+    elasticity.declare_parameters(prm);
+    heat.declare_parameters(prm);
 }
 
 void ParametersParser::parse_parameters(dealii::ParameterHandler &prm)
@@ -83,12 +83,58 @@ void ElasticityProperties::parse_parameters(dealii::ParameterHandler &/*prm*/)
 }
 
 
-void HeatProperties::declare_parameters(dealii::ParameterHandler &/*prm*/)
+void HeatProperties::declare_parameters(dealii::ParameterHandler &prm)
 {
+    prm.enter_subsection("Heat");
+    {
+        prm.declare_entry("Thermal diffusivity", "9.0e-2",
+                          Patterns::Double(0),
+                          "Thermal diffusivity");
 
+        prm.enter_subsection("Fairing boundary function");
+        {
+            fairing_boundary_function.declare_parameters(prm, 1);
+        }
+        prm.leave_subsection();
+
+        prm.enter_subsection("Other boundary function");
+        {
+            other_boundary_function.declare_parameters(prm, 1);
+        }
+        prm.leave_subsection();
+
+        prm.enter_subsection("Right hand side function");
+        {
+            rhs_function.declare_parameters(prm, 1);
+        }
+        prm.leave_subsection();
+    }
+    prm.leave_subsection();
 }
 
-void HeatProperties::parse_parameters(dealii::ParameterHandler &/*prm*/)
+void HeatProperties::parse_parameters(dealii::ParameterHandler &prm)
 {
+    prm.enter_subsection("Heat");
+    {
+        a_square = prm.get_double("Thermal diffusivity");
 
+        prm.enter_subsection("Fairing boundary function");
+        {
+            fairing_boundary_function.parse_parameters(prm);
+        }
+        prm.leave_subsection();
+
+        prm.enter_subsection("Other boundary function");
+        {
+            other_boundary_function.parse_parameters(prm);
+        }
+        prm.leave_subsection();
+
+        prm.enter_subsection("Right hand side function");
+        {
+            rhs_function.parse_parameters(prm);
+        }
+        prm.leave_subsection();
+    }
+    prm.leave_subsection();
 }

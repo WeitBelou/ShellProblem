@@ -1,3 +1,5 @@
+#All values in CGS system
+
 subsection Geometry
     subsection Sizes
         set L = 15.0
@@ -6,4 +8,20 @@ subsection Geometry
     end
 
     set N global refinements = 1
+end
+
+subsection Heat
+    set Thermal diffusivity = 9.0e-2
+
+    subsection Fairing boundary function
+        set Function expression = 2000 * (x * x) / (x * x + y * y + z * z) # 2000 * sin(theta)
+    end
+
+    subsection Other boundary function
+        set Function expression = 0
+    end
+
+    subsection Right hand side function
+        set Function expression = 0
+    end
 end

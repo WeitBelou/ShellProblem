@@ -4,6 +4,7 @@
 #include <boost/filesystem/path.hpp>
 
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/parsed_function.h>
 
 namespace TaskReader
 {
@@ -16,7 +17,7 @@ struct GeometryProperties
 
     int n_global_refinements;
 
-    static void declare_parameters(dealii::ParameterHandler &prm);
+    void declare_parameters(dealii::ParameterHandler &prm);
     void parse_parameters(dealii::ParameterHandler &prm);
 };
 
@@ -24,15 +25,19 @@ struct ElasticityProperties
 {
 
 
-    static void declare_parameters(dealii::ParameterHandler &prm);
+    void declare_parameters(dealii::ParameterHandler &prm);
     void parse_parameters(dealii::ParameterHandler &prm);
 };
 
 struct HeatProperties
 {
+    double a_square;
 
+    dealii::Functions::ParsedFunction<3> fairing_boundary_function;
+    dealii::Functions::ParsedFunction<3> other_boundary_function;
+    dealii::Functions::ParsedFunction<3> rhs_function;
 
-    static void declare_parameters(dealii::ParameterHandler &prm);
+    void declare_parameters(dealii::ParameterHandler &prm);
     void parse_parameters(dealii::ParameterHandler &prm);
 };
 
@@ -46,7 +51,7 @@ public:
     HeatProperties heat;
 
 private:
-    static void declare_parameters(dealii::ParameterHandler &prm);
+    void declare_parameters(dealii::ParameterHandler &prm);
     void parse_parameters(dealii::ParameterHandler &prm);
 
     dealii::ParameterHandler parameter_handler;
