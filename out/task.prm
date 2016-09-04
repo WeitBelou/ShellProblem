@@ -5,5 +5,5 @@ subsection Geometry
         set d = 0.3
     end
 
-    set N global refinements = 2
+    set N global refinements = 1
 end
