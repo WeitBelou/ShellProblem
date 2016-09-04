@@ -56,13 +56,8 @@ int main(int argc, char **argv)
 
     try
     {
-        const BoundaryConditions::SinSquareFunction temperature_function(2200);
-        const dealii::ZeroFunction<3> rhs_function(1);
-
-        const double a_square = 9.0e-2;
-
         HeatSolver::SimpleSolver
-            solver{mesh, rhs_function, temperature_function, a_square};
+            solver(mesh, parameters.heat);
         solver.run(output_dir);
     }
     catch (std::exception &exc)

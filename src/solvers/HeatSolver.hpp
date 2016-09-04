@@ -14,16 +14,14 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
 
+#include "TaskReader.hpp"
 namespace HeatSolver
 {
 
 class SimpleSolver
 {
 public:
-    SimpleSolver(dealii::Triangulation<3> &mesh,
-                 const dealii::Function<3> &rhs_function,
-                 const dealii::Function<3> &fairing_conditions,
-                 const double a_square);
+    SimpleSolver(dealii::Triangulation<3> &mesh, const TaskReader::HeatProperties &heat_properties);
     ~SimpleSolver();
 
     void run(const boost::filesystem::path &output_dir);
@@ -39,6 +37,7 @@ private:
 
     const dealii::SmartPointer<const dealii::Function<3>> rhs_function;
     const dealii::SmartPointer<const dealii::Function<3>> fairing_conditions;
+    const dealii::SmartPointer<const dealii::Function<3>> other_boundary_conditions;
 
     const dealii::FE_Q<3> fe;
     const dealii::QGauss<3> quadrature;

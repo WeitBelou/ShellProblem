@@ -20,17 +20,16 @@
 using namespace dealii;
 
 HeatSolver::SimpleSolver::SimpleSolver(dealii::Triangulation<3> &mesh,
-                                       const dealii::Function<3> &rhs_function,
-                                       const dealii::Function<3> &fairing_conditions,
-                                       const double a_square)
+                                       const TaskReader::HeatProperties &heat_properties)
     :
     mesh(&mesh),
     dof_handler(mesh),
-    rhs_function(&rhs_function),
-    fairing_conditions(&fairing_conditions),
+    rhs_function(&heat_properties.rhs_function),
+    fairing_conditions(&heat_properties.fairing_boundary_function),
+    other_boundary_conditions(&heat_properties.other_boundary_function),
     fe(2),
     quadrature(2),
-    a_square(a_square)
+    a_square(heat_properties.a_square)
 {
 
 }
@@ -124,7 +123,7 @@ void HeatSolver::SimpleSolver::assemble_system()
 
     VectorTools::interpolate_boundary_values(dof_handler,
                                              0,
-                                             ZeroFunction<3>(1),
+                                             *other_boundary_conditions,
                                              boundary_values);
 
     VectorTools::interpolate_boundary_values(dof_handler,
