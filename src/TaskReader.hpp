@@ -10,29 +10,30 @@ namespace TaskReader
 
 struct GeometryProperties
 {
-    GeometryProperties(dealii::ParameterHandler &parameter_handler);
+    double L;
+    double r;
+    double d;
 
-private:
+    int n_global_refinements;
+
     static void declare_parameters(dealii::ParameterHandler &prm);
-    void parse_parameters(const dealii::ParameterHandler &prm);
+    void parse_parameters(dealii::ParameterHandler &prm);
 };
 
 struct ElasticityProperties
 {
-    ElasticityProperties(dealii::ParameterHandler &parameter_handler);
 
-private:
+
     static void declare_parameters(dealii::ParameterHandler &prm);
-    void parse_parameters(const dealii::ParameterHandler &prm);
+    void parse_parameters(dealii::ParameterHandler &prm);
 };
 
 struct HeatProperties
 {
-    HeatProperties(dealii::ParameterHandler &parameter_handler);
 
-private:
+
     static void declare_parameters(dealii::ParameterHandler &prm);
-    void parse_parameters(const dealii::ParameterHandler &prm);
+    void parse_parameters(dealii::ParameterHandler &prm);
 };
 
 class ParametersParser
@@ -45,7 +46,8 @@ public:
     HeatProperties heat;
 
 private:
-    static void declare_parameters(dealii::ParameterHandler &parameter_handler);
+    static void declare_parameters(dealii::ParameterHandler &prm);
+    void parse_parameters(dealii::ParameterHandler &prm);
 
     dealii::ParameterHandler parameter_handler;
 };
