@@ -37,7 +37,7 @@ private:
 
     const dealii::SmartPointer<const dealii::Function<3>> rhs_function;
     const dealii::SmartPointer<const dealii::Function<3>> fairing_conditions;
-    const dealii::SmartPointer<const dealii::Function<3>> other_boundary_conditions;
+    const dealii::SmartPointer<const dealii::Function<3>> outer_boundary_conditions;
 
     const dealii::FE_Q<3> fe;
     const dealii::QGauss<3> quadrature;

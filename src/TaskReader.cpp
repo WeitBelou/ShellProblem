@@ -97,7 +97,7 @@ void HeatProperties::declare_parameters(dealii::ParameterHandler &prm)
         }
         prm.leave_subsection();
 
-        prm.enter_subsection("Other boundary function");
+        prm.enter_subsection("Outer boundary function");
         {
             other_boundary_function.declare_parameters(prm, 1);
         }
@@ -124,7 +124,7 @@ void HeatProperties::parse_parameters(dealii::ParameterHandler &prm)
         }
         prm.leave_subsection();
 
-        prm.enter_subsection("Other boundary function");
+        prm.enter_subsection("Outer boundary function");
         {
             other_boundary_function.parse_parameters(prm);
         }

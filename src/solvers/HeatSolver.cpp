@@ -26,7 +26,7 @@ HeatSolver::SimpleSolver::SimpleSolver(dealii::Triangulation<3> &mesh,
     dof_handler(mesh),
     rhs_function(&heat_properties.rhs_function),
     fairing_conditions(&heat_properties.fairing_boundary_function),
-    other_boundary_conditions(&heat_properties.other_boundary_function),
+    outer_boundary_conditions(&heat_properties.other_boundary_function),
     fe(2),
     quadrature(2),
     a_square(heat_properties.a_square)
@@ -122,12 +122,7 @@ void HeatSolver::SimpleSolver::assemble_system()
     std::map<types::global_dof_index, double> boundary_values;
 
     VectorTools::interpolate_boundary_values(dof_handler,
-                                             0,
-                                             *other_boundary_conditions,
-                                             boundary_values);
-
-    VectorTools::interpolate_boundary_values(dof_handler,
-                                             1,
+                                             2,
                                              *fairing_conditions,
                                              boundary_values);
 
@@ -137,7 +132,7 @@ void HeatSolver::SimpleSolver::assemble_system()
 
 size_t HeatSolver::SimpleSolver::solve_linear_system()
 {
-    SolverControl solver_control(dof_handler.n_dofs() / 2);
+    SolverControl solver_control(dof_handler.n_dofs());
     SolverCG<> solver(solver_control);
 
     PreconditionSSOR<> preconditioner;
