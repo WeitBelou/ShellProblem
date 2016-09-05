@@ -58,6 +58,12 @@ void MeshCreators::create_shell_mesh(dealii::Triangulation<3> &tria, const TaskR
         }
     }
 
+    /**
+     * Boundary ids:
+     * 0 - inner boundary
+     * 1 - outer boundary
+     * 2 - fairling
+     */
     for (auto cell : tria.active_cell_iterators())
     {
         if (cell->manifold_id() == 1)
@@ -68,6 +74,22 @@ void MeshCreators::create_shell_mesh(dealii::Triangulation<3> &tria, const TaskR
                 {
                     const Point<3> face_center = cell->face(f)->center(true);
                     if (face_center.norm_square() > (r + d / 2) * (r + d / 2))
+                    {
+                        cell->face(f)->set_all_boundary_ids(2);
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (size_t f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
+            {
+                if (cell->face(f)->at_boundary())
+                {
+                    const Point<3> face_center = cell->face(f)->center();
+                    if (std::fabs(face_center[1]) > a + d / 2
+                        || std::fabs(face_center[2]) > a + d / 2
+                        || face_center[0] == -L)
                     {
                         cell->face(f)->set_all_boundary_ids(1);
                     }
