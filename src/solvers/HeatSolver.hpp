@@ -30,7 +30,8 @@ private:
     void setup_system();
     void assemble_system();
     size_t solve_linear_system();
-    void output_solution(const boost::filesystem::path &output_dir);
+    void refine_grid();
+    void output_solution(const boost::filesystem::path &output_dir, size_t refinement_step);
 
     const dealii::SmartPointer<dealii::Triangulation<3>> mesh;
     dealii::DoFHandler<3> dof_handler;
@@ -44,7 +45,7 @@ private:
 
     const double a_square;
 
-    dealii::ConstraintMatrix hanging_node_constraints;
+    dealii::ConstraintMatrix constraints;
     dealii::SparsityPattern sparsity_pattern;
     dealii::SparseMatrix<double> system_matrix;
     dealii::Vector<double> system_rhs;

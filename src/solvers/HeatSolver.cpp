@@ -14,6 +14,9 @@
 #include <deal.II/lac/solver_control.h>
 #include <deal.II/lac/precondition.h>
 
+#include <deal.II/numerics/error_estimator.h>
+#include <deal.II/grid/grid_refinement.h>
+
 #include <deal.II/numerics/data_out.h>
 #include <fstream>
 
@@ -41,35 +44,51 @@ HeatSolver::SimpleSolver::~SimpleSolver()
 
 void HeatSolver::SimpleSolver::run(const boost::filesystem::path &output_dir)
 {
-    std::cout << "    Setup system..." << std::endl << std::flush;
-    setup_system();
-    std::cout << "    Number of degrees of freedom: " << dof_handler.n_dofs() << std::endl;
+    for (size_t step = 0; step < 3; ++step)
+    {
+        std::cout << "Refinement step: " << step << std::endl;
 
-    std::cout << "    Assembling system..." << std::endl << std::flush;
-    assemble_system();
+        std::cout << "    Setup system..." << std::endl << std::flush;
+        setup_system();
+        std::cout << "    Number of degrees of freedom: " << dof_handler.n_dofs() << std::endl;
 
-    std::cout << "    Solving linear system..." << std::endl << std::flush;
-    const size_t n_iter = solve_linear_system();
-    std::cout << "    Solver conerges in " << n_iter << " iterations." << std::endl;
+        std::cout << "    Assembling system..." << std::endl << std::flush;
+        assemble_system();
 
-    std::cout << "    Output solution..." << std::endl << std::flush;
-    output_solution(output_dir);
+        std::cout << "    Solving linear system..." << std::endl << std::flush;
+        const size_t n_iter = solve_linear_system();
+        std::cout << "    Solver converges in " << n_iter << " iterations." << std::endl;
+
+        std::cout << "    Output solution..." << std::endl << std::flush;
+        output_solution(output_dir, step);
+
+        std::cout << "    Refine mesh..." << std::endl << std::flush;
+        refine_grid();
+    }
+
 }
 
 void HeatSolver::SimpleSolver::setup_system()
 {
     dof_handler.distribute_dofs(fe);
 
-    DoFTools::make_hanging_node_constraints(dof_handler,
-                                            hanging_node_constraints);
+    solution.reinit(dof_handler.n_dofs());
+    system_rhs.reinit(dof_handler.n_dofs());
+
+    constraints.clear();
+
+    DoFTools::make_hanging_node_constraints(dof_handler, constraints);
+    VectorTools::interpolate_boundary_values(dof_handler,
+                                             2,
+                                             *fairing_conditions,
+                                             constraints);
+    constraints.close();
 
     DynamicSparsityPattern dsp(dof_handler.n_dofs());
-    DoFTools::make_sparsity_pattern(dof_handler, dsp, hanging_node_constraints);
+    DoFTools::make_sparsity_pattern(dof_handler, dsp, constraints, true);
     sparsity_pattern.copy_from(dsp);
 
     system_matrix.reinit(sparsity_pattern);
-    solution.reinit(dof_handler.n_dofs());
-    system_rhs.reinit(dof_handler.n_dofs());
 }
 
 void HeatSolver::SimpleSolver::assemble_system()
@@ -112,11 +131,12 @@ void HeatSolver::SimpleSolver::assemble_system()
 
         cell->get_dof_indices(local_dof_indices);
 
-        hanging_node_constraints.distribute_local_to_global(cell_matrix,
-                                                            cell_rhs,
-                                                            local_dof_indices,
-                                                            system_matrix,
-                                                            system_rhs);
+        constraints.distribute_local_to_global(cell_matrix,
+                                               cell_rhs,
+                                               local_dof_indices,
+                                               system_matrix,
+                                               system_rhs);
+
     }
 
     std::map<types::global_dof_index, double> boundary_values;
@@ -126,8 +146,10 @@ void HeatSolver::SimpleSolver::assemble_system()
                                              *fairing_conditions,
                                              boundary_values);
 
-    MatrixTools::apply_boundary_values(boundary_values, system_matrix,
-                                       solution, system_rhs);
+    MatrixTools::apply_boundary_values(boundary_values,
+                                       system_matrix,
+                                       solution,
+                                       system_rhs);
 }
 
 size_t HeatSolver::SimpleSolver::solve_linear_system()
@@ -140,10 +162,24 @@ size_t HeatSolver::SimpleSolver::solve_linear_system()
 
     solver.solve(system_matrix, solution, system_rhs, preconditioner);
 
+    constraints.distribute(solution);
     return solver_control.last_step();
 }
 
-void HeatSolver::SimpleSolver::output_solution(const boost::filesystem::path &output_dir)
+void HeatSolver::SimpleSolver::refine_grid()
+{
+    Vector<float> estimated_error_per_cell(mesh->n_active_cells());
+    KellyErrorEstimator<3>::estimate(dof_handler,
+                                     QGauss<2>(3),
+                                     FunctionMap<3>::type(),
+                                     solution,
+                                     estimated_error_per_cell);
+
+    GridRefinement::refine_and_coarsen_fixed_number(*mesh, estimated_error_per_cell, 0.3, 0);
+    mesh->execute_coarsening_and_refinement();
+}
+
+void HeatSolver::SimpleSolver::output_solution(const boost::filesystem::path &output_dir, size_t refinement_step)
 {
     DataOut<3> data_out;
 
@@ -153,7 +189,9 @@ void HeatSolver::SimpleSolver::output_solution(const boost::filesystem::path &ou
     data_out.build_patches();
 
     boost::filesystem::path output_filename = output_dir;
-    output_filename /= "heat_solution.vtu";
+    output_filename /= "heat_solution-";
+    output_filename += Utilities::int_to_string(refinement_step, 2);
+    output_filename += ".vtu";
 
     std::ofstream out(output_filename.c_str());
 
