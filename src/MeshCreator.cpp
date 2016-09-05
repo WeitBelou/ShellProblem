@@ -23,21 +23,20 @@ void MeshCreators::create_shell_mesh(dealii::Triangulation<3> &tria, const TaskR
 
     const int n_global_refinements = geometry.n_global_refinements;
 
-    Triangulation<3> head(Triangulation<3>::patch_level_1);
+    Triangulation<3> head;
     GridGenerator::half_hyper_shell(head, Point<3>(0, 0, 0), r, r + d);
 
     Triangulation<3> tail;
-    GridGenerator::cylinder_shell(tail, L / 2.0, r, r + d, 4, 5);
+    GridGenerator::cylinder_shell(tail, L, r, r + d, 4, 3);
     GridTools::rotate(M_PI / 2, 1, tail);
     GridTools::rotate(M_PI / 4, 0, tail);
     Tensor<1, 3> shift;
-    shift[0] = -L / 2;
+    shift[0] = -L;
     GridTools::shift(shift, tail);
 
     Triangulation<3> cap;
-    GridGenerator::cylinder(cap, r + d, d / 2.0);
-    shift[0] = -L / 2 + d / 2;
-    GridTools::shift(shift, cap);
+    const double a = r / std::sqrt(2);
+    GridGenerator::hyper_rectangle(cap, Point<3>(-L + d, a, a), Point<3>(-L, -a, -a));
 
     Triangulation<3> tail_with_cap;
     GridGenerator::merge_triangulations(tail, cap, tail_with_cap);
