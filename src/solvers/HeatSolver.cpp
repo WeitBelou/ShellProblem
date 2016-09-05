@@ -5,13 +5,11 @@
 #include <deal.II/numerics/vector_tools.h>
 #include <deal.II/numerics/matrix_tools.h>
 
-#include <deal.II/dofs/dof_accessor.h>
 #include <deal.II/dofs/dof_tools.h>
 
 #include <deal.II/fe/fe_values.h>
 
 #include <deal.II/lac/solver.h>
-#include <deal.II/lac/solver_control.h>
 #include <deal.II/lac/precondition.h>
 
 #include <deal.II/numerics/error_estimator.h>
@@ -78,6 +76,16 @@ void HeatSolver::SimpleSolver::setup_system()
     constraints.clear();
 
     DoFTools::make_hanging_node_constraints(dof_handler, constraints);
+
+    VectorTools::interpolate_boundary_values(dof_handler,
+                                             0,
+                                             *outer_boundary_conditions,
+                                             constraints);
+
+    VectorTools::interpolate_boundary_values(dof_handler,
+                                             1,
+                                             *outer_boundary_conditions,
+                                             constraints);
     VectorTools::interpolate_boundary_values(dof_handler,
                                              2,
                                              *fairing_conditions,
@@ -118,9 +126,10 @@ void HeatSolver::SimpleSolver::assemble_system()
             {
                 for (size_t j = 0; j < dofs_per_cell; ++j)
                 {
-                    cell_matrix(i, j) += a_square * fe_values.shape_grad(i, q) *
+                    cell_matrix(i, j) += fe_values.shape_grad(i, q) *
                                          fe_values.shape_grad(j, q) *
-                                         fe_values.JxW(q);
+                                         fe_values.JxW(q) *
+                                         a_square;
                 }
 
                 cell_rhs(i) += fe_values.shape_value(i, q) *
@@ -138,18 +147,6 @@ void HeatSolver::SimpleSolver::assemble_system()
                                                system_rhs);
 
     }
-
-    std::map<types::global_dof_index, double> boundary_values;
-
-    VectorTools::interpolate_boundary_values(dof_handler,
-                                             2,
-                                             *fairing_conditions,
-                                             boundary_values);
-
-    MatrixTools::apply_boundary_values(boundary_values,
-                                       system_matrix,
-                                       solution,
-                                       system_rhs);
 }
 
 size_t HeatSolver::SimpleSolver::solve_linear_system()
