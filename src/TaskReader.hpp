@@ -11,11 +11,8 @@ namespace TaskReader
 
 struct GeometryProperties
 {
-    double L;
-    double r;
-    double d;
-
-    int n_global_refinements;
+    std::string geo_file;
+    std::string msh_file;
 
     void declare_parameters(dealii::ParameterHandler &prm);
     void parse_parameters(dealii::ParameterHandler &prm);

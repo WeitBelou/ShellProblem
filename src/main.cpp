@@ -51,8 +51,7 @@ int main(int argc, char **argv)
     TaskReader::ParametersParser parameters(task_file);
 
     dealii::Triangulation<3> mesh;
-    MeshCreators::create_shell_mesh(mesh, parameters.geometry);
-    MeshCreators::write_mesh(mesh, "mesh.msh");
+    MeshCreators::read_from_msh(mesh, parameters.geometry.msh_file);
 
     try
     {

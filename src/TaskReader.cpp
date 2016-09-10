@@ -31,25 +31,12 @@ void GeometryProperties::declare_parameters(ParameterHandler &prm)
 {
     prm.enter_subsection("Geometry");
     {
-        prm.enter_subsection("Sizes");
-        {
-            prm.declare_entry("L", "15.0",
-                              Patterns::Double(0.1),
-                              "Length of the shell.");
-
-            prm.declare_entry("r", "5.0",
-                              Patterns::Double(0.1),
-                              "Inner radius");
-
-            prm.declare_entry("d", "0.3",
-                              Patterns::Double(0.01),
-                              "Thickness of the shell");
-        }
-        prm.leave_subsection();
-
-        prm.declare_entry("N global refinements", "1",
-                          Patterns::Integer(0, 5),
-                          "Number of global refinements");
+        prm.declare_entry("Geo file", "",
+                          Patterns::FileName(),
+                          "Path to .geo file with grid");
+        prm.declare_entry("Msh file", "",
+                          Patterns::FileName(),
+                          "Path to .msh file with mesh");
     }
     prm.leave_subsection();
 }
@@ -58,15 +45,8 @@ void GeometryProperties::parse_parameters(ParameterHandler &prm)
 {
     prm.enter_subsection("Geometry");
     {
-        prm.enter_subsection("Sizes");
-        {
-            L = prm.get_double("L");
-            r = prm.get_double("r");
-            d = prm.get_double("d");
-        }
-        prm.leave_subsection();
-
-        n_global_refinements = prm.get_integer("N global refinements");
+        geo_file = prm.get("Geo file");
+        msh_file = prm.get("Msh file");
     }
     prm.leave_subsection();
 }

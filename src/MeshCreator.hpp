@@ -7,9 +7,6 @@
 namespace MeshCreators
 {
 
-void create_shell_mesh(dealii::Triangulation<3> &tria,
-                       const TaskReader::GeometryProperties &geometry);
-
 void write_mesh(const dealii::Triangulation<3> &tria,
                 const std::string &output_file);
 
