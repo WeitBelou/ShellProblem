@@ -1,19 +1,24 @@
+#include <deal.II/numerics/vector_tools.h>
 #include "BoundaryConditions.hpp"
 
 using namespace BoundaryConditions;
 using namespace dealii;
 
-SinSquareFunction::SinSquareFunction(const double A)
+BoundaryFunctionsMap::BoundaryFunctionsMap(const FunctionPointerMap &functions_map)
     :
-    Function<3>(1),
-    A(A)
+    functions_map(functions_map)
 {
 
 }
-
-double SinSquareFunction::value(const Point<3> &p, const size_t /*component*/) const
+void BoundaryFunctionsMap::interpolate_boundary_values(const dealii::DoFHandler<3> &dof,
+                                                       dealii::ConstraintMatrix &constraints,
+                                                       const ComponentMask &component_mask)
 {
-    const double sin_square = p[0] * p[0] / p.norm_square();
-
-    return A * sin_square;
+    for (auto pair : functions_map)
+    {
+        VectorTools::interpolate_boundary_values(dof, pair.first,
+                                                 *pair.second,
+                                                 constraints,
+                                                 component_mask);
+    }
 }

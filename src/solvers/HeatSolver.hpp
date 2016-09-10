@@ -15,6 +15,8 @@
 #include <deal.II/lac/constraint_matrix.h>
 
 #include "TaskReader.hpp"
+#include "BoundaryConditions.hpp"
+
 namespace HeatSolver
 {
 
@@ -30,15 +32,13 @@ private:
     void setup_system();
     void assemble_system();
     size_t solve_linear_system();
-    void refine_grid();
-    void output_solution(const boost::filesystem::path &output_dir, size_t refinement_step);
+    void output_solution(const boost::filesystem::path &output_dir);
 
     const dealii::SmartPointer<dealii::Triangulation<3>> mesh;
     dealii::DoFHandler<3> dof_handler;
 
     const dealii::SmartPointer<const dealii::Function<3>> rhs_function;
-    const dealii::SmartPointer<const dealii::Function<3>> fairing_conditions;
-    const dealii::SmartPointer<const dealii::Function<3>> outer_boundary_conditions;
+    BoundaryConditions::BoundaryFunctionsMap boundary_conditions;
 
     const dealii::FE_Q<3> fe;
     const dealii::QGauss<3> quadrature;

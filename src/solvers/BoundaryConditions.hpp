@@ -2,19 +2,26 @@
 #define SHELL_PROBLEM_BOUNDARY_CONDITIONS_HPP
 
 #include <deal.II/base/function.h>
+#include <deal.II/dofs/dof_handler.h>
+#include <deal.II/lac/constraint_matrix.h>
+#include <deal.II/fe/component_mask.h>
 
 namespace BoundaryConditions
 {
 
-class SinSquareFunction: public dealii::Function<3>
+class BoundaryFunctionsMap
 {
 public:
-    SinSquareFunction(const double A);
+    typedef std::map<dealii::types::boundary_id,
+                                        const dealii::SmartPointer<const dealii::Function<3>>> FunctionPointerMap;
 
-    virtual double value(const dealii::Point<3> &p,
-                         const size_t component = 0) const override;
+    BoundaryFunctionsMap(const FunctionPointerMap &functions_map);
+
+    void interpolate_boundary_values(const dealii::DoFHandler<3> &dof,
+                                     dealii::ConstraintMatrix &constraints,
+                                     const dealii::ComponentMask &component_mask = dealii::ComponentMask());
 private:
-    const double A;
+    FunctionPointerMap functions_map;
 };
 
 }
