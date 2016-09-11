@@ -30,8 +30,6 @@ HeatSolver::SimpleSolver::SimpleSolver(dealii::Triangulation<3> &mesh,
                             std::make_pair<types::boundary_id,
                                            const SmartPointer<const Function<3>>>(0, &heat_properties.other_boundary_function),
                             std::make_pair<types::boundary_id,
-                                           const SmartPointer<const Function<3>>>(1, &heat_properties.other_boundary_function),
-                            std::make_pair<types::boundary_id,
                                            const SmartPointer<const Function<3>>>(2, &heat_properties.fairing_boundary_function)
                         }),
     fe(2),
