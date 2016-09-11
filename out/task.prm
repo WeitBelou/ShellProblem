@@ -1,20 +1,15 @@
 #All values in CGS system
 
 subsection Geometry
-    subsection Sizes
-        set L = 15.0
-        set r = 5.0
-        set d = 0.3
-    end
-
-    set N global refinements = 0
+    set Geo file = ../grids/shell.geo
+    set Msh file = ../grids/shell.msh
 end
 
 subsection Heat
     set Thermal diffusivity = 9.0e-2
 
     subsection Fairing boundary function
-        set Function expression = 2000 * (x * x) / (x * x + y * y + z * z) # 2000 * sin^2(theta)
+        set Function expression = 2000 * (z * z) / (x * x + y * y + z * z) # 2000 * sin^2(theta)
     end
 
     subsection Outer boundary function
