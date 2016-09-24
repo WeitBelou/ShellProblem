@@ -54,17 +54,21 @@ int main(int argc, char **argv)
     MeshCreators::create_coarse_shell_mesh(tria, parameters.geometry);
     MeshCreators::write_msh(tria, "coarse.tmp.msh");
 
-    try
-    {
-        HeatSolver::SimpleSolver
-            solver(tria, parameters.heat);
-        solver.run(output_dir);
-    }
-    catch (std::exception &exc)
-    {
-        std::cerr << "Error during solving elasticity problem"
-                  << exc.what() << std::endl;
-        return 1;
-    }
+    MeshCreators::apply_iges_boundary_desc(tria, parameters.geometry.iges_file, parameters.geometry);
+    tria.refine_global(1);
+    MeshCreators::write_msh(tria, "refined.tmp.msh");
+
+//    try
+//    {
+//        HeatSolver::SimpleSolver
+//            solver(tria, parameters.heat);
+//        solver.run(output_dir);
+//    }
+//    catch (std::exception &exc)
+//    {
+//        std::cerr << "Error during solving elasticity problem"
+//                  << exc.what() << std::endl;
+//        return 1;
+//    }
     return 0;
 }

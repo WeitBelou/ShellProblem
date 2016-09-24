@@ -47,31 +47,80 @@ void ::MeshCreators::create_coarse_shell_mesh(dealii::Triangulation<3> &tria,
     const Point<3> fairing_center;
     GridGenerator::half_hyper_shell(fairing, fairing_center,
                                     inner_radius, outer_radius);
-    GridTools::rotate(-M_PI / 2, 1, fairing);
 
     //Shell cylinder
     Triangulation<3> shell_cylinder;
-    GridGenerator::cylinder_shell(shell_cylinder, cylinder_length,
-                                  inner_radius, outer_radius,
-                                  4, 4);
-    const double cylinder_shift[] = {0.0, 0.0, -cylinder_length};
-    GridTools::shift(Tensor<1, 3>(cylinder_shift), shell_cylinder);
-    GridTools::rotate(M_PI / 4, 2, shell_cylinder);
+    GridGenerator::half_hyper_shell(shell_cylinder, fairing_center,
+                                    inner_radius, outer_radius);
+    GridTools::rotate(M_PI, 1, shell_cylinder);
 
-    //Cap
-    Triangulation<3> cap;
-    const double d = outer_radius - inner_radius;
-    GridGenerator::cylinder(cap, inner_radius, d / 2);
-    GridTools::rotate(-M_PI / 2, 1, cap);
-    const double cap_shift[] = {0.0, 0.0, -cylinder_length + d / 2};
-    GridTools::shift(Tensor<1, 3>(cap_shift), cap);
+    auto transform_function =
+        [outer_radius, inner_radius, cylinder_length](const Point<3> &p)
+        {
+            Point<3> result = p;
+            const double d = outer_radius - inner_radius;
 
-    //Temp merge
-    Triangulation<3> tmp;
-    GridGenerator::merge_triangulations(fairing, shell_cylinder, tmp);
+            auto fuzzy_equal = [](double a, double b)
+            {
+                return std::fabs(a - b) < 1e-10;
+            };
+
+            if (p[0] < -1e-10)
+            {
+                if (fuzzy_equal(p.norm(), inner_radius))
+                {
+                    const double half_side = inner_radius / std::sqrt(2);
+                    result[0] = -cylinder_length + d;
+
+                    if (p[1] > 0)
+                    {
+                        result[1] = half_side;
+                    }
+                    else
+                    {
+                        result[1] = -half_side;
+                    }
+
+                    if (p[2] > 0)
+                    {
+                        result[2] = half_side;
+                    }
+                    else
+                    {
+                        result[2] = -half_side;
+                    }
+                }
+                else
+                {
+                    const double half_side = outer_radius / std::sqrt(2);
+                    result[0] = -cylinder_length;
+
+                    if (p[1] > 0)
+                    {
+                        result[1] = half_side;
+                    }
+                    else
+                    {
+                        result[1] = -half_side;
+                    }
+
+                    if (p[2] > 0)
+                    {
+                        result[2] = half_side;
+                    }
+                    else
+                    {
+                        result[2] = -half_side;
+                    }
+                }
+            }
+            return result;
+        };
+    GridTools::transform(transform_function, shell_cylinder);
 
     //Final merge
-    GridGenerator::merge_triangulations(tmp, cap, tria);
+    GridGenerator::merge_triangulations(fairing, shell_cylinder, tria);
+    GridTools::rotate(-M_PI / 2, 1, tria);
 
     //Boundary ids
     for (auto cell : tria.active_cell_iterators())
@@ -100,10 +149,11 @@ void ::MeshCreators::create_coarse_shell_mesh(dealii::Triangulation<3> &tria,
 }
 
 void MeshCreators::apply_iges_boundary_desc(Triangulation<3, 3> &tria,
-                                            const std::string &iges_file)
+                                            const std::string &iges_file,
+                                            const TaskReader::GeometryProperties &geometry)
 {
-    TopoDS_Shape shell_surface = OpenCASCADE::read_IGES(iges_file, 1e-1);
-    const double tolerance = OpenCASCADE::get_shape_tolerance(shell_surface) * 5;
+    TopoDS_Shape shell_surface = OpenCASCADE::read_IGES(iges_file, 0.1);
+    const double tolerance = OpenCASCADE::get_shape_tolerance(shell_surface);
 
     std::vector<TopoDS_Compound> compounds;
     std::vector<TopoDS_CompSolid> compsolids;
@@ -118,24 +168,22 @@ void MeshCreators::apply_iges_boundary_desc(Triangulation<3, 3> &tria,
                                          shells,
                                          wires);
 
-    for (auto cell : tria.active_cell_iterators())
-    {
-        cell->set_manifold_id(1);
+    const double inner_radius = geometry.inner_radius;
+    const double outer_radius = geometry.outer_radius;
+    const double cylinder_length = geometry.cylinder_length;
 
-        for (size_t f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
-        {
-            cell->face(f)->set_manifold_id(2);
-        }
-    }
+    auto fuzzy_equal = [](double a, double b)
+    {
+        return std::abs(a - b) < 1e-10;
+    };
 
     Assert(wires.size() > 0,
            ExcMessage("I could not find any wire in the CAD file you gave me. Bailing out."));
 
-    static OpenCASCADE::ArclengthProjectionLineManifold<3, 3> line_projector(wires[0], tolerance);
-    tria.set_manifold(2, line_projector);
+    tria.set_all_manifold_ids(1);
 
     static OpenCASCADE::NormalProjectionBoundary<3, 3> normal_projector(shell_surface, tolerance);
     tria.set_manifold(1, normal_projector);
 
-    tria.refine_global(1);
+    GridOut grid_out;
 }
