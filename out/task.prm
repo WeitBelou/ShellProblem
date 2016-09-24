@@ -1,8 +1,13 @@
 #All values in CGS system
 
 subsection Geometry
-    set Geo file = ../grids/shell.geo
-    set Msh file = ../grids/shell.msh
+    set IGES file = ../grids/hull_shell.iges
+
+    subsection Sizes
+        set Inner radius = 5.0
+        set Outer radius = 5.3
+        set Cylinder length = 15.0
+    end
 end
 
 subsection Heat

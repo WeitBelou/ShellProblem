@@ -31,12 +31,23 @@ void GeometryProperties::declare_parameters(ParameterHandler &prm)
 {
     prm.enter_subsection("Geometry");
     {
-        prm.declare_entry("Geo file", "",
+        prm.declare_entry("IGES file", "",
                           Patterns::FileName(),
-                          "Path to .geo file with grid");
-        prm.declare_entry("Msh file", "",
-                          Patterns::FileName(),
-                          "Path to .msh file with mesh");
+                          "Path to .iges file with geometry");
+
+        prm.enter_subsection("Sizes");
+        {
+            prm.declare_entry("Inner radius", "5.0",
+                              Patterns::Double(0.0),
+                              "Inner radius");
+            prm.declare_entry("Outer radius", "5.3",
+                              Patterns::Double(0.0),
+                              "Outer radius");
+            prm.declare_entry("Cylinder length", "15.0",
+                              Patterns::Double(0.0),
+                              "Cylinder length");
+        }
+        prm.leave_subsection();
     }
     prm.leave_subsection();
 }
@@ -45,8 +56,15 @@ void GeometryProperties::parse_parameters(ParameterHandler &prm)
 {
     prm.enter_subsection("Geometry");
     {
-        geo_file = prm.get("Geo file");
-        msh_file = prm.get("Msh file");
+        iges_file = prm.get("IGES file");
+
+        prm.enter_subsection("Sizes");
+        {
+            inner_radius = prm.get_double("Inner radius");
+            outer_radius = prm.get_double("Outer radius");
+            cylinder_length = prm.get_double("Cylinder length");
+        }
+        prm.leave_subsection();
     }
     prm.leave_subsection();
 }
