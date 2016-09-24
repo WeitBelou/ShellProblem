@@ -1,7 +1,7 @@
 #All values in CGS system
 
 subsection Geometry
-    set IGES file = ../grids/hull_shell.iges
+    set IGES file = ../grids/simple_shell.iges
 
     subsection Sizes
         set Inner radius = 5.0
