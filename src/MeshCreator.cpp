@@ -85,7 +85,6 @@ void ::MeshCreators::create_coarse_shell_mesh(dealii::Triangulation<3> &tria,
                     const Point<3> current_point = cell->face(f)->vertex(v);
                     if (current_point[2] > 1e-10)
                     {
-                        std::clog << v << ": " << cell->vertex(v).norm() << std::endl;
                         if (std::fabs(current_point.norm() - outer_radius) < 1e-10)
                         {
                             cell->face(f)->set_boundary_id(2);
