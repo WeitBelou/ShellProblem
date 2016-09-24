@@ -50,13 +50,14 @@ int main(int argc, char **argv)
 
     TaskReader::ParametersParser parameters(task_file);
 
-    dealii::Triangulation<3> mesh;
-    MeshCreators::read_from_msh(mesh, parameters.geometry.msh_file);
+    dealii::Triangulation<3> tria;
+    MeshCreators::create_coarse_shell_mesh(tria, parameters.geometry);
+    MeshCreators::write_msh(tria, "coarse.tmp.msh");
 
     try
     {
         HeatSolver::SimpleSolver
-            solver(mesh, parameters.heat);
+            solver(tria, parameters.heat);
         solver.run(output_dir);
     }
     catch (std::exception &exc)
