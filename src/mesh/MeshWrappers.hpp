@@ -1,10 +1,10 @@
-#ifndef SHELL_PROBLEM_MESHCREATOR_HPP
-#define SHELL_PROBLEM_MESHCREATOR_HPP
+#ifndef SHELL_PROBLEM_MESH_WRAPPERS_HPP
+#define SHELL_PROBLEM_MESH_WRAPPERS_HPP
 
 #include "deal.II/grid/tria.h"
 #include "TaskReader.hpp"
 
-namespace MeshCreators
+namespace MeshWrappers
 {
 
 class SimpleShellMesh
@@ -32,4 +32,4 @@ private:
 
 }
 
-#endif //SHELL_PROBLEM_MESHCREATOR_HPP
+#endif //SHELL_PROBLEM_MESH_WRAPPERS_HPP

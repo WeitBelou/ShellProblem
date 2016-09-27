@@ -2,7 +2,7 @@
 #include <boost/program_options.hpp>
 
 #include "TaskReader.hpp"
-#include "src/mesh/MeshCreator.hpp"
+#include "src/mesh/MeshWrappers.hpp"
 #include "solvers/ElasticitySolver.hpp"
 #include "solvers/HeatSolver.hpp"
 #include "solvers/BoundaryConditions.hpp"
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 
     TaskReader::ParametersParser parameters(task_file);
 
-    MeshCreators::SimpleShellMesh shell_mesh(parameters.geometry);
+    MeshWrappers::SimpleShellMesh shell_mesh(parameters.geometry);
     shell_mesh.write_msh("mesh.msh");
 
 //    try

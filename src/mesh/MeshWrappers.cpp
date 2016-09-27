@@ -1,4 +1,4 @@
-#include "MeshCreator.hpp"
+#include "MeshWrappers.hpp"
 #include "Utilities.hpp"
 
 #include <deal.II/grid/grid_generator.h>
@@ -11,7 +11,7 @@
 
 #include <fstream>
 
-using namespace MeshCreators;
+using namespace MeshWrappers;
 using namespace Utilities;
 using namespace dealii;
 
