@@ -11,11 +11,11 @@ namespace TaskReader
 
 struct GeometryProperties
 {
-    std::string iges_file;
-
     double inner_radius;
     double outer_radius;
     double cylinder_length;
+
+    size_t n_refinements;
 
     void declare_parameters(dealii::ParameterHandler &prm);
     void parse_parameters(dealii::ParameterHandler &prm);

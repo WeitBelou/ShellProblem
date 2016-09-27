@@ -1,20 +1,21 @@
 #All values in CGS system
 
 subsection Geometry
-    set IGES file = ../grids/simple_shell.iges
-
     subsection Sizes
         set Inner radius = 5.0
         set Outer radius = 5.3
         set Cylinder length = 15.0
     end
+
+    set N refinements = 2
 end
 
 subsection Heat
     set Thermal diffusivity = 9.0e-2
 
     subsection Fairing boundary function
-        set Function expression = 2000 * (z * z) / (x * x + y * y + z * z) # 2000 * sin^2(theta)
+        set Function constants = x_0 = 0.0, y_0 = 0.0, z_0 = 0.0, A = 2000.0
+        set Function expression = A * ((z - z_0) ^ 2) / ((x - x_0) ^ 2 + (y - y_0) ^ 2 + (z - z_0) ^ 2)
     end
 
     subsection Outer boundary function

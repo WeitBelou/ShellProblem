@@ -31,9 +31,9 @@ void GeometryProperties::declare_parameters(ParameterHandler &prm)
 {
     prm.enter_subsection("Geometry");
     {
-        prm.declare_entry("IGES file", "",
-                          Patterns::FileName(),
-                          "Path to .iges file with geometry");
+        prm.declare_entry("N refinements", "",
+                          Patterns::Integer(0, 10),
+                          "N initial global refinements");
 
         prm.enter_subsection("Sizes");
         {
@@ -56,7 +56,7 @@ void GeometryProperties::parse_parameters(ParameterHandler &prm)
 {
     prm.enter_subsection("Geometry");
     {
-        iges_file = prm.get("IGES file");
+        n_refinements = prm.get_integer("N refinemnts");
 
         prm.enter_subsection("Sizes");
         {
