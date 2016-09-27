@@ -15,7 +15,7 @@ struct GeometryProperties
     double outer_radius;
     double cylinder_length;
 
-    size_t n_refinements;
+    int n_refinements;
 
     void declare_parameters(dealii::ParameterHandler &prm);
     void parse_parameters(dealii::ParameterHandler &prm);

@@ -31,7 +31,7 @@ void GeometryProperties::declare_parameters(ParameterHandler &prm)
 {
     prm.enter_subsection("Geometry");
     {
-        prm.declare_entry("N refinements", "",
+        prm.declare_entry("N refinements", "0",
                           Patterns::Integer(0, 10),
                           "N initial global refinements");
 
@@ -56,7 +56,7 @@ void GeometryProperties::parse_parameters(ParameterHandler &prm)
 {
     prm.enter_subsection("Geometry");
     {
-        n_refinements = prm.get_integer("N refinemnts");
+        n_refinements = prm.get_integer("N refinements");
 
         prm.enter_subsection("Sizes");
         {

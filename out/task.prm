@@ -7,7 +7,7 @@ subsection Geometry
         set Cylinder length = 15.0
     end
 
-    set N refinements = 2
+    set N refinements = 1
 end
 
 subsection Heat
