@@ -5,10 +5,8 @@
 #include <deal.II/grid/grid_tools.h>
 
 #include <deal.II/grid/manifold_lib.h>
-#include <deal.II/grid/tria_boundary_lib.h>
 
 #include <deal.II/grid/grid_in.h>
-#include <deal.II/grid/grid_reordering.h>
 #include <deal.II/grid/grid_out.h>
 
 #include <fstream>
@@ -17,44 +15,22 @@ using namespace MeshCreators;
 using namespace Utilities;
 using namespace dealii;
 
-void MeshCreators::write_msh(const Triangulation<3, 3> &tria,
-                             const std::string &output_file)
+SimpleShellMesh::SimpleShellMesh(const TaskReader::GeometryProperties &geometry) :
+    inner_radius(geometry.inner_radius),
+    outer_radius(geometry.outer_radius),
+    thickness(outer_radius - inner_radius),
+    cylinder_length(geometry.cylinder_length),
+    n_refinements(geometry.n_refinements)
 {
-    GridOut grid_out;
-    GridOutFlags::Msh msh_flags(true, true);
-    grid_out.set_flags(msh_flags);
+    create_coarse_mesh();
+    apply_manifold_ids();
+    apply_boundary_ids();
 
-    std::ofstream out(output_file);
-    grid_out.write_msh(tria, out);
+    refine_mesh(n_refinements);
 }
 
-void MeshCreators::write_vtu(const dealii::Triangulation<3> &tria, const std::string &output_file)
+void SimpleShellMesh::create_coarse_mesh()
 {
-    GridOut grid_out;
-    GridOutFlags::Vtu vtu_flags;
-    grid_out.set_flags(vtu_flags);
-
-    std::ofstream out(output_file);
-    grid_out.write_vtu(tria, out);
-}
-
-void MeshCreators::read_from_msh(Triangulation<3> &tria, const std::string &input_file)
-{
-    GridIn<3> grid_in;
-    grid_in.attach_triangulation(tria);
-
-    std::ifstream in(input_file);
-    grid_in.read_msh(in);
-}
-
-void MeshCreators::create_coarse_shell_mesh(dealii::Triangulation<3> &tria,
-                                            const TaskReader::GeometryProperties &geometry)
-{
-    const double inner_radius = geometry.inner_radius;
-    const double outer_radius = geometry.outer_radius;
-    const double cylinder_length = geometry.cylinder_length;
-    const double d = outer_radius - inner_radius;
-
     //Fairing
     Triangulation<3> fairing;
     const Point<3> fairing_center;
@@ -66,9 +42,30 @@ void MeshCreators::create_coarse_shell_mesh(dealii::Triangulation<3> &tria,
     GridGenerator::half_hyper_shell(shell_cylinder, fairing_center,
                                     inner_radius, outer_radius);
     GridTools::rotate(numbers::PI, 1, shell_cylinder);
-    auto shell_to_cylinder = [](const Point<3> &p)
+    auto shell_to_cylinder = [fairing_center, this](const Point<3> &p)
     {
         Point<3> result = p;
+
+        if (p(0) < -1e-10)
+        {
+            if (is_point_on_sphere(p, fairing_center, inner_radius))
+            {
+                const double a = inner_radius / std::sqrt(2);
+                result(0) = -cylinder_length + thickness;
+
+                result(1) = (p(1) < 0) ? (-a) : (a);
+                result(2) = (p(2) < 0) ? (-a) : (a);
+            }
+            else if (is_point_on_sphere(p, fairing_center, outer_radius))
+            {
+                const double a = outer_radius / std::sqrt(2);
+                result(0) = -cylinder_length;
+
+                result(1) = (p(1) < 0) ? (-a) : (a);
+                result(2) = (p(2) < 0) ? (-a) : (a);
+            }
+        }
+
         return result;
     };
     GridTools::transform(shell_to_cylinder, shell_cylinder);
@@ -76,23 +73,22 @@ void MeshCreators::create_coarse_shell_mesh(dealii::Triangulation<3> &tria,
     //Merge
     GridGenerator::merge_triangulations(fairing, shell_cylinder, tria);
     GridTools::rotate(-numbers::PI_2, 1, tria);
+}
 
-    //Manifolds and boundaries
-    static const SphericalManifold<3> spherical_manifold(fairing_center);
-    static const CylindricalManifold<3> cylindrical_manifold(2);
-    static const FlatManifold<3> flat_manifold;
+void SimpleShellMesh::apply_manifold_ids()
+{
+    static const dealii::FlatManifold<3> flat_manifold;
+    static const dealii::SphericalManifold<3> spherical_manifold(Point<3>(0, 0, 0));
+    static const dealii::CylindricalManifold<3> cylindrical_manifold(2);
 
-    //Manifolds
     tria.set_manifold(0, flat_manifold);
     tria.set_manifold(1, spherical_manifold);
     tria.set_manifold(2, cylindrical_manifold);
 
     tria.set_all_manifold_ids(0);
 
-    //Manifold and boundaries
     for (auto cell : tria.active_cell_iterators())
     {
-        //Set manifold
         if (cell->center()(2) > 0)
         {
             cell->set_all_manifold_ids(1);
@@ -101,19 +97,49 @@ void MeshCreators::create_coarse_shell_mesh(dealii::Triangulation<3> &tria,
         {
             cell->set_all_manifold_ids(2);
         }
+    }
+}
 
-        //Set boundary ids
+void SimpleShellMesh::apply_boundary_ids()
+{
+    for (auto cell : tria.active_cell_iterators())
+    {
         for (size_t f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
         {
             if (cell->face(f)->at_boundary())
             {
                 Triangulation<3>::face_iterator face = cell->face(f);
-                if (is_face_on_sphere(face, fairing_center, outer_radius))
+                if (is_face_on_sphere(face, Point<3>(0, 0, 0), outer_radius))
                 {
                     face->set_boundary_id(2);
                 }
             }
         }
     }
+}
+
+void SimpleShellMesh::refine_mesh(size_t n_refines)
+{
+    tria.refine_global(n_refines);
+}
+
+void SimpleShellMesh::write_msh(const std::string &output_file)
+{
+    GridOut grid_out;
+    GridOutFlags::Msh msh_flags(true, true);
+    grid_out.set_flags(msh_flags);
+
+    std::ofstream out(output_file);
+    grid_out.write_msh(tria, out);
+}
+
+void SimpleShellMesh::write_vtu(const std::string &output_file)
+{
+    GridOut grid_out;
+    GridOutFlags::Vtu vtu_flags;
+    grid_out.set_flags(vtu_flags);
+
+    std::ofstream out(output_file);
+    grid_out.write_vtu(tria, out);
 }
 

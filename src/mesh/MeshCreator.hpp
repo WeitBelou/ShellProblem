@@ -7,17 +7,28 @@
 namespace MeshCreators
 {
 
-void write_msh(const dealii::Triangulation<3> &tria,
-               const std::string &output_file);
+class SimpleShellMesh
+{
+public:
+    SimpleShellMesh(const TaskReader::GeometryProperties &geometry);
 
-void write_vtu(const dealii::Triangulation<3> &tria,
-               const std::string &output_file);
+    void write_msh(const std::string &output_file);
+    void write_vtu(const std::string &output_file);
+protected:
+    void create_coarse_mesh();
+    void apply_manifold_ids();
+    void apply_boundary_ids();
+    void refine_mesh(size_t n_refines);
+private:
+    dealii::Triangulation<3> tria;
 
-void read_from_msh(dealii::Triangulation<3> &tria,
-                   const std::string &input_file);
+    const double inner_radius;
+    const double outer_radius;
+    const double thickness;
+    const double cylinder_length;
 
-void create_coarse_shell_mesh(dealii::Triangulation<3> &tria,
-                              const TaskReader::GeometryProperties &geometry);
+    const size_t n_refinements;
+};
 
 }
 

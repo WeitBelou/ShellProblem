@@ -50,24 +50,20 @@ int main(int argc, char **argv)
 
     TaskReader::ParametersParser parameters(task_file);
 
-    dealii::Triangulation<3> tria;
-    MeshCreators::create_coarse_shell_mesh(tria, parameters.geometry);
-    MeshCreators::write_msh(tria, "coarse.tmp.msh");
+    MeshCreators::SimpleShellMesh shell_mesh(parameters.geometry);
+    shell_mesh.write_msh("mesh.msh");
 
-    tria.refine_global(1);
-    MeshCreators::write_msh(tria, "refined.tmp.msh");
-
-    try
-    {
-        HeatSolver::SimpleSolver
-            solver(tria, parameters.heat);
-        solver.run(output_dir);
-    }
-    catch (std::exception &exc)
-    {
-        std::cerr << "Error during solving elasticity problem"
-                  << exc.what() << std::endl;
-        return 1;
-    }
+//    try
+//    {
+//        HeatSolver::SimpleSolver
+//            solver(tria, parameters.heat);
+//        solver.run(output_dir);
+//    }
+//    catch (std::exception &exc)
+//    {
+//        std::cerr << "Error during solving elasticity problem"
+//                  << exc.what() << std::endl;
+//        return 1;
+//    }
     return 0;
 }
