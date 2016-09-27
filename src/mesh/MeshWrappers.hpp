@@ -12,6 +12,7 @@ class SimpleShellMesh
 public:
     SimpleShellMesh(const TaskReader::GeometryProperties &geometry);
 
+    const dealii::Triangulation<3, 3> &mesh() const;
     void write_msh(const std::string &output_file);
     void write_vtu(const std::string &output_file);
 protected:

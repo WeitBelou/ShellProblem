@@ -53,17 +53,17 @@ int main(int argc, char **argv)
     MeshWrappers::SimpleShellMesh shell_mesh(parameters.geometry);
     shell_mesh.write_msh("mesh.msh");
 
-//    try
-//    {
-//        HeatSolver::SimpleSolver
-//            solver(tria, parameters.heat);
-//        solver.run(output_dir);
-//    }
-//    catch (std::exception &exc)
-//    {
-//        std::cerr << "Error during solving elasticity problem"
-//                  << exc.what() << std::endl;
-//        return 1;
-//    }
+    try
+    {
+        HeatSolver::SimpleSolver
+            solver(shell_mesh, parameters.heat);
+        solver.run(output_dir);
+    }
+    catch (std::exception &exc)
+    {
+        std::cerr << "Error during solving elasticity problem"
+                  << exc.what() << std::endl;
+        return 1;
+    }
     return 0;
 }

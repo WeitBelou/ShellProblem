@@ -16,6 +16,7 @@
 
 #include "TaskReader.hpp"
 #include "BoundaryConditions.hpp"
+#include "mesh/MeshWrappers.hpp"
 
 namespace HeatSolver
 {
@@ -23,7 +24,8 @@ namespace HeatSolver
 class SimpleSolver
 {
 public:
-    SimpleSolver(dealii::Triangulation<3> &mesh, const TaskReader::HeatProperties &heat_properties);
+    SimpleSolver(const MeshWrappers::SimpleShellMesh &mesh,
+                 const TaskReader::HeatProperties &heat_properties);
     ~SimpleSolver();
 
     void run(const boost::filesystem::path &output_dir);
@@ -34,7 +36,6 @@ private:
     size_t solve_linear_system();
     void output_solution(const boost::filesystem::path &output_dir);
 
-    const dealii::SmartPointer<dealii::Triangulation<3>> mesh;
     dealii::DoFHandler<3> dof_handler;
 
     const dealii::SmartPointer<const dealii::Function<3>> rhs_function;

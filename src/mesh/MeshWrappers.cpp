@@ -142,4 +142,8 @@ void SimpleShellMesh::write_vtu(const std::string &output_file)
     std::ofstream out(output_file);
     grid_out.write_vtu(tria, out);
 }
+const Triangulation<3> &SimpleShellMesh::mesh() const
+{
+    return tria;
+}
 

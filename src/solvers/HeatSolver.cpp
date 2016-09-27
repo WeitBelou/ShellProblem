@@ -20,11 +20,10 @@
 
 using namespace dealii;
 
-HeatSolver::SimpleSolver::SimpleSolver(dealii::Triangulation<3> &mesh,
+HeatSolver::SimpleSolver::SimpleSolver(const MeshWrappers::SimpleShellMesh &mesh,
                                        const TaskReader::HeatProperties &heat_properties)
     :
-    mesh(&mesh),
-    dof_handler(mesh),
+    dof_handler(mesh.mesh()),
     rhs_function(&heat_properties.rhs_function),
     boundary_conditions({
                             std::make_pair<types::boundary_id,
