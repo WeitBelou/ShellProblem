@@ -1,7 +1,6 @@
 #ifndef SHELL_PROBLEM_UTILITIES_HPP
 #define SHELL_PROBLEM_UTILITIES_HPP
 #include "deal.II/grid/tria.h"
-#include "TaskReader.hpp"
 
 namespace Utilities
 {

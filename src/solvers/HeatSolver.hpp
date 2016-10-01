@@ -14,18 +14,27 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
 
-#include "TaskReader.hpp"
-#include "BoundaryConditions.hpp"
+#include "src/TaskReader/SimpleMaterial.hpp"
 #include "mesh/MeshWrappers.hpp"
 
 namespace HeatSolver
 {
 
+class FairingBoundaryFunction : public dealii::Function<3>
+{
+public:
+
+    FairingBoundaryFunction() : dealii::Function<3>(1){}
+
+    double value(const dealii::Point<3> &point,
+                 size_t component = 0) const override;
+};
+
 class SimpleSolver
 {
 public:
     SimpleSolver(const MeshWrappers::SimpleShellMesh &mesh,
-                 const TaskReader::HeatProperties &heat_properties);
+                 const Material::SimpleHeat &heat_properties);
     ~SimpleSolver();
 
     void run(const boost::filesystem::path &output_dir);
@@ -38,15 +47,16 @@ private:
 
     dealii::DoFHandler<3> dof_handler;
 
-    const dealii::SmartPointer<const dealii::Function<3>> rhs_function;
-    BoundaryConditions::BoundaryFunctionsMap boundary_conditions;
+    const dealii::ZeroFunction<3> rhs_function;
+    const FairingBoundaryFunction fairing_boundary_function;
 
     const dealii::FE_Q<3> fe;
     const dealii::QGauss<3> quadrature;
 
     const double a_square;
 
-    dealii::ConstraintMatrix constraints;
+    dealii::ConstraintMatrix hanging_node_constraints;
+
     dealii::SparsityPattern sparsity_pattern;
     dealii::SparseMatrix<double> system_matrix;
     dealii::Vector<double> system_rhs;

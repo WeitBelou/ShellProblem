@@ -2,33 +2,46 @@
 #define SHELL_PROBLEM_MESH_WRAPPERS_HPP
 
 #include "deal.II/grid/tria.h"
-#include "TaskReader.hpp"
+
+#include "src/TaskReader/Geometry.hpp"
+
 
 namespace MeshWrappers
 {
 
-class SimpleShellMesh
+class Mesh
 {
 public:
-    SimpleShellMesh(const TaskReader::GeometryProperties &geometry);
-
     const dealii::Triangulation<3, 3> &mesh() const;
-    void write_msh(const std::string &output_file);
-    void write_vtu(const std::string &output_file);
-protected:
-    void create_coarse_mesh();
-    void apply_manifold_ids();
-    void apply_boundary_ids();
-    void refine_mesh(size_t n_refines);
-private:
-    dealii::Triangulation<3> tria;
 
+    void write_msh(const std::string &output_file);
+protected:
+    virtual void create_coarse_mesh() = 0;
+    virtual void apply_manifold_ids() = 0;
+    virtual void apply_boundary_ids() = 0;
+
+    void refine_mesh(size_t n_refines);
+
+    dealii::Triangulation<3> tria;
+};
+
+class SimpleShellMesh : public Mesh
+{
+public:
+    SimpleShellMesh(const Geometry::SimpleGeometry &geometry);
+
+protected:
+    virtual void create_coarse_mesh() override;
+    virtual void apply_manifold_ids() override;
+    virtual void apply_boundary_ids() override;
+
+private:
     const double inner_radius;
     const double outer_radius;
     const double thickness;
     const double cylinder_length;
 
-    const size_t n_refinements;
+    const int n_refinements;
 };
 
 }

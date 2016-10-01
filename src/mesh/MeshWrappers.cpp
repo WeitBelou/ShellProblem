@@ -15,12 +15,12 @@ using namespace MeshWrappers;
 using namespace Utilities;
 using namespace dealii;
 
-SimpleShellMesh::SimpleShellMesh(const TaskReader::GeometryProperties &geometry) :
+SimpleShellMesh::SimpleShellMesh(const Geometry::SimpleGeometry &geometry) :
     inner_radius(geometry.inner_radius),
     outer_radius(geometry.outer_radius),
     thickness(outer_radius - inner_radius),
     cylinder_length(geometry.cylinder_length),
-    n_refinements(geometry.n_refinements)
+    n_refinements(geometry.n_global_refinements)
 {
     create_coarse_mesh();
     apply_manifold_ids();
@@ -111,19 +111,23 @@ void SimpleShellMesh::apply_boundary_ids()
                 Triangulation<3>::face_iterator face = cell->face(f);
                 if (is_face_on_sphere(face, Point<3>(0, 0, 0), outer_radius))
                 {
-                    face->set_boundary_id(2);
+                    face->set_all_boundary_ids(2);
+                }
+                else
+                {
+                    face->set_all_boundary_ids(1);
                 }
             }
         }
     }
 }
 
-void SimpleShellMesh::refine_mesh(size_t n_refines)
+const dealii::Triangulation<3, 3> &Mesh::mesh() const
 {
-    tria.refine_global(n_refines);
+    return tria;
 }
 
-void SimpleShellMesh::write_msh(const std::string &output_file)
+void Mesh::write_msh(const std::string &output_file)
 {
     GridOut grid_out;
     GridOutFlags::Msh msh_flags(true, true);
@@ -133,17 +137,7 @@ void SimpleShellMesh::write_msh(const std::string &output_file)
     grid_out.write_msh(tria, out);
 }
 
-void SimpleShellMesh::write_vtu(const std::string &output_file)
+void Mesh::refine_mesh(size_t n_refines)
 {
-    GridOut grid_out;
-    GridOutFlags::Vtu vtu_flags;
-    grid_out.set_flags(vtu_flags);
-
-    std::ofstream out(output_file);
-    grid_out.write_vtu(tria, out);
+    tria.refine_global(n_refines);
 }
-const Triangulation<3> &SimpleShellMesh::mesh() const
-{
-    return tria;
-}
-

@@ -11,29 +11,20 @@
 
 #include <deal.II/lac/solver.h>
 #include <deal.II/lac/precondition.h>
-
-#include <deal.II/numerics/error_estimator.h>
-#include <deal.II/grid/grid_refinement.h>
-
 #include <deal.II/numerics/data_out.h>
 #include <fstream>
 
 using namespace dealii;
 
 HeatSolver::SimpleSolver::SimpleSolver(const MeshWrappers::SimpleShellMesh &mesh,
-                                       const TaskReader::HeatProperties &heat_properties)
+                                       const Material::SimpleHeat &heat_properties)
     :
     dof_handler(mesh.mesh()),
-    rhs_function(&heat_properties.rhs_function),
-    boundary_conditions({
-                            std::make_pair<types::boundary_id,
-                                           const SmartPointer<const Function<3>>>(0, &heat_properties.other_boundary_function),
-                            std::make_pair<types::boundary_id,
-                                           const SmartPointer<const Function<3>>>(2, &heat_properties.fairing_boundary_function)
-                        }),
+    rhs_function(),
+    fairing_boundary_function(),
     fe(2),
     quadrature(2),
-    a_square(heat_properties.a_square)
+    a_square(heat_properties.thermal_diffusivity)
 {
 
 }
@@ -68,13 +59,12 @@ void HeatSolver::SimpleSolver::setup_system()
     solution.reinit(dof_handler.n_dofs());
     system_rhs.reinit(dof_handler.n_dofs());
 
-    constraints.clear();
-    DoFTools::make_hanging_node_constraints(dof_handler, constraints);
-    boundary_conditions.interpolate_boundary_values(dof_handler, constraints);
-    constraints.close();
+    hanging_node_constraints.clear();
+    DoFTools::make_hanging_node_constraints(dof_handler, hanging_node_constraints);
+    hanging_node_constraints.close();
 
     DynamicSparsityPattern dsp(dof_handler.n_dofs());
-    DoFTools::make_sparsity_pattern(dof_handler, dsp, constraints, true);
+    DoFTools::make_sparsity_pattern(dof_handler, dsp, hanging_node_constraints, true);
     sparsity_pattern.copy_from(dsp);
 
     system_matrix.reinit(sparsity_pattern);
@@ -114,20 +104,27 @@ void HeatSolver::SimpleSolver::assemble_system()
                 }
 
                 cell_rhs(i) += fe_values.shape_value(i, q) *
-                               rhs_function->value(fe_values.quadrature_point(q)) *
+                               rhs_function.value(fe_values.quadrature_point(q), 0) *
                                fe_values.JxW(q);
             }
         }
 
         cell->get_dof_indices(local_dof_indices);
 
-        constraints.distribute_local_to_global(cell_matrix,
-                                               cell_rhs,
-                                               local_dof_indices,
-                                               system_matrix,
-                                               system_rhs);
+        hanging_node_constraints.distribute_local_to_global(cell_matrix,
+                                                            cell_rhs,
+                                                            local_dof_indices,
+                                                            system_matrix,
+                                                            system_rhs);
 
     }
+    std::map<types::global_dof_index, double> zero_boundary_values;
+    VectorTools::interpolate_boundary_values(dof_handler, 1, ZeroFunction<3>(1), zero_boundary_values);
+    MatrixTools::apply_boundary_values(zero_boundary_values, system_matrix, solution, system_rhs);
+
+    std::map<types::global_dof_index, double> fairing_boundary_values;
+    VectorTools::interpolate_boundary_values(dof_handler, 2, fairing_boundary_function, fairing_boundary_values);
+    MatrixTools::apply_boundary_values(fairing_boundary_values, system_matrix, solution, system_rhs);
 }
 
 size_t HeatSolver::SimpleSolver::solve_linear_system()
@@ -140,7 +137,7 @@ size_t HeatSolver::SimpleSolver::solve_linear_system()
 
     solver.solve(system_matrix, solution, system_rhs, preconditioner);
 
-    constraints.distribute(solution);
+    hanging_node_constraints.distribute(solution);
     return solver_control.last_step();
 }
 
@@ -162,3 +159,9 @@ void HeatSolver::SimpleSolver::output_solution(const boost::filesystem::path &ou
     data_out.write_vtu(out);
 }
 
+double HeatSolver::FairingBoundaryFunction::value(const dealii::Point<3> &point, size_t /*component*/) const
+{
+    const double z = point(2);
+
+    return (z * z) / point.norm_square();
+}
