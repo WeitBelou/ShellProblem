@@ -33,7 +33,7 @@ public:
 class SimpleSolver
 {
 public:
-    SimpleSolver(const MeshWrappers::SimpleShellMesh &mesh,
+    SimpleSolver(const MeshWrappers::Mesh &mesh,
                  const Material::SimpleHeat &heat_properties);
     ~SimpleSolver();
 
@@ -55,7 +55,7 @@ private:
 
     const double a_square;
 
-    dealii::ConstraintMatrix hanging_node_constraints;
+    dealii::ConstraintMatrix constraints;
 
     dealii::SparsityPattern sparsity_pattern;
     dealii::SparseMatrix<double> system_matrix;

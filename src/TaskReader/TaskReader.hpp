@@ -4,7 +4,7 @@
 #include <boost/filesystem/path.hpp>
 #include <deal.II/base/parameter_handler.h>
 
-#include "Geometry.hpp"
+#include "mesh/MeshWrappers.hpp"
 #include "SimpleMaterial.hpp"
 
 namespace TaskReader
@@ -12,7 +12,7 @@ namespace TaskReader
 
 enum class GeometryType
 {
-    Simple, InvalidType
+    Simple, Cube, InvalidType
 };
 
 enum class MaterialType

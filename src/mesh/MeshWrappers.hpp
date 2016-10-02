@@ -1,9 +1,8 @@
 #ifndef SHELL_PROBLEM_MESH_WRAPPERS_HPP
 #define SHELL_PROBLEM_MESH_WRAPPERS_HPP
 
-#include "deal.II/grid/tria.h"
-
-#include "src/TaskReader/Geometry.hpp"
+#include <deal.II/grid/tria.h>
+#include <deal.II/base/parameter_handler.h>
 
 
 namespace MeshWrappers
@@ -16,6 +15,8 @@ public:
 
     void write_msh(const std::string &output_file);
 protected:
+    virtual void get_parameters(dealii::ParameterHandler &prm) = 0;
+
     virtual void create_coarse_mesh() = 0;
     virtual void apply_manifold_ids() = 0;
     virtual void apply_boundary_ids() = 0;
@@ -25,23 +26,44 @@ protected:
     dealii::Triangulation<3> tria;
 };
 
-class SimpleShellMesh : public Mesh
+class CubeMesh: public Mesh
 {
 public:
-    SimpleShellMesh(const Geometry::SimpleGeometry &geometry);
+    CubeMesh(dealii::ParameterHandler &prm);
 
+    static void declare_parameters(dealii::ParameterHandler &prm);
 protected:
+    virtual void get_parameters(dealii::ParameterHandler &prm) override;
+
+    virtual void create_coarse_mesh() override;
+    virtual void apply_manifold_ids() override;
+    virtual void apply_boundary_ids() override;
+private:
+    double size;
+
+    int n_global_refinements;
+};
+
+class SimpleShellMesh: public Mesh
+{
+public:
+    SimpleShellMesh(dealii::ParameterHandler &prm);
+
+    static void declare_parameters(dealii::ParameterHandler &prm);
+protected:
+    virtual void get_parameters(dealii::ParameterHandler &prm) override;
+
     virtual void create_coarse_mesh() override;
     virtual void apply_manifold_ids() override;
     virtual void apply_boundary_ids() override;
 
 private:
-    const double inner_radius;
-    const double outer_radius;
-    const double thickness;
-    const double cylinder_length;
+    double inner_radius;
+    double outer_radius;
+    double thickness;
+    double cylinder_length;
 
-    const int n_refinements;
+    int n_global_refinements;
 };
 
 }

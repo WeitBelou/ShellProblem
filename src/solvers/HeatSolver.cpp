@@ -16,7 +16,7 @@
 
 using namespace dealii;
 
-HeatSolver::SimpleSolver::SimpleSolver(const MeshWrappers::SimpleShellMesh &mesh,
+HeatSolver::SimpleSolver::SimpleSolver(const MeshWrappers::Mesh &mesh,
                                        const Material::SimpleHeat &heat_properties)
     :
     dof_handler(mesh.mesh()),
@@ -59,12 +59,22 @@ void HeatSolver::SimpleSolver::setup_system()
     solution.reinit(dof_handler.n_dofs());
     system_rhs.reinit(dof_handler.n_dofs());
 
-    hanging_node_constraints.clear();
-    DoFTools::make_hanging_node_constraints(dof_handler, hanging_node_constraints);
-    hanging_node_constraints.close();
+
+    ConstraintMatrix dirichlet_boundary_constraints;
+    dirichlet_boundary_constraints.clear();
+    VectorTools::interpolate_boundary_values(dof_handler, 0, ZeroFunction<3>(1),
+                                             dirichlet_boundary_constraints);
+    VectorTools::interpolate_boundary_values(dof_handler, 1, fairing_boundary_function,
+                                             dirichlet_boundary_constraints);
+    dirichlet_boundary_constraints.close();
+
+    constraints.clear();
+    DoFTools::make_hanging_node_constraints(dof_handler, constraints);
+    constraints.merge(dirichlet_boundary_constraints, ConstraintMatrix::right_object_wins);
+    constraints.close();
 
     DynamicSparsityPattern dsp(dof_handler.n_dofs());
-    DoFTools::make_sparsity_pattern(dof_handler, dsp, hanging_node_constraints, true);
+    DoFTools::make_sparsity_pattern(dof_handler, dsp, constraints, true);
     sparsity_pattern.copy_from(dsp);
 
     system_matrix.reinit(sparsity_pattern);
@@ -111,20 +121,13 @@ void HeatSolver::SimpleSolver::assemble_system()
 
         cell->get_dof_indices(local_dof_indices);
 
-        hanging_node_constraints.distribute_local_to_global(cell_matrix,
-                                                            cell_rhs,
-                                                            local_dof_indices,
-                                                            system_matrix,
-                                                            system_rhs);
+        constraints.distribute_local_to_global(cell_matrix,
+                                               cell_rhs,
+                                               local_dof_indices,
+                                               system_matrix,
+                                               system_rhs);
 
     }
-    std::map<types::global_dof_index, double> zero_boundary_values;
-    VectorTools::interpolate_boundary_values(dof_handler, 1, ZeroFunction<3>(1), zero_boundary_values);
-    MatrixTools::apply_boundary_values(zero_boundary_values, system_matrix, solution, system_rhs);
-
-    std::map<types::global_dof_index, double> fairing_boundary_values;
-    VectorTools::interpolate_boundary_values(dof_handler, 2, fairing_boundary_function, fairing_boundary_values);
-    MatrixTools::apply_boundary_values(fairing_boundary_values, system_matrix, solution, system_rhs);
 }
 
 size_t HeatSolver::SimpleSolver::solve_linear_system()
@@ -135,9 +138,10 @@ size_t HeatSolver::SimpleSolver::solve_linear_system()
     PreconditionSSOR<> preconditioner;
     preconditioner.initialize(system_matrix, 1.2);
 
+    constraints.set_zero(solution);
     solver.solve(system_matrix, solution, system_rhs, preconditioner);
+    constraints.distribute(solution);
 
-    hanging_node_constraints.distribute(solution);
     return solver_control.last_step();
 }
 
@@ -162,6 +166,7 @@ void HeatSolver::SimpleSolver::output_solution(const boost::filesystem::path &ou
 double HeatSolver::FairingBoundaryFunction::value(const dealii::Point<3> &point, size_t /*component*/) const
 {
     const double z = point(2);
+    const double amplitude = 2000;
 
-    return (z * z) / point.norm_square();
+    return amplitude * (z * z) / point.norm_square();
 }

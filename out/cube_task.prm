@@ -1,13 +1,9 @@
 #All values in CGS system
 
 subsection Geometry
-    subsection Sizes
-        set Inner radius = 5.0
-        set Outer radius = 5.3
-        set Cylinder length = 15.0
-    end
+    set Size = 5.0
 
-    set N global refinements = 2
+    set N global refinements = 1
 end
 
 subsection Material
