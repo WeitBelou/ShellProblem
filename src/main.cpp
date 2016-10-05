@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "src/TaskReader/TaskReader.hpp"
-#include "TaskReader/ParsedArgs.hpp"
+#include "launcher/TaskReader.hpp"
+#include "launcher/ParsedArgs.hpp"
 
 using namespace TaskReader;
 
@@ -20,10 +20,9 @@ int main(int argc, char **argv)
     }
 
     Launcher launcher;
-    launcher.initialize(args.get_geometry_type(),
-                        args.get_material_type());
+    launcher.initialize(args.get_task_file());
 
-    launcher.run(args.get_task_file(), args.get_output_dir());
+    launcher.run(args.get_output_dir());
 
     return 0;
 }

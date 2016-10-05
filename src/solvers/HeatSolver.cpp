@@ -34,7 +34,7 @@ HeatSolver::SimpleSolver::~SimpleSolver()
     dof_handler.clear();
 }
 
-void HeatSolver::SimpleSolver::run(const boost::filesystem::path &output_dir)
+void HeatSolver::SimpleSolver::run(const std::string &output_dir)
 {
     std::cout << "    Setup system..." << std::endl << std::flush;
     setup_system();

@@ -9,14 +9,3 @@ subsection Geometry
 
     set N global refinements = 1
 end
-
-subsection Material
-    subsection Heat
-        set Thermal diffusivity = 9.0e-2
-    end
-
-    subsection Elasticity
-        set E = 7.0e11
-        set G = 2.6e11
-    end
-end

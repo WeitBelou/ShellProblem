@@ -14,7 +14,7 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
 
-#include "src/TaskReader/SimpleMaterial.hpp"
+#include "launcher/SimpleMaterial.hpp"
 #include "mesh/MeshWrappers.hpp"
 
 namespace HeatSolver
@@ -37,7 +37,7 @@ public:
                  const Material::SimpleHeat &heat_properties);
     ~SimpleSolver();
 
-    void run(const boost::filesystem::path &output_dir);
+    void run(const std::string &output_dir);
 
 private:
     void setup_system();

@@ -1,0 +1,9 @@
+subsection Material
+    set Type = Simple
+    set Path = materials/simple_material.prm
+end
+
+subsection Geometry
+    set Type = Simple
+    set Path = models/simple_shell.prm
+end

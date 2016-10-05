@@ -51,6 +51,14 @@ void Material::SimpleHeat::get_parameters(dealii::ParameterHandler &prm)
     prm.leave_subsection();
 }
 
+Material::SimpleMaterial::SimpleMaterial(const std::string &material_file)
+{
+    ParameterHandler prm;
+    declare_parameters(prm);
+    prm.parse_input(material_file);
+    get_parameters(prm);
+}
+
 void Material::SimpleMaterial::declare_parameters(dealii::ParameterHandler &prm)
 {
     prm.enter_subsection("Material");
@@ -69,4 +77,14 @@ void Material::SimpleMaterial::get_parameters(dealii::ParameterHandler &prm)
         elasticity.get_parameters(prm);
     }
     prm.leave_subsection();
+}
+
+const Material::SimpleHeat &Material::SimpleMaterial::get_heat() const
+{
+    return heat;
+}
+
+const Material::SimpleElasticity &Material::SimpleMaterial::get_elasticity() const
+{
+    return elasticity;
 }

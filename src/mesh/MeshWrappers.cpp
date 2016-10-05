@@ -15,6 +15,20 @@ using namespace MeshWrappers;
 using namespace Utilities;
 using namespace dealii;
 
+void Mesh::initialize(const std::string &input)
+{
+    ParameterHandler prm;
+    declare_parameters(prm);
+    prm.parse_input(input);
+    get_parameters(prm);
+
+    create_coarse_mesh();
+    apply_manifold_ids();
+    apply_boundary_ids();
+
+    refine_mesh(n_global_refinements);
+}
+
 const dealii::Triangulation<3, 3> &Mesh::mesh() const
 {
     return tria;
@@ -33,17 +47,6 @@ void Mesh::write_msh(const std::string &output_file)
 void Mesh::refine_mesh(size_t n_refines)
 {
     tria.refine_global(n_refines);
-}
-
-SimpleShellMesh::SimpleShellMesh(ParameterHandler &prm)
-{
-    get_parameters(prm);
-
-    create_coarse_mesh();
-    apply_manifold_ids();
-    apply_boundary_ids();
-
-    refine_mesh(n_global_refinements);
 }
 
 void SimpleShellMesh::create_coarse_mesh()
@@ -181,17 +184,6 @@ void SimpleShellMesh::get_parameters(dealii::ParameterHandler &prm)
         n_global_refinements = prm.get_integer("N global refinements");
     }
     prm.leave_subsection();
-}
-
-CubeMesh::CubeMesh(ParameterHandler &prm)
-{
-    get_parameters(prm);
-
-    create_coarse_mesh();
-    apply_manifold_ids();
-    apply_boundary_ids();
-
-    refine_mesh(n_global_refinements);
 }
 
 void CubeMesh::create_coarse_mesh()

@@ -11,10 +11,12 @@ namespace MeshWrappers
 class Mesh
 {
 public:
+    virtual void initialize(const std::string &input);
     const dealii::Triangulation<3, 3> &mesh() const;
 
     void write_msh(const std::string &output_file);
 protected:
+    virtual void declare_parameters(dealii::ParameterHandler &prm) = 0;
     virtual void get_parameters(dealii::ParameterHandler &prm) = 0;
 
     virtual void create_coarse_mesh() = 0;
@@ -24,15 +26,13 @@ protected:
     void refine_mesh(size_t n_refines);
 
     dealii::Triangulation<3> tria;
+    int n_global_refinements;
 };
 
 class CubeMesh: public Mesh
 {
-public:
-    CubeMesh(dealii::ParameterHandler &prm);
-
-    static void declare_parameters(dealii::ParameterHandler &prm);
 protected:
+    virtual void declare_parameters(dealii::ParameterHandler &prm) override;
     virtual void get_parameters(dealii::ParameterHandler &prm) override;
 
     virtual void create_coarse_mesh() override;
@@ -40,17 +40,12 @@ protected:
     virtual void apply_boundary_ids() override;
 private:
     double size;
-
-    int n_global_refinements;
 };
 
 class SimpleShellMesh: public Mesh
 {
-public:
-    SimpleShellMesh(dealii::ParameterHandler &prm);
-
-    static void declare_parameters(dealii::ParameterHandler &prm);
 protected:
+    virtual void declare_parameters(dealii::ParameterHandler &prm) override;
     virtual void get_parameters(dealii::ParameterHandler &prm) override;
 
     virtual void create_coarse_mesh() override;
@@ -62,8 +57,6 @@ private:
     double outer_radius;
     double thickness;
     double cylinder_length;
-
-    int n_global_refinements;
 };
 
 }

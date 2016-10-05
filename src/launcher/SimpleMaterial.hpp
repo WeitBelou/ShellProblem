@@ -1,7 +1,6 @@
 #ifndef SHELL_PROBLEM_MATERIALS_HPP
 #define SHELL_PROBLEM_MATERIALS_HPP
 
-
 #include <deal.II/base/parameter_handler.h>
 #include <deal.II/base/tensor.h>
 
@@ -27,13 +26,19 @@ struct SimpleHeat
     void get_parameters(dealii::ParameterHandler &prm);
 };
 
-struct SimpleMaterial
+class SimpleMaterial
 {
-    SimpleHeat heat;
-    SimpleElasticity elasticity;
+public:
+    SimpleMaterial(const std::string &material_file);
 
+    const SimpleHeat &get_heat() const;
+    const SimpleElasticity &get_elasticity() const;
+private:
     static void declare_parameters(dealii::ParameterHandler &prm);
     void get_parameters(dealii::ParameterHandler &prm);
+
+    SimpleHeat heat;
+    SimpleElasticity elasticity;
 };
 
 }

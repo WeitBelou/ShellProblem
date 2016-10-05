@@ -3,6 +3,7 @@
 
 #include <boost/filesystem/path.hpp>
 #include <deal.II/base/parameter_handler.h>
+#include <boost/program_options.hpp>
 
 #include "mesh/MeshWrappers.hpp"
 #include "SimpleMaterial.hpp"
@@ -23,16 +24,20 @@ enum class MaterialType
 class Launcher
 {
 public:
-    void initialize(GeometryType geometry, MaterialType material);
-    void run(const boost::filesystem::path &input_file,
-             const boost::filesystem::path &output_dir);
+    void initialize(const std::string &input_file);
+    void run(const std::string &output_dir);
 private:
-    void declare_geometry(const GeometryType &geometry);
-    void declare_material(const MaterialType &material);
+    void declare_parameters(dealii::ParameterHandler &prm);
+    void get_parameters(dealii::ParameterHandler &prm);
 
-    dealii::ParameterHandler parameter_handler;
+    GeometryType get_geometry_type_from_string(const std::string &type) const;
+    MaterialType get_material_type_from_string(const std::string &type) const;
+
     GeometryType geometry;
+    std::string path_to_geometry;
+
     MaterialType material;
+    std::string path_to_material;
 };
 
 }
