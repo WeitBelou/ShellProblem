@@ -6,7 +6,6 @@
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/grid/grid_generator.h>
 
-#include "MeshWrappers.hpp"
 #include "Utilities.hpp"
 
 using namespace Utilities;
