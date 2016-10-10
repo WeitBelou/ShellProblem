@@ -20,14 +20,18 @@
 namespace HeatSolver
 {
 
-class FairingBoundaryFunction : public dealii::Function<3>
+class FairingBoundaryFunction: public dealii::Function<3>
 {
 public:
 
-    FairingBoundaryFunction() : dealii::Function<3>(1){}
+    FairingBoundaryFunction() : dealii::Function<3>(1)
+    {}
 
     double value(const dealii::Point<3> &point,
                  size_t component = 0) const override;
+
+    virtual dealii::Tensor<1, 3>
+    gradient(const dealii::Point<3> &p, const unsigned int component = 0) const override;
 };
 
 class SimpleSolver
@@ -47,7 +51,6 @@ private:
 
     dealii::DoFHandler<3> dof_handler;
 
-    const dealii::ZeroFunction<3> rhs_function;
     const FairingBoundaryFunction fairing_boundary_function;
 
     const dealii::FE_Q<3> fe;

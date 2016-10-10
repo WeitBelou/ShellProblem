@@ -20,7 +20,6 @@ HeatSolver::SimpleSolver::SimpleSolver(const MeshWrappers::Mesh &mesh,
                                        const Material::SimpleHeat &heat_properties)
     :
     dof_handler(mesh.mesh()),
-    rhs_function(),
     fairing_boundary_function(),
     fe(2),
     quadrature(2),
@@ -86,8 +85,14 @@ void HeatSolver::SimpleSolver::assemble_system()
                           update_values | update_gradients |
                           update_quadrature_points | update_JxW_values);
 
+    QGauss<2> face_quadrature(2);
+    FEFaceValues<3> fe_face_values(fe, face_quadrature,
+                                   update_values | update_quadrature_points |
+                                   update_normal_vectors | update_JxW_values);
+
     const size_t dofs_per_cell = fe.dofs_per_cell;
     const size_t n_q_points = quadrature.size();
+    const size_t n_face_q_points = face_quadrature.size();
 
     FullMatrix<double> cell_matrix(dofs_per_cell, dofs_per_cell);
     Vector<double> cell_rhs(dofs_per_cell);
@@ -112,27 +117,38 @@ void HeatSolver::SimpleSolver::assemble_system()
                                          fe_values.JxW(q) *
                                          a_square;
                 }
+            }
+        }
 
-                cell_rhs(i) += fe_values.shape_value(i, q) *
-                               rhs_function.value(fe_values.quadrature_point(q), 0) *
-                               fe_values.JxW(q);
+        for (size_t f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
+        {
+            if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == 1)
+            {
+                fe_face_values.reinit(cell, f);
+                for (size_t q = 0; q < n_face_q_points; ++q)
+                {
+                    const double boundary_value = fairing_boundary_function.gradient(fe_face_values.quadrature_point(q))
+                                                  * fe_face_values.normal_vector(q);
+                    for (size_t i = 0; i < dofs_per_cell; ++i)
+                    {
+                        cell_rhs(i) += boundary_value * fe_face_values.shape_value(i, q) * fe_face_values.JxW(q);
+                    }
+                }
             }
         }
 
         cell->get_dof_indices(local_dof_indices);
-
         constraints.distribute_local_to_global(cell_matrix,
                                                cell_rhs,
                                                local_dof_indices,
                                                system_matrix,
                                                system_rhs);
-
     }
 }
 
 size_t HeatSolver::SimpleSolver::solve_linear_system()
 {
-    SolverControl solver_control(dof_handler.n_dofs());
+    SolverControl solver_control(dof_handler.n_dofs(), 1e-3);
     SolverCG<> solver(solver_control);
 
     PreconditionSSOR<> preconditioner;
@@ -169,4 +185,22 @@ double HeatSolver::FairingBoundaryFunction::value(const dealii::Point<3> &point,
     const double amplitude = 2000;
 
     return amplitude * (z * z) / point.norm_square();
+}
+
+Tensor<1, 3>
+HeatSolver::FairingBoundaryFunction::gradient(const Point<3> &p, const unsigned int /*component*/) const
+{
+    const double r = p.norm();
+    const double x = p(0);
+    const double y = p(1);
+    const double z = p(2);
+    const double amplitude = 2000;
+
+    Tensor<1, 3> grad;
+    grad[0] = -4 * x * pow(z, 2) / pow(r, 3);
+    grad[1] = -4 * y * pow(z, 2) / pow(r, 3);
+    grad[2] = 2 * z / pow(r, 2) - 2 * pow(z, 3) / pow(r, 4);
+    grad *= amplitude;
+
+    return grad;
 }
