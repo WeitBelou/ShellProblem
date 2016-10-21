@@ -1,5 +1,5 @@
 #include "MeshWrappers.hpp"
-#include "Utilities.hpp"
+#include "MeshUtilities.hpp"
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/grid_tools.h>
@@ -12,7 +12,7 @@
 #include <fstream>
 
 using namespace MeshWrappers;
-using namespace Utilities;
+using namespace MeshUtilities;
 using namespace dealii;
 
 void Mesh::initialize(const std::string &input)

@@ -1,8 +1,8 @@
-#ifndef SHELL_PROBLEM_UTILITIES_HPP
-#define SHELL_PROBLEM_UTILITIES_HPP
+#ifndef SHELL_PROBLEM_MESH_UTILITIES_HPP
+#define SHELL_PROBLEM_MESH_UTILITIES_HPP
 #include "deal.II/grid/tria.h"
 
-namespace Utilities
+namespace MeshUtilities
 {
 bool is_point_on_sphere(const dealii::Point<3> &point,
                         const dealii::Point<3> &center,
@@ -47,4 +47,4 @@ bool fuzzy_equal(const double x, const double y, const double tolerance);
 dealii::Point<3> get_axis_from_number(size_t axis_no);
 }
 
-#endif //SHELL_PROBLEM_UTILITIES_HPP
+#endif //SHELL_PROBLEM_GENERAL_SOLVER_HPP

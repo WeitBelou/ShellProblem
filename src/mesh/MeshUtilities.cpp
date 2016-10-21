@@ -6,12 +6,12 @@
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/grid/grid_generator.h>
 
-#include "Utilities.hpp"
+#include "MeshUtilities.hpp"
 
-using namespace Utilities;
+using namespace MeshUtilities;
 
 
-bool Utilities::is_point_on_sphere(const dealii::Point<3> &point,
+bool MeshUtilities::is_point_on_sphere(const dealii::Point<3> &point,
                                    const dealii::Point<3> &center,
                                    const double radius,
                                    const double tolerance)
@@ -20,7 +20,7 @@ bool Utilities::is_point_on_sphere(const dealii::Point<3> &point,
 }
 
 
-bool Utilities::is_point_on_plane(const dealii::Point<3> &point,
+bool MeshUtilities::is_point_on_plane(const dealii::Point<3> &point,
                                     const dealii::Point<3> &point_on_plane,
                                     const size_t axis,
                                     const double tolerance)
@@ -31,7 +31,7 @@ bool Utilities::is_point_on_plane(const dealii::Point<3> &point,
 
 }
 
-bool Utilities::is_point_on_circle(const dealii::Point<3> &point,
+bool MeshUtilities::is_point_on_circle(const dealii::Point<3> &point,
                                      const dealii::Point<3> &center,
                                      const double radius,
                                      const size_t axis,
@@ -45,7 +45,7 @@ bool Utilities::is_point_on_circle(const dealii::Point<3> &point,
 
 }
 
-bool Utilities::is_face_on_sphere(const dealii::Triangulation<3>::active_face_iterator &face,
+bool MeshUtilities::is_face_on_sphere(const dealii::Triangulation<3>::active_face_iterator &face,
                                   const dealii::Point<3> &center,
                                   const double radius,
                                   const double tolerance)
@@ -61,7 +61,7 @@ bool Utilities::is_face_on_sphere(const dealii::Triangulation<3>::active_face_it
     return true;
 }
 
-bool Utilities::is_face_on_plane(const dealii::Triangulation<3>::active_face_iterator &face,
+bool MeshUtilities::is_face_on_plane(const dealii::Triangulation<3>::active_face_iterator &face,
                                  const dealii::Point<3> &point_on_plane,
                                  const size_t axis,
                                  const double tolerance)
@@ -77,7 +77,7 @@ bool Utilities::is_face_on_plane(const dealii::Triangulation<3>::active_face_ite
     return true;
 }
 
-bool Utilities::is_face_inscribed_in_circle(const dealii::Triangulation<3>::active_face_iterator &face,
+bool MeshUtilities::is_face_inscribed_in_circle(const dealii::Triangulation<3>::active_face_iterator &face,
                                             const dealii::Point<3> &center,
                                             const double radius,
                                             const size_t axis,
@@ -94,7 +94,7 @@ bool Utilities::is_face_inscribed_in_circle(const dealii::Triangulation<3>::acti
     return true;
 }
 
-bool Utilities::is_face_on_cylinder(const dealii::Triangulation<3>::active_face_iterator &face,
+bool MeshUtilities::is_face_on_cylinder(const dealii::Triangulation<3>::active_face_iterator &face,
                                     const dealii::Point<3> &center,
                                     const size_t axis,
                                     const double radius,
@@ -120,7 +120,7 @@ bool Utilities::is_face_on_cylinder(const dealii::Triangulation<3>::active_face_
     return true;
 }
 
-dealii::Point<3> Utilities::get_axis_from_number(size_t axis_no)
+dealii::Point<3> MeshUtilities::get_axis_from_number(size_t axis_no)
 {
     switch (axis_no)
     {
@@ -136,7 +136,7 @@ dealii::Point<3> Utilities::get_axis_from_number(size_t axis_no)
     return dealii::Point<3>();
 }
 
-bool Utilities::fuzzy_equal(const double x, const double y, const double tolerance)
+bool MeshUtilities::fuzzy_equal(const double x, const double y, const double tolerance)
 {
     return std::fabs(x - y) < tolerance;
 }
