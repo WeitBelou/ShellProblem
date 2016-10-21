@@ -16,6 +16,7 @@
 
 #include "launcher/SimpleMaterial.hpp"
 #include "mesh/MeshWrappers.hpp"
+#include "Boundaries.hpp"
 
 namespace Solvers
 {
@@ -51,7 +52,7 @@ private:
 
     dealii::DoFHandler<3> dof_handler;
 
-    const FairingBoundaryFunction fairing_boundary_function;
+    const SinSquare fairing_function;
 
     const dealii::FE_Q<3> fe;
     const dealii::QGauss<3> quadrature;
