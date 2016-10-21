@@ -16,7 +16,7 @@
 
 using namespace dealii;
 
-HeatSolver::SimpleSolver::SimpleSolver(const MeshWrappers::Mesh &mesh,
+Solvers::HeatSolver::HeatSolver(const MeshWrappers::Mesh &mesh,
                                        const Material::SimpleHeat &heat_properties)
     :
     dof_handler(mesh.mesh()),
@@ -28,12 +28,12 @@ HeatSolver::SimpleSolver::SimpleSolver(const MeshWrappers::Mesh &mesh,
 
 }
 
-HeatSolver::SimpleSolver::~SimpleSolver()
+Solvers::HeatSolver::~HeatSolver()
 {
     dof_handler.clear();
 }
 
-void HeatSolver::SimpleSolver::run(const std::string &output_dir)
+void Solvers::HeatSolver::run(const std::string &output_dir)
 {
     std::cout << "    Setup system..." << std::endl << std::flush;
     setup_system();
@@ -51,7 +51,7 @@ void HeatSolver::SimpleSolver::run(const std::string &output_dir)
 
 }
 
-void HeatSolver::SimpleSolver::setup_system()
+void Solvers::HeatSolver::setup_system()
 {
     dof_handler.distribute_dofs(fe);
 
@@ -79,7 +79,7 @@ void HeatSolver::SimpleSolver::setup_system()
     system_matrix.reinit(sparsity_pattern);
 }
 
-void HeatSolver::SimpleSolver::assemble_system()
+void Solvers::HeatSolver::assemble_system()
 {
     FEValues<3> fe_values(fe, quadrature,
                           update_values | update_gradients |
@@ -114,8 +114,7 @@ void HeatSolver::SimpleSolver::assemble_system()
                 {
                     cell_matrix(i, j) += fe_values.shape_grad(i, q) *
                                          fe_values.shape_grad(j, q) *
-                                         fe_values.JxW(q) *
-                                         a_square;
+                                         fe_values.JxW(q);
                 }
             }
         }
@@ -146,7 +145,7 @@ void HeatSolver::SimpleSolver::assemble_system()
     }
 }
 
-size_t HeatSolver::SimpleSolver::solve_linear_system()
+size_t Solvers::HeatSolver::solve_linear_system()
 {
     SolverControl solver_control(dof_handler.n_dofs(), 1e-3);
     SolverCG<> solver(solver_control);
@@ -161,7 +160,7 @@ size_t HeatSolver::SimpleSolver::solve_linear_system()
     return solver_control.last_step();
 }
 
-void HeatSolver::SimpleSolver::output_solution(const boost::filesystem::path &output_dir)
+void Solvers::HeatSolver::output_solution(const boost::filesystem::path &output_dir)
 {
     DataOut<3> data_out;
 
@@ -179,7 +178,7 @@ void HeatSolver::SimpleSolver::output_solution(const boost::filesystem::path &ou
     data_out.write_vtu(out);
 }
 
-double HeatSolver::FairingBoundaryFunction::value(const dealii::Point<3> &point, size_t /*component*/) const
+double Solvers::FairingBoundaryFunction::value(const dealii::Point<3> &point, size_t /*component*/) const
 {
     const double z = point(2);
     const double amplitude = 2000;
@@ -188,7 +187,7 @@ double HeatSolver::FairingBoundaryFunction::value(const dealii::Point<3> &point,
 }
 
 Tensor<1, 3>
-HeatSolver::FairingBoundaryFunction::gradient(const Point<3> &p, const unsigned int /*component*/) const
+Solvers::FairingBoundaryFunction::gradient(const Point<3> &p, const unsigned int /*component*/) const
 {
     const double r = p.norm();
     const double x = p(0);

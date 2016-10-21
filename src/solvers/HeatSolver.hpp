@@ -17,7 +17,7 @@
 #include "launcher/SimpleMaterial.hpp"
 #include "mesh/MeshWrappers.hpp"
 
-namespace HeatSolver
+namespace Solvers
 {
 
 class FairingBoundaryFunction: public dealii::Function<3>
@@ -34,12 +34,12 @@ public:
     gradient(const dealii::Point<3> &p, const unsigned int component = 0) const override;
 };
 
-class SimpleSolver
+class HeatSolver
 {
 public:
-    SimpleSolver(const MeshWrappers::Mesh &mesh,
+    HeatSolver(const MeshWrappers::Mesh &mesh,
                  const Material::SimpleHeat &heat_properties);
-    ~SimpleSolver();
+    ~HeatSolver();
 
     void run(const std::string &output_dir);
 

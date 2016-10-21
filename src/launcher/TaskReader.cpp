@@ -32,8 +32,19 @@ void Launcher::run(const std::string &output_dir)
     if (material == MaterialType::Simple)
     {
         SimpleMaterial simple_material(path_to_material);
-        HeatSolver::SimpleSolver heat_solver(*mesh, simple_material.get_heat());
-        heat_solver.run(output_dir);
+
+        {
+            std::cout << "Solving heat." << std::endl;
+            Solvers::HeatSolver heat_solver(*mesh, simple_material.get_heat());
+            heat_solver.run(output_dir);
+        }
+
+        {
+            std::cout << "Solving elasticity." << std::endl;
+            Solvers::ElasticitySolver elasticity_solver(*mesh, simple_material.get_elasticity());
+            elasticity_solver.run(output_dir);
+        }
+
     }
     else
     {
