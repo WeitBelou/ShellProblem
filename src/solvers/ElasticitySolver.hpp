@@ -4,16 +4,17 @@
 #include <boost/filesystem/path.hpp>
 
 #include <deal.II/dofs/dof_handler.h>
-#include <deal.II/fe/fe_q.h>
 #include <deal.II/fe/fe_system.h>
 #include <deal.II/base/quadrature_lib.h>
+#include <deal.II/base/symmetric_tensor.h>
 
-#include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/lac/sparse_matrix.h>
 #include <deal.II/lac/sparsity_pattern.h>
+#include <deal.II/lac/constraint_matrix.h>
 
 #include "launcher/SimpleMaterial.hpp"
 #include "mesh/MeshWrappers.hpp"
+#include "Boundaries.hpp"
 
 namespace Solvers
 {
@@ -32,6 +33,21 @@ private:
     void output_solution(const boost::filesystem::path &output_dir);
 
     dealii::DoFHandler<3> dof_handler;
+
+    const dealii::FESystem<3> fe;
+    const dealii::QGauss<3> quadrature;
+    const dealii::QGauss<2> face_quadrature;
+
+    dealii::ConstraintMatrix constraints;
+
+    const dealii::SymmetricTensor<4, 3> stress_strain;
+    const SinSquare fairing_function;
+
+    dealii::SparsityPattern sparsity_pattern;
+
+    dealii::SparseMatrix<double> system_matrix;
+    dealii::Vector<double> system_rhs;
+    dealii::Vector<double> solution;
 };
 
 }
