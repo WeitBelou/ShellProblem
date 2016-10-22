@@ -30,3 +30,28 @@ dealii::Tensor<1, 3> Solvers::SinSquare::gradient(const dealii::Point<3> &p, con
 
     return grad;
 }
+
+void Solvers::SinSquare::value_list(const std::vector<Point<3>> &points,
+                                    std::vector<double> &values,
+                                    const unsigned int /*component*/) const
+{
+    const size_t n_points = points.size();
+    Assert(n_points == values.size(), ExcDimensionMismatch(n_points, values.size()));
+    for (size_t j = 0; j < n_points; ++j)
+    {
+        values[j] = SinSquare::value(points[j]);
+    }
+}
+
+void Solvers::SinSquare::gradient_list(const std::vector<Point<3>> &points,
+                                       std::vector<Tensor<1, 3, double>> &gradients,
+                                       const unsigned int /*component*/) const
+{
+    const size_t n_points = points.size();
+    Assert(n_points == gradients.size(),
+           ExcDimensionMismatch(n_points, gradients.size()));
+    for (size_t j = 0; j < n_points; ++j)
+    {
+        gradients[j] = SinSquare::gradient(points[j]);
+    }
+}
