@@ -2,6 +2,7 @@
 #define SHELL_PROBLEM_MATERIALS_HPP
 
 #include <deal.II/base/parameter_handler.h>
+#include <deal.II/base/symmetric_tensor.h>
 #include <deal.II/base/tensor.h>
 
 namespace Material
@@ -12,10 +13,10 @@ struct SimpleElasticity
     static void declare_parameters(dealii::ParameterHandler &prm);
     void get_parameters(dealii::ParameterHandler &prm);
 
-    dealii::Tensor<4, 3> get_stress_strain_tensor() const;
+    dealii::SymmetricTensor<4, 3> get_stress_strain_tensor() const;
 private:
-    double youngs_modulus;
-    double shear_modulus;
+    double E;
+    double G;
 };
 
 struct SimpleHeat
