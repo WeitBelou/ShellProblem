@@ -23,7 +23,7 @@ Solvers::HeatSolver::HeatSolver(const MeshWrappers::Mesh &mesh,
     fairing_function(2000),
     fe(2),
     quadrature(2),
-    a_square(heat_properties.thermal_diffusivity)
+    face_quadrature(2)
 {
 
 }

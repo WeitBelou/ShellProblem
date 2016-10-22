@@ -21,20 +21,6 @@
 namespace Solvers
 {
 
-class FairingBoundaryFunction: public dealii::Function<3>
-{
-public:
-
-    FairingBoundaryFunction() : dealii::Function<3>(1)
-    {}
-
-    double value(const dealii::Point<3> &point,
-                 size_t component = 0) const override;
-
-    virtual dealii::Tensor<1, 3>
-    gradient(const dealii::Point<3> &p, const unsigned int component = 0) const override;
-};
-
 class HeatSolver
 {
 public:
@@ -56,8 +42,7 @@ private:
 
     const dealii::FE_Q<3> fe;
     const dealii::QGauss<3> quadrature;
-
-    const double a_square;
+    const dealii::QGauss<3> face_quadrature;
 
     dealii::ConstraintMatrix constraints;
 
