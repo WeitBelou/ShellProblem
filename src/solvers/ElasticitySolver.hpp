@@ -23,7 +23,15 @@ class ElasticitySolver
 public:
     ElasticitySolver(const MeshWrappers::Mesh &mesh,
                  const Material::SimpleElasticity &elasticity);
+    ~ElasticitySolver();
     void run(const boost::filesystem::path &output_dir);
+private:
+    void setup_system();
+    void assemble_system();
+    size_t solve_linear_system();
+    void output_solution(const boost::filesystem::path &output_dir);
+
+    dealii::DoFHandler<3> dof_handler;
 };
 
 }
