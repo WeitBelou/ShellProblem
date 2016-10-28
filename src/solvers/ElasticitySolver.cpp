@@ -44,7 +44,8 @@ inline SymmetricTensor<2, 3> get_strain(const FEValues<3> &fev,
 Solvers::ElasticitySolver::ElasticitySolver(const MeshWrappers::Mesh &mesh,
                                             const Material::SimpleElasticity &elasticity)
     :
-    dof_handler(mesh.mesh()),
+    tria(&mesh.mesh()),
+    dof_handler(*tria),
     fe(FE_Q<3>(2), 3),
     quadrature(2),
     face_quadrature(2),
@@ -156,7 +157,7 @@ void Solvers::ElasticitySolver::assemble_system()
 
                     for (size_t q = 0; q < n_face_q_points; ++q)
                     {
-                        cell_rhs(i) += pressure[q] *
+                        cell_rhs(i) += -pressure[q] *
                                        fe_face_values.shape_value(i, q) *
                                        fe_face_values.normal_vector(q)[component_i] *
                                        fe_face_values.JxW(q);
@@ -174,13 +175,13 @@ void Solvers::ElasticitySolver::assemble_system()
 size_t Solvers::ElasticitySolver::solve_linear_system()
 {
     SolverControl solver_control(dof_handler.n_dofs(),
-                                 1e-14 * system_rhs.l2_norm(),
+                                 2e-14 * system_rhs.l2_norm(),
                                  true, true);
 
     SolverGMRES<>::AdditionalData additional(30, false, true, true);
     SolverGMRES<> solver(solver_control, additional);
 
-    PreconditionSSOR<> precondition;
+    PreconditionJacobi<> precondition;
     precondition.initialize(system_matrix);
 
     try

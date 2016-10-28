@@ -32,6 +32,7 @@ private:
     size_t solve_linear_system();
     void output_solution(const boost::filesystem::path &output_dir);
 
+    const dealii::SmartPointer<const dealii::Triangulation<3>> tria;
     dealii::DoFHandler<3> dof_handler;
 
     const dealii::FESystem<3> fe;

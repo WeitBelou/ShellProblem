@@ -7,5 +7,5 @@ subsection Geometry
         set Cylinder length = 15.0
     end
 
-    set N global refinements = 3
+    set N global refinements = 2
 end
