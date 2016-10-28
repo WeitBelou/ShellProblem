@@ -30,10 +30,12 @@ private:
     void setup_system();
     void assemble_system();
     size_t solve_linear_system();
+    void compute_norm_of_stress();
     void output_solution(const boost::filesystem::path &output_dir);
 
     const dealii::SmartPointer<const dealii::Triangulation<3>> tria;
     dealii::DoFHandler<3> dof_handler;
+    dealii::Vector<double> norm_of_stress;
 
     const dealii::FESystem<3> fe;
     const dealii::QGauss<3> quadrature;

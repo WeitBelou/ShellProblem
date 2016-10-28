@@ -41,11 +41,29 @@ inline SymmetricTensor<2, 3> get_strain(const FEValues<3> &fev,
     return tmp;
 }
 
+inline SymmetricTensor<2, 3> get_strain(const std::vector<Tensor<1, 3>> &grads)
+{
+    SymmetricTensor<2, 3> tmp;
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+        tmp[i][i] = grads[i][i];
+    }
+    for (unsigned int i = 0; i < 3; ++i)
+    {
+        for (unsigned int j = i + 1; j < 3; ++j)
+        {
+            tmp[i][j] = (grads[i][j] + grads[j][i]) / 2;
+        }
+    }
+    return tmp;
+}
+
 Solvers::ElasticitySolver::ElasticitySolver(const MeshWrappers::Mesh &mesh,
                                             const Material::SimpleElasticity &elasticity)
     :
     tria(&mesh.mesh()),
     dof_handler(*tria),
+    norm_of_stress(tria->n_active_cells()),
     fe(FE_Q<3>(2), 3),
     quadrature(2),
     face_quadrature(2),
@@ -67,6 +85,9 @@ void Solvers::ElasticitySolver::run(const boost::filesystem::path &output_dir)
     std::cout << "    Solving linear system..." << std::endl << std::flush;
     const size_t n_iter = solve_linear_system();
     std::cout << "    Solver converges in " << n_iter << " iterations." << std::endl;
+
+    std::cout << "    Compute norm of stress..."  << std::endl;
+    compute_norm_of_stress();
 
     std::cout << "    Output solution..." << std::endl << std::flush;
     output_solution(output_dir);
@@ -199,6 +220,29 @@ size_t Solvers::ElasticitySolver::solve_linear_system()
     return solver_control.last_step();
 }
 
+void Solvers::ElasticitySolver::compute_norm_of_stress()
+{
+    FEValues<3> fe_values(fe, quadrature,
+                          update_values | update_gradients);
+    std::vector<std::vector<Tensor<1, 3>>> displacement_grads(quadrature.size(),
+                                                              std::vector<Tensor<1, 3>>(3));
+
+    const size_t n_q_points = quadrature.size();
+
+    for (auto cell : dof_handler.active_cell_iterators())
+    {
+        fe_values.reinit(cell);
+        fe_values.get_function_gradients(solution, displacement_grads);
+
+        SymmetricTensor<2, 3> stress;
+        for (size_t q = 0; q < n_q_points; ++q)
+        {
+            stress += stress_strain * get_strain(displacement_grads[q]);
+        }
+        norm_of_stress(cell->active_cell_index()) = (stress / n_q_points).norm();
+    }
+}
+
 void Solvers::ElasticitySolver::output_solution(const boost::filesystem::path &output_dir)
 {
     auto output_file_name = output_dir;
@@ -218,6 +262,9 @@ void Solvers::ElasticitySolver::output_solution(const boost::filesystem::path &o
     data_out.add_data_vector(solution, solution_names,
                              DataOut<3>::type_dof_data,
                              data_component_interpretation);
+
+    //Output norm of stress
+    data_out.add_data_vector(norm_of_stress, "norm_of_stress");
 
     data_out.build_patches();
 
