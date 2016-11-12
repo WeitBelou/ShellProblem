@@ -22,7 +22,7 @@ ParsedArgs::ParsedArgs()
 void ParsedArgs::parse_args(int argc, char **argv)
 {
     po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::store(po::parse_command_line(argc, const_cast<const char * const *>(argv), desc), vm);
 
     if (vm.count("help"))
     {
