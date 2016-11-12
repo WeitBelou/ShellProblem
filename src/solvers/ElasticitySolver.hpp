@@ -38,6 +38,7 @@ private:
     dealii::Vector<double> norm_of_stress;
 
     const dealii::FESystem<3> fe;
+    const dealii::FEValuesExtractors::Vector displacement;
     const dealii::QGauss<3> quadrature;
     const dealii::QGauss<2> face_quadrature;
 

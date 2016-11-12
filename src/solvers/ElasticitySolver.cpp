@@ -20,44 +20,6 @@
 
 using namespace dealii;
 
-inline SymmetricTensor<2, 3> get_strain(const FEValues<3> &fev,
-                                        const unsigned int shape_func,
-                                        const unsigned int q_point)
-{
-    SymmetricTensor<2, 3> tmp;
-    for (unsigned int i = 0; i < 3; ++i)
-    {
-        tmp[i][i] = fev.shape_grad_component(shape_func, q_point, i)[i];
-    }
-    for (unsigned int i = 0; i < 3; ++i)
-    {
-        for (unsigned int j = i + 1; j < 3; ++j)
-        {
-            tmp[i][j]
-                = (fev.shape_grad_component(shape_func, q_point, i)[j] +
-                   fev.shape_grad_component(shape_func, q_point, j)[i]) / 2;
-        }
-    }
-    return tmp;
-}
-
-inline SymmetricTensor<2, 3> get_strain(const std::vector<Tensor<1, 3>> &grads)
-{
-    SymmetricTensor<2, 3> tmp;
-    for (unsigned int i = 0; i < 3; ++i)
-    {
-        tmp[i][i] = grads[i][i];
-    }
-    for (unsigned int i = 0; i < 3; ++i)
-    {
-        for (unsigned int j = i + 1; j < 3; ++j)
-        {
-            tmp[i][j] = (grads[i][j] + grads[j][i]) / 2;
-        }
-    }
-    return tmp;
-}
-
 Solvers::ElasticitySolver::ElasticitySolver(const MeshWrappers::Mesh &mesh,
                                             const Material::SimpleElasticity &elasticity)
     :
@@ -65,6 +27,7 @@ Solvers::ElasticitySolver::ElasticitySolver(const MeshWrappers::Mesh &mesh,
     dof_handler(*tria),
     norm_of_stress(tria->n_active_cells()),
     fe(FE_Q<3>(2), 3),
+    displacement(0),
     quadrature(2),
     face_quadrature(2),
     stress_strain(elasticity.get_stress_strain_tensor()),
@@ -153,11 +116,10 @@ void Solvers::ElasticitySolver::assemble_system()
             {
                 for (size_t j = 0; j < dofs_per_cell; ++j)
                 {
-                    const SymmetricTensor<2, 3> eps_phi_i = get_strain(fe_values, i, q);
-                    const SymmetricTensor<2, 3> eps_phi_j = get_strain(fe_values, j, q);
+                    const SymmetricTensor<2, 3> eps_phi_i = fe_values[displacement].symmetric_gradient(i, q);
+                    const SymmetricTensor<2, 3> eps_phi_j = fe_values[displacement].symmetric_gradient(j, q);
 
-                    cell_matrix(i, j) += (eps_phi_i * stress_strain *
-                                          eps_phi_j * jxw);
+                    cell_matrix(i, j) += double_contract(eps_phi_i, stress_strain * eps_phi_j) * jxw;
                 }
             }
         }
@@ -224,22 +186,21 @@ void Solvers::ElasticitySolver::compute_norm_of_stress()
 {
     FEValues<3> fe_values(fe, quadrature,
                           update_values | update_gradients);
-    std::vector<std::vector<Tensor<1, 3>>> displacement_grads(quadrature.size(),
-                                                              std::vector<Tensor<1, 3>>(3));
+    std::vector<SymmetricTensor<2, 3>> displacement_grads(quadrature.size());
 
     const size_t n_q_points = quadrature.size();
 
     for (auto cell : dof_handler.active_cell_iterators())
     {
         fe_values.reinit(cell);
-        fe_values.get_function_gradients(solution, displacement_grads);
 
+        fe_values[displacement].get_function_symmetric_gradients(solution, displacement_grads);
         SymmetricTensor<2, 3> stress;
         for (size_t q = 0; q < n_q_points; ++q)
         {
-            stress += stress_strain * get_strain(displacement_grads[q]);
+            stress += stress_strain * displacement_grads[q];
         }
-        norm_of_stress(cell->active_cell_index()) = (stress / n_q_points).norm();
+        norm_of_stress(cell->active_cell_index()) = stress.norm() / n_q_points;
     }
 }
 
