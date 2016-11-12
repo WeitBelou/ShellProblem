@@ -1,5 +1,5 @@
-#ifndef SHELLPROBLEM_BOUNDARIES_HPP
-#define SHELLPROBLEM_BOUNDARIES_HPP
+#ifndef SHELL_PROBLEM_BOUNDARIES_HPP
+#define SHELL_PROBLEM_BOUNDARIES_HPP
 
 #include <deal.II/base/point.h>
 #include <deal.II/base/function.h>
@@ -30,4 +30,4 @@ private:
 
 }
 
-#endif //SHELLPROBLEM_BOUNDARIES_HPP
+#endif //SHELL_PROBLEM_BOUNDARIES_HPP
