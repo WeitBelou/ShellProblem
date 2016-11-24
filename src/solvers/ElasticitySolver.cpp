@@ -119,7 +119,7 @@ void Solvers::ElasticitySolver::assemble_system()
                     const SymmetricTensor<2, 3> eps_phi_i = fe_values[displacement].symmetric_gradient(i, q);
                     const SymmetricTensor<2, 3> eps_phi_j = fe_values[displacement].symmetric_gradient(j, q);
 
-                    cell_matrix(i, j) += double_contract(eps_phi_i, stress_strain * eps_phi_j) * jxw;
+                    cell_matrix(i, j) += eps_phi_i * stress_strain * eps_phi_j * jxw;
                 }
             }
         }
