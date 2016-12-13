@@ -8,14 +8,14 @@ Solvers::SinSquare::SinSquare(double amplitude)
 
 }
 
-double Solvers::SinSquare::value(const dealii::Point<3> &point, size_t /*component*/) const
+double Solvers::SinSquare::value(const dealii::Point<3> &point, const unsigned int /*component*/) const
 {
     const double z = point(2);
 
     return a * (z * z) / point.norm_square();
 }
 
-dealii::Tensor<1, 3> Solvers::SinSquare::gradient(const dealii::Point<3> &p, const size_t /*component*/) const
+dealii::Tensor<1, 3> Solvers::SinSquare::gradient(const dealii::Point<3> &p, const unsigned int /*component*/) const
 {
     const double r = p.norm();
     const double x = p(0);
