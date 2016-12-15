@@ -35,7 +35,7 @@ $ ShellProblem --task=<task-name> --out=<output-dir>
 ```
 2) ... or several tasks
 ```
-$ python run_directory.py <dir_with_tasks>
+$ python run_directory.py <executable> <dir_with_tasks> <output_dir>
 ```
-In this case output will be written in
-`out/<name-of-every-task>`
+In this case output  files will be written in
+`<output_dir>/<name_of_task>`
