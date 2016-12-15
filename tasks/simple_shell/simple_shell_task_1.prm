@@ -5,5 +5,5 @@ end
 
 subsection Geometry
     set Type = Simple
-    set Path = models/simple_shell.prm
+    set Path = models/simple_shell/simple_shell_1.prm
 end
