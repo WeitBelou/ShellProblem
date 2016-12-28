@@ -11,30 +11,29 @@ namespace MeshWrappers
 class Mesh
 {
 public:
-    virtual void initialize(const std::string &input);
+    Mesh(unsigned int n_global_refinements);
     const dealii::Triangulation<3, 3> &mesh() const;
-
     void write_msh(const std::string &output_file);
 protected:
-    virtual void declare_parameters(dealii::ParameterHandler &prm) = 0;
-    virtual void get_parameters(dealii::ParameterHandler &prm) = 0;
+    void create();
 
     virtual void create_coarse_mesh() = 0;
     virtual void apply_manifold_ids() = 0;
     virtual void apply_boundary_ids() = 0;
 
-    void refine_mesh(size_t n_refines);
+    void refine_mesh(unsigned int n_refines);
 
     dealii::Triangulation<3> tria;
-    int n_global_refinements;
+    unsigned int n_global_refinements;
 };
 
 class CubeMesh: public Mesh
 {
-protected:
-    virtual void declare_parameters(dealii::ParameterHandler &prm) override;
-    virtual void get_parameters(dealii::ParameterHandler &prm) override;
 
+protected:
+public:
+    CubeMesh(double size, unsigned int n_refines);
+protected:
     virtual void create_coarse_mesh() override;
     virtual void apply_manifold_ids() override;
     virtual void apply_boundary_ids() override;
@@ -44,11 +43,14 @@ private:
 
 class SimpleShellMesh: public Mesh
 {
+public:
+    SimpleShellMesh(double inner_radius,
+                    double outer_radius,
+                    double cylinder_length,
+                    unsigned int n_refines);
 protected:
-    virtual void declare_parameters(dealii::ParameterHandler &prm) override;
-    virtual void get_parameters(dealii::ParameterHandler &prm) override;
-
     virtual void create_coarse_mesh() override;
+
     virtual void apply_manifold_ids() override;
     virtual void apply_boundary_ids() override;
 

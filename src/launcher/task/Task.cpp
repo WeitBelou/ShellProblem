@@ -1,6 +1,13 @@
 #include "Task.hpp"
 
-void Task::execute()
+Task::Task(std::shared_ptr<Solvers::SolverBase> solver)
+    :
+    solver(solver)
 {
 
+}
+
+void Task::execute()
+{
+    solver->run();
 }

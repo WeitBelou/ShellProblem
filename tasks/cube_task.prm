@@ -1,9 +1,0 @@
-subsection Material
-    set Type = Simple
-    set Path = materials/simple_material.prm
-end
-
-subsection Geometry
-    set Type = Cube
-    set Path = models/cube.prm
-end

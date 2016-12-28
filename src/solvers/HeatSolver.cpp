@@ -16,12 +16,13 @@
 
 using namespace dealii;
 
-Solvers::HeatSolver::HeatSolver(const MeshWrappers::Mesh &mesh,
+Solvers::HeatSolver::HeatSolver(std::shared_ptr<MeshWrappers::Mesh> mesh,
                                 const Material::SimpleHeat &heat_properties,
                                 const boost::filesystem::path &output_dir)
     :
+    SolverBase(mesh),
     output_dir(output_dir),
-    dof_handler(mesh.mesh()),
+    dof_handler(mesh->mesh()),
     fairing_function(2000),
     fe(2),
     quadrature(2),

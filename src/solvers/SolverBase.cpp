@@ -1,6 +1,10 @@
 #include <iostream>
 #include "SolverBase.hpp"
 
+Solvers::SolverBase::SolverBase(const std::shared_ptr<MeshWrappers::Mesh> &mesh)
+    : mesh(mesh)
+{}
+
 void Solvers::SolverBase::run()
 {
     std::cout << "    Setup system..." << std::endl << std::flush;

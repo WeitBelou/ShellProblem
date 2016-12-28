@@ -15,17 +15,15 @@ using namespace MeshWrappers;
 using namespace MeshUtilities;
 using namespace dealii;
 
-void Mesh::initialize(const std::string &input)
-{
-    ParameterHandler prm;
-    declare_parameters(prm);
-    prm.parse_input(input);
-    get_parameters(prm);
+Mesh::Mesh(unsigned int n_global_refinements)
+    : n_global_refinements(n_global_refinements)
+{}
 
+void Mesh::create()
+{
     create_coarse_mesh();
     apply_manifold_ids();
     apply_boundary_ids();
-
     refine_mesh(n_global_refinements);
 }
 
@@ -33,7 +31,6 @@ const dealii::Triangulation<3, 3> &Mesh::mesh() const
 {
     return tria;
 }
-
 void Mesh::write_msh(const std::string &output_file)
 {
     GridOut grid_out;
@@ -44,9 +41,23 @@ void Mesh::write_msh(const std::string &output_file)
     grid_out.write_msh(tria, out);
 }
 
-void Mesh::refine_mesh(size_t n_refines)
+void Mesh::refine_mesh(unsigned int n_refines)
 {
     tria.refine_global(n_refines);
+}
+
+SimpleShellMesh::SimpleShellMesh(double inner_radius,
+                                 double outer_radius,
+                                 double cylinder_length,
+                                 unsigned int n_refines)
+    :
+    Mesh(n_refines),
+    inner_radius(inner_radius),
+    outer_radius(outer_radius),
+    thickness(outer_radius - inner_radius),
+    cylinder_length(cylinder_length)
+{
+    create();
 }
 
 void SimpleShellMesh::create_coarse_mesh()
@@ -66,18 +77,15 @@ void SimpleShellMesh::create_coarse_mesh()
     {
         Point<3> result = p;
 
-        if (p(0) < -1e-10)
-        {
-            if (is_point_on_sphere(p, fairing_center, inner_radius))
-            {
+        if (p(0) < -1e-10) {
+            if (is_point_on_sphere(p, fairing_center, inner_radius)) {
                 const double a = inner_radius / std::sqrt(2);
                 result(0) = -cylinder_length + thickness;
 
                 result(1) = (p(1) < 0) ? (-a) : (a);
                 result(2) = (p(2) < 0) ? (-a) : (a);
             }
-            else if (is_point_on_sphere(p, fairing_center, outer_radius))
-            {
+            else if (is_point_on_sphere(p, fairing_center, outer_radius)) {
                 const double a = outer_radius / std::sqrt(2);
                 result(0) = -cylinder_length;
 
@@ -107,34 +115,25 @@ void SimpleShellMesh::apply_manifold_ids()
 
     tria.set_all_manifold_ids(0);
 
-    for (auto cell : tria.active_cell_iterators())
-    {
-        if (cell->center()(2) > 0)
-        {
+    for (auto cell : tria.active_cell_iterators()) {
+        if (cell->center()(2) > 0) {
             cell->set_all_manifold_ids(1);
         }
-        else
-        {
+        else {
             cell->set_all_manifold_ids(2);
         }
     }
 }
-
 void SimpleShellMesh::apply_boundary_ids()
 {
-    for (auto cell : tria.active_cell_iterators())
-    {
-        for (size_t f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
-        {
-            if (cell->face(f)->at_boundary())
-            {
+    for (auto cell : tria.active_cell_iterators()) {
+        for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
+            if (cell->face(f)->at_boundary()) {
                 Triangulation<3>::face_iterator face = cell->face(f);
-                if (is_face_on_sphere(face, Point<3>(0, 0, 0), outer_radius))
-                {
+                if (is_face_on_sphere(face, Point<3>(0, 0, 0), outer_radius)) {
                     face->set_all_boundary_ids(1);
                 }
-                else
-                {
+                else {
                     face->set_all_boundary_ids(0);
                 }
             }
@@ -142,48 +141,13 @@ void SimpleShellMesh::apply_boundary_ids()
     }
 }
 
-void SimpleShellMesh::declare_parameters(dealii::ParameterHandler &prm)
+CubeMesh::CubeMesh(double size,
+                   unsigned int n_refines)
+    :
+    Mesh(n_refines),
+    size(size)
 {
-    prm.enter_subsection("Geometry");
-    {
-        prm.enter_subsection("Sizes");
-        {
-            prm.declare_entry("Inner radius", "5.0",
-                              Patterns::Double(0),
-                              "Inner radius of the shell");
-            prm.declare_entry("Outer radius", "5.3",
-                              Patterns::Double(0),
-                              "Outer radius of the shell");
-            prm.declare_entry("Cylinder length", "5.0",
-                              Patterns::Double(0),
-                              "Length of shell\'s cylindrical part");
-        }
-        prm.leave_subsection();
-
-        prm.declare_entry("N global refinements", "0",
-                          Patterns::Integer(0, 6),
-                          "Number of initial global refinements");
-    }
-    prm.leave_subsection();
-}
-
-void SimpleShellMesh::get_parameters(dealii::ParameterHandler &prm)
-{
-    prm.enter_subsection("Geometry");
-    {
-        prm.enter_subsection("Sizes");
-        {
-            inner_radius = prm.get_double("Inner radius");
-            outer_radius = prm.get_double("Outer radius");
-            thickness = outer_radius - inner_radius;
-
-            cylinder_length = prm.get_double("Cylinder length");
-        }
-        prm.leave_subsection();
-
-        n_global_refinements = prm.get_integer("N global refinements");
-    }
-    prm.leave_subsection();
+    create();
 }
 
 void CubeMesh::create_coarse_mesh()
@@ -197,22 +161,16 @@ void CubeMesh::apply_manifold_ids()
     tria.set_manifold(0, flate_manifold);
     tria.set_all_manifold_ids(0);
 }
-
 void CubeMesh::apply_boundary_ids()
 {
-    for (auto cell : tria.active_cell_iterators())
-    {
-        for (size_t f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
-        {
-            if (cell->face(f)->at_boundary())
-            {
+    for (auto cell : tria.active_cell_iterators()) {
+        for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
+            if (cell->face(f)->at_boundary()) {
                 Triangulation<3>::active_face_iterator face = cell->face(f);
-                if (is_face_on_plane(face, Point<3>(0, 0, size / 2), 2))
-                {
+                if (is_face_on_plane(face, Point<3>(0, 0, size / 2), 2)) {
                     face->set_all_boundary_ids(1);
                 }
-                else
-                {
+                else {
                     face->set_all_boundary_ids(0);
                 }
             }
@@ -220,26 +178,3 @@ void CubeMesh::apply_boundary_ids()
     }
 }
 
-void CubeMesh::declare_parameters(dealii::ParameterHandler &prm)
-{
-    prm.enter_subsection("Geometry");
-    {
-        prm.declare_entry("Size", "5.0",
-                          Patterns::Double(0),
-                          "Length of cube side");
-        prm.declare_entry("N global refinements", "0",
-                          Patterns::Integer(0, 6),
-                          "Number of initial global refinements");
-    }
-    prm.leave_subsection();
-}
-
-void CubeMesh::get_parameters(dealii::ParameterHandler &prm)
-{
-    prm.enter_subsection("Geometry");
-    {
-        size = prm.get_double("Size");
-        n_global_refinements = prm.get_integer("N global refinements");
-    }
-    prm.leave_subsection();
-}

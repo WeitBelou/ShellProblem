@@ -15,6 +15,7 @@
 #include <deal.II/lac/constraint_matrix.h>
 
 #include "src/material/SimpleMaterial.hpp"
+
 #include "mesh/MeshWrappers.hpp"
 #include "Boundaries.hpp"
 #include "SolverBase.hpp"
@@ -25,7 +26,7 @@ namespace Solvers
 class HeatSolver: public SolverBase
 {
 public:
-    HeatSolver(const MeshWrappers::Mesh &mesh,
+    HeatSolver(std::shared_ptr<MeshWrappers::Mesh> mesh,
                const Material::SimpleHeat &heat_properties,
                const boost::filesystem::path &output_dir);
     ~HeatSolver();

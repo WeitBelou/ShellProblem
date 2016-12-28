@@ -20,16 +20,16 @@
 namespace Solvers
 {
 
-class ElasticitySolver : public SolverBase
+class ElasticitySolver: public SolverBase
 {
 public:
-    ElasticitySolver(const MeshWrappers::Mesh &mesh,
-                         const Material::SimpleElasticity &elasticity,
-                         const boost::filesystem::path &output_dir);
+    ElasticitySolver(std::shared_ptr<MeshWrappers::Mesh> mesh,
+                     const Material::SimpleElasticity &elasticity,
+                     const boost::filesystem::path &output_dir);
     ~ElasticitySolver();
 protected:
-    void setup_system() override ;
-    void assemble_system() override ;
+    void setup_system() override;
+    void assemble_system() override;
     unsigned int solve_linear_system() override;
     void do_postprocessing() override;
     unsigned int get_n_dofs() override;
@@ -39,7 +39,6 @@ private:
 
     const boost::filesystem::path &output_dir;
 
-    const dealii::SmartPointer<const dealii::Triangulation<3>> tria;
     dealii::DoFHandler<3> dof_handler;
 
     dealii::Vector<double> norm_of_stress;

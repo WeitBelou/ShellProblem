@@ -8,38 +8,23 @@
 namespace Material
 {
 
-struct SimpleElasticity
-{
-    static void declare_parameters(dealii::ParameterHandler &prm);
-    void get_parameters(dealii::ParameterHandler &prm);
 
-    dealii::SymmetricTensor<4, 3> get_stress_strain_tensor() const;
-private:
-    double E;
-    double G;
-};
-
-struct SimpleHeat
-{
-    double thermal_diffusivity;
-
-    static void declare_parameters(dealii::ParameterHandler &prm);
-    void get_parameters(dealii::ParameterHandler &prm);
-};
-
-class SimpleMaterial
+class SimpleElasticity
 {
 public:
-    SimpleMaterial(const std::string &material_file);
-
-    const SimpleHeat &get_heat() const;
-    const SimpleElasticity &get_elasticity() const;
+    SimpleElasticity(double E, double G);
+    dealii::SymmetricTensor<4, 3> get_stress_strain_tensor() const;
 private:
-    static void declare_parameters(dealii::ParameterHandler &prm);
-    void get_parameters(dealii::ParameterHandler &prm);
+    const double E;
+    const double G;
+};
 
-    SimpleHeat heat;
-    SimpleElasticity elasticity;
+class SimpleHeat
+{
+public:
+    SimpleHeat(const double thermal_diffusivity);
+public:
+    const double thermal_diffusivity;
 };
 
 }

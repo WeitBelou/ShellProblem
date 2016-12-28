@@ -20,9 +20,7 @@ int main(int argc, char **argv)
     }
 
     Launcher launcher;
-    launcher.initialize(args.get_task_file());
-
-    launcher.run(args.get_output_dir());
+    launcher.run(args.get_task_file(), args.get_output_dir());
 
     return 0;
 }

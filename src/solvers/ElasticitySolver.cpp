@@ -20,14 +20,14 @@
 
 using namespace dealii;
 
-Solvers::ElasticitySolver::ElasticitySolver(const MeshWrappers::Mesh &mesh,
+Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<MeshWrappers::Mesh> mesh,
                                             const Material::SimpleElasticity &elasticity,
                                             const boost::filesystem::path &output_dir)
     :
+    SolverBase(mesh),
     output_dir(output_dir),
-    tria(&mesh.mesh()),
-    dof_handler(*tria),
-    norm_of_stress(tria->n_active_cells()),
+    dof_handler(mesh->mesh()),
+    norm_of_stress(mesh->mesh().n_active_cells()),
     fe(FE_Q<3>(2), 3),
     displacement(0),
     quadrature(2),

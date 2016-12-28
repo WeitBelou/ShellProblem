@@ -1,3 +1,4 @@
+#include <iostream>
 #include "ParsedArgs.hpp"
 
 namespace po = boost::program_options;
