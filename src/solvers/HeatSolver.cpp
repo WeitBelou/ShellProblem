@@ -17,8 +17,10 @@
 using namespace dealii;
 
 Solvers::HeatSolver::HeatSolver(const MeshWrappers::Mesh &mesh,
-                                const Material::SimpleHeat &heat_properties)
+                                const Material::SimpleHeat &heat_properties,
+                                const boost::filesystem::path &output_dir)
     :
+    output_dir(output_dir),
     dof_handler(mesh.mesh()),
     fairing_function(2000),
     fe(2),
@@ -31,24 +33,6 @@ Solvers::HeatSolver::HeatSolver(const MeshWrappers::Mesh &mesh,
 Solvers::HeatSolver::~HeatSolver()
 {
     dof_handler.clear();
-}
-
-void Solvers::HeatSolver::run(const std::string &output_dir)
-{
-    std::cout << "    Setup system..." << std::endl << std::flush;
-    setup_system();
-    std::cout << "    Number of degrees of freedom: " << dof_handler.n_dofs() << std::endl;
-
-    std::cout << "    Assembling system..." << std::endl << std::flush;
-    assemble_system();
-
-    std::cout << "    Solving linear system..." << std::endl << std::flush;
-    const size_t n_iter = solve_linear_system();
-    std::cout << "    Solver converges in " << n_iter << " iterations." << std::endl;
-
-    std::cout << "    Output solution..." << std::endl << std::flush;
-    output_solution(output_dir);
-
 }
 
 void Solvers::HeatSolver::setup_system()
@@ -83,57 +67,49 @@ void Solvers::HeatSolver::assemble_system()
 {
     FEValues<3> fe_values(fe, quadrature,
                           update_values | update_gradients |
-                          update_quadrature_points | update_JxW_values);
+                              update_quadrature_points | update_JxW_values);
 
     QGauss<2> face_quadrature(2);
     FEFaceValues<3> fe_face_values(fe, face_quadrature,
                                    update_values | update_quadrature_points |
-                                   update_normal_vectors | update_JxW_values);
+                                       update_normal_vectors | update_JxW_values);
 
-    const size_t dofs_per_cell = fe.dofs_per_cell;
-    const size_t n_q_points = quadrature.size();
-    const size_t n_face_q_points = face_quadrature.size();
+    const unsigned int dofs_per_cell = fe.dofs_per_cell;
+    const unsigned int n_q_points = quadrature.size();
+    const unsigned int n_face_q_points = face_quadrature.size();
 
     FullMatrix<double> cell_matrix(dofs_per_cell, dofs_per_cell);
     Vector<double> cell_rhs(dofs_per_cell);
 
     std::vector<types::global_dof_index> local_dof_indices(dofs_per_cell);
 
-    for (auto cell : dof_handler.active_cell_iterators())
-    {
+    for (auto cell : dof_handler.active_cell_iterators()) {
         fe_values.reinit(cell);
 
         cell_matrix = 0;
         cell_rhs = 0;
 
-        for (size_t q = 0; q < n_q_points; ++q)
-        {
-            for (size_t i = 0; i < dofs_per_cell; ++i)
-            {
+        for (unsigned int q = 0; q < n_q_points; ++q) {
+            for (unsigned int i = 0; i < dofs_per_cell; ++i) {
                 const Tensor<1, 3> grad_phi_i = fe_values.shape_grad(i, q);
 
-                for (size_t j = 0; j < dofs_per_cell; ++j)
-                {
+                for (unsigned int j = 0; j < dofs_per_cell; ++j) {
                     const Tensor<1, 3> grad_phi_j = fe_values.shape_grad(j, q);
 
                     cell_matrix(i, j) += grad_phi_i *
-                                         grad_phi_j *
-                                         fe_values.JxW(q);
+                        grad_phi_j *
+                        fe_values.JxW(q);
                 }
             }
         }
 
-        for (size_t f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
-        {
-            if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == 1)
-            {
+        for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
+            if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == 1) {
                 fe_face_values.reinit(cell, f);
-                for (size_t q = 0; q < n_face_q_points; ++q)
-                {
+                for (unsigned int q = 0; q < n_face_q_points; ++q) {
                     const double boundary_value = fairing_function.gradient(fe_face_values.quadrature_point(q))
-                                                  * fe_face_values.normal_vector(q);
-                    for (size_t i = 0; i < dofs_per_cell; ++i)
-                    {
+                        * fe_face_values.normal_vector(q);
+                    for (unsigned int i = 0; i < dofs_per_cell; ++i) {
                         const double phi_i = fe_face_values.shape_value(i, q);
                         cell_rhs(i) += boundary_value * phi_i * fe_face_values.JxW(q);
                     }
@@ -150,7 +126,7 @@ void Solvers::HeatSolver::assemble_system()
     }
 }
 
-size_t Solvers::HeatSolver::solve_linear_system()
+unsigned int Solvers::HeatSolver::solve_linear_system()
 {
     SolverControl solver_control(dof_handler.n_dofs(), 1e-3);
     SolverCG<> solver(solver_control);
@@ -181,4 +157,17 @@ void Solvers::HeatSolver::output_solution(const boost::filesystem::path &output_
     std::ofstream out(output_filename.c_str());
 
     data_out.write_vtu(out);
+}
+
+void Solvers::HeatSolver::do_postprocessing()
+{
+
+    std::cout << "    Output solution..." << std::endl << std::flush;
+    output_solution(output_dir);
+
+}
+
+unsigned int Solvers::HeatSolver::get_n_dofs()
+{
+    return dof_handler.n_dofs();
 }

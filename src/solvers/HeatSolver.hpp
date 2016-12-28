@@ -17,24 +17,29 @@
 #include "src/material/SimpleMaterial.hpp"
 #include "mesh/MeshWrappers.hpp"
 #include "Boundaries.hpp"
+#include "SolverBase.hpp"
 
 namespace Solvers
 {
 
-class HeatSolver
+class HeatSolver: public SolverBase
 {
 public:
     HeatSolver(const MeshWrappers::Mesh &mesh,
-                 const Material::SimpleHeat &heat_properties);
+               const Material::SimpleHeat &heat_properties,
+               const boost::filesystem::path &output_dir);
     ~HeatSolver();
-
-    void run(const std::string &output_dir);
+protected:
+    void setup_system() override;
+    void assemble_system() override;
+    unsigned int solve_linear_system() override;
+    void do_postprocessing() override;
+    unsigned int get_n_dofs() override;
 
 private:
-    void setup_system();
-    void assemble_system();
-    size_t solve_linear_system();
     void output_solution(const boost::filesystem::path &output_dir);
+
+    const boost::filesystem::path output_dir;
 
     dealii::DoFHandler<3> dof_handler;
 

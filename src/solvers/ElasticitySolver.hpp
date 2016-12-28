@@ -30,9 +30,9 @@ public:
 protected:
     void setup_system() override ;
     void assemble_system() override ;
-    size_t solve_linear_system() override;
+    unsigned int solve_linear_system() override;
     void do_postprocessing() override;
-    size_t get_n_dofs() override;
+    unsigned int get_n_dofs() override;
 private:
     void compute_norm_of_stress();
     void output_solution(const boost::filesystem::path &output_dir);

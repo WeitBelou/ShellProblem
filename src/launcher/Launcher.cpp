@@ -35,8 +35,8 @@ void Launcher::run(const std::string &output_dir)
 
         {
             std::cout << "Solving heat." << std::endl;
-            Solvers::HeatSolver heat_solver(*mesh, simple_material.get_heat());
-            heat_solver.run(output_dir);
+            Solvers::HeatSolver heat_solver(*mesh, simple_material.get_heat(), output_dir);
+            heat_solver.run();
         }
 
         {

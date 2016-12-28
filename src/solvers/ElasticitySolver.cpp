@@ -92,12 +92,12 @@ void Solvers::ElasticitySolver::assemble_system()
         fe_values.reinit(cell);
 
         //Assemble matrix
-        for (size_t q = 0; q < n_q_points; ++q)
+        for (unsigned int q = 0; q < n_q_points; ++q)
         {
             const double jxw = fe_values.JxW(q);
-            for (size_t i = 0; i < dofs_per_cell; ++i)
+            for (unsigned int i = 0; i < dofs_per_cell; ++i)
             {
-                for (size_t j = 0; j < dofs_per_cell; ++j)
+                for (unsigned int j = 0; j < dofs_per_cell; ++j)
                 {
                     const SymmetricTensor<2, 3> eps_phi_i = fe_values[displacement].symmetric_gradient(i, q);
                     const SymmetricTensor<2, 3> eps_phi_j = fe_values[displacement].symmetric_gradient(j, q);
@@ -108,7 +108,7 @@ void Solvers::ElasticitySolver::assemble_system()
         }
 
         //Assemble rhs
-        for (size_t f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
+        for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
         {
             if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == 1)
             {
@@ -117,11 +117,11 @@ void Solvers::ElasticitySolver::assemble_system()
                 std::vector<double> pressure(n_face_q_points);
                 fairing_function.value_list(fe_face_values.get_quadrature_points(), pressure);
 
-                for (size_t i = 0; i < dofs_per_cell; ++i)
+                for (unsigned int i = 0; i < dofs_per_cell; ++i)
                 {
-                    const size_t component_i = fe.system_to_component_index(i).first;
+                    const unsigned int component_i = fe.system_to_component_index(i).first;
 
-                    for (size_t q = 0; q < n_face_q_points; ++q)
+                    for (unsigned int q = 0; q < n_face_q_points; ++q)
                     {
                         cell_rhs(i) += -pressure[q] *
                                        fe_face_values.shape_value(i, q) *
@@ -138,7 +138,7 @@ void Solvers::ElasticitySolver::assemble_system()
     }
 }
 
-size_t Solvers::ElasticitySolver::solve_linear_system()
+unsigned int Solvers::ElasticitySolver::solve_linear_system()
 {
     SolverControl solver_control(dof_handler.n_dofs(),
                                  2e-14 * system_rhs.l2_norm(),
@@ -179,7 +179,7 @@ void Solvers::ElasticitySolver::compute_norm_of_stress()
 
         fe_values[displacement].get_function_symmetric_gradients(solution, displacement_grads);
         SymmetricTensor<2, 3> stress;
-        for (size_t q = 0; q < n_q_points; ++q)
+        for (unsigned int q = 0; q < n_q_points; ++q)
         {
             stress += stress_strain * displacement_grads[q];
         }
@@ -224,7 +224,7 @@ void Solvers::ElasticitySolver::do_postprocessing()
     output_solution(output_dir);
 }
 
-size_t Solvers::ElasticitySolver::get_n_dofs()
+unsigned int Solvers::ElasticitySolver::get_n_dofs()
 {
     return dof_handler.n_dofs();
 }
