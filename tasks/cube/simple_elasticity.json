@@ -1,0 +1,16 @@
+{
+  "solver": {
+    "type": "simple_elasticity",
+    "material": {
+      "E": 1.0e+12,
+      "G": 4.7e+11
+    }
+  },
+  "mesh": {
+    "type": "cube",
+    "geometry": {
+      "size": 1,
+      "n_refines": 1
+    }
+  }
+}

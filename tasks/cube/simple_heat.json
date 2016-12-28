@@ -1,0 +1,15 @@
+{
+  "solver": {
+    "type": "simple_heat",
+    "material": {
+      "thermal_diffusivity": 9.0e-2
+    }
+  },
+  "mesh": {
+    "type": "cube",
+    "geometry": {
+      "size": 1,
+      "n_refines": 1
+    }
+  }
+}
