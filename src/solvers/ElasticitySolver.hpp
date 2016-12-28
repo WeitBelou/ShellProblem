@@ -13,9 +13,10 @@
 #include <deal.II/lac/constraint_matrix.h>
 
 #include "src/material/SimpleMaterial.hpp"
-#include "mesh/MeshWrappers.hpp"
+#include "mesh/CubeMesh.hpp"
 #include "Boundaries.hpp"
 #include "SolverBase.hpp"
+#include "src/mesh/MeshBase.hpp"
 
 namespace Solvers
 {
@@ -23,7 +24,7 @@ namespace Solvers
 class ElasticitySolver: public SolverBase
 {
 public:
-    ElasticitySolver(std::shared_ptr<MeshWrappers::Mesh> mesh,
+    ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
                      const Material::SimpleElasticity &elasticity,
                      const boost::filesystem::path &output_dir);
     ~ElasticitySolver();

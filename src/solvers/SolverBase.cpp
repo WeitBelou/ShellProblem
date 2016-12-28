@@ -1,7 +1,7 @@
 #include <iostream>
 #include "SolverBase.hpp"
 
-Solvers::SolverBase::SolverBase(const std::shared_ptr<MeshWrappers::Mesh> &mesh)
+Solvers::SolverBase::SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh)
     : mesh(mesh)
 {}
 

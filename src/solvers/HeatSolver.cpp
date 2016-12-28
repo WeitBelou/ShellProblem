@@ -1,5 +1,4 @@
 #include "HeatSolver.hpp"
-
 #include <deal.II/lac/dynamic_sparsity_pattern.h>
 
 #include <deal.II/numerics/vector_tools.h>
@@ -16,7 +15,7 @@
 
 using namespace dealii;
 
-Solvers::HeatSolver::HeatSolver(std::shared_ptr<MeshWrappers::Mesh> mesh,
+Solvers::HeatSolver::HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
                                 const Material::SimpleHeat &heat_properties,
                                 const boost::filesystem::path &output_dir)
     :

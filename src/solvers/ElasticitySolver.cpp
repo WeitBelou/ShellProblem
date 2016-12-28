@@ -20,7 +20,7 @@
 
 using namespace dealii;
 
-Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<MeshWrappers::Mesh> mesh,
+Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
                                             const Material::SimpleElasticity &elasticity,
                                             const boost::filesystem::path &output_dir)
     :

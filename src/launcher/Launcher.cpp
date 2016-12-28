@@ -1,13 +1,7 @@
 #include "Launcher.hpp"
-
-#include "solvers/HeatSolver.hpp"
+#include <src/launcher/task/TaskFactory.hpp>
 
 using namespace dealii;
-
-using namespace TaskReader;
-
-using namespace Material;
-using namespace MeshWrappers;
 
 void Launcher::run(const std::string &task_file, const std::string &output_dir)
 {

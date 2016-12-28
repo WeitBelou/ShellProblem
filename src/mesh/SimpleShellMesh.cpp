@@ -1,57 +1,22 @@
-#include "MeshWrappers.hpp"
-#include "MeshUtilities.hpp"
-
-#include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/grid_tools.h>
-
+#include <deal.II/grid/grid_generator.h>
+#include <deal.II/grid/manifold.h>
 #include <deal.II/grid/manifold_lib.h>
 
-#include <deal.II/grid/grid_in.h>
-#include <deal.II/grid/grid_out.h>
+#include "CubeMesh.hpp"
+#include "SimpleShellMesh.hpp"
+#include "MeshUtilities.hpp"
 
-#include <fstream>
-
-using namespace MeshWrappers;
+using namespace Meshes;
 using namespace MeshUtilities;
 using namespace dealii;
-
-Mesh::Mesh(unsigned int n_global_refinements)
-    : n_global_refinements(n_global_refinements)
-{}
-
-void Mesh::create()
-{
-    create_coarse_mesh();
-    apply_manifold_ids();
-    apply_boundary_ids();
-    refine_mesh(n_global_refinements);
-}
-
-const dealii::Triangulation<3, 3> &Mesh::mesh() const
-{
-    return tria;
-}
-void Mesh::write_msh(const std::string &output_file)
-{
-    GridOut grid_out;
-    GridOutFlags::Msh msh_flags(true, true);
-    grid_out.set_flags(msh_flags);
-
-    std::ofstream out(output_file);
-    grid_out.write_msh(tria, out);
-}
-
-void Mesh::refine_mesh(unsigned int n_refines)
-{
-    tria.refine_global(n_refines);
-}
 
 SimpleShellMesh::SimpleShellMesh(double inner_radius,
                                  double outer_radius,
                                  double cylinder_length,
                                  unsigned int n_refines)
     :
-    Mesh(n_refines),
+    MeshBase(n_refines),
     inner_radius(inner_radius),
     outer_radius(outer_radius),
     thickness(outer_radius - inner_radius),
@@ -59,23 +24,22 @@ SimpleShellMesh::SimpleShellMesh(double inner_radius,
 {
     create();
 }
-
 void SimpleShellMesh::create_coarse_mesh()
 {
     //Fairing
-    Triangulation<3> fairing;
-    const Point<3> fairing_center;
+    dealii::Triangulation<3> fairing;
+    const dealii::Point<3> fairing_center;
     GridGenerator::half_hyper_shell(fairing, fairing_center,
                                     inner_radius, outer_radius);
 
     //Shell cylinder
-    Triangulation<3> shell_cylinder;
+    dealii::Triangulation<3> shell_cylinder;
     GridGenerator::half_hyper_shell(shell_cylinder, fairing_center,
                                     inner_radius, outer_radius);
-    GridTools::rotate(numbers::PI, 1, shell_cylinder);
-    auto shell_to_cylinder = [fairing_center, this](const Point<3> &p)
+    dealii::GridTools::rotate(dealii::numbers::PI, 1, shell_cylinder);
+    auto shell_to_cylinder = [fairing_center, this](const dealii::Point<3> &p)
     {
-        Point<3> result = p;
+        dealii::Point<3> result = p;
 
         if (p(0) < -1e-10) {
             if (is_point_on_sphere(p, fairing_center, inner_radius)) {
@@ -96,17 +60,16 @@ void SimpleShellMesh::create_coarse_mesh()
 
         return result;
     };
-    GridTools::transform(shell_to_cylinder, shell_cylinder);
+    dealii::GridTools::transform(shell_to_cylinder, shell_cylinder);
 
     //Merge
     GridGenerator::merge_triangulations(fairing, shell_cylinder, tria);
-    GridTools::rotate(-numbers::PI_2, 1, tria);
+    dealii::GridTools::rotate(-dealii::numbers::PI_2, 1, tria);
 }
-
 void SimpleShellMesh::apply_manifold_ids()
 {
     static const dealii::FlatManifold<3> flat_manifold;
-    static const dealii::SphericalManifold<3> spherical_manifold(Point<3>(0, 0, 0));
+    static const dealii::SphericalManifold<3> spherical_manifold(dealii::Point<3>(0, 0, 0));
     static const dealii::CylindricalManifold<3> cylindrical_manifold(2);
 
     tria.set_manifold(0, flat_manifold);
@@ -127,10 +90,10 @@ void SimpleShellMesh::apply_manifold_ids()
 void SimpleShellMesh::apply_boundary_ids()
 {
     for (auto cell : tria.active_cell_iterators()) {
-        for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
+        for (unsigned int f = 0; f < dealii::GeometryInfo<3>::faces_per_cell; ++f) {
             if (cell->face(f)->at_boundary()) {
-                Triangulation<3>::face_iterator face = cell->face(f);
-                if (is_face_on_sphere(face, Point<3>(0, 0, 0), outer_radius)) {
+                dealii::Triangulation<3>::face_iterator face = cell->face(f);
+                if (is_face_on_sphere(face, dealii::Point<3>(0, 0, 0), outer_radius)) {
                     face->set_all_boundary_ids(1);
                 }
                 else {
@@ -140,41 +103,3 @@ void SimpleShellMesh::apply_boundary_ids()
         }
     }
 }
-
-CubeMesh::CubeMesh(double size,
-                   unsigned int n_refines)
-    :
-    Mesh(n_refines),
-    size(size)
-{
-    create();
-}
-
-void CubeMesh::create_coarse_mesh()
-{
-    GridGenerator::hyper_cube(tria, -size / 2, size / 2);
-}
-
-void CubeMesh::apply_manifold_ids()
-{
-    static const dealii::FlatManifold<3> flate_manifold(Point<3>(0, 0, 0));
-    tria.set_manifold(0, flate_manifold);
-    tria.set_all_manifold_ids(0);
-}
-void CubeMesh::apply_boundary_ids()
-{
-    for (auto cell : tria.active_cell_iterators()) {
-        for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
-            if (cell->face(f)->at_boundary()) {
-                Triangulation<3>::active_face_iterator face = cell->face(f);
-                if (is_face_on_plane(face, Point<3>(0, 0, size / 2), 2)) {
-                    face->set_all_boundary_ids(1);
-                }
-                else {
-                    face->set_all_boundary_ids(0);
-                }
-            }
-        }
-    }
-}
-

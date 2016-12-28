@@ -3,14 +3,15 @@
 
 #include <boost/filesystem/path.hpp>
 #include <deal.II/grid/tria.h>
-#include "src/mesh/MeshWrappers.hpp"
+#include "src/mesh/CubeMesh.hpp"
+#include "src/mesh/MeshBase.hpp"
 namespace Solvers
 {
 
 class SolverBase
 {
 public:
-    SolverBase(const std::shared_ptr<MeshWrappers::Mesh> &mesh);
+    SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh);
 
     void run();
 protected:
@@ -21,7 +22,7 @@ protected:
 
     virtual unsigned int get_n_dofs() = 0;
 
-    const std::shared_ptr<MeshWrappers::Mesh> mesh;
+    const std::shared_ptr<Meshes::MeshBase> mesh;
 };
 
 }

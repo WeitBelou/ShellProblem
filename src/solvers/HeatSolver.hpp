@@ -16,9 +16,9 @@
 
 #include "src/material/SimpleMaterial.hpp"
 
-#include "mesh/MeshWrappers.hpp"
 #include "Boundaries.hpp"
 #include "SolverBase.hpp"
+#include "src/mesh/MeshBase.hpp"
 
 namespace Solvers
 {
@@ -26,7 +26,7 @@ namespace Solvers
 class HeatSolver: public SolverBase
 {
 public:
-    HeatSolver(std::shared_ptr<MeshWrappers::Mesh> mesh,
+    HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
                const Material::SimpleHeat &heat_properties,
                const boost::filesystem::path &output_dir);
     ~HeatSolver();
