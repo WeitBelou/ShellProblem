@@ -29,7 +29,13 @@ CMake will create in ShellProblem directory `bin`.
 In this directory you will find `ShellProblem`
 executable.
 
-Run program task...
+1) Run program with one task...
 ```
 $ ShellProblem --task=<task-name> --out=<output-dir>
 ```
+2) ... or several tasks
+```
+$ python run_directory.py <executable> <dir_with_tasks> <output_dir>
+```
+In this case output  files will be written in
+`<output_dir>/<name_of_task>`
