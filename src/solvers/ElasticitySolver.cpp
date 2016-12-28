@@ -38,7 +38,6 @@ Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<MeshWrappers::Mesh> 
 
 }
 
-
 Solvers::ElasticitySolver::~ElasticitySolver()
 {
     dof_handler.clear();
@@ -70,11 +69,11 @@ void Solvers::ElasticitySolver::assemble_system()
 
     FEValues<3> fe_values(fe, quadrature,
                           update_values | update_gradients
-                          | update_JxW_values);
+                              | update_JxW_values);
 
     FEFaceValues<3> fe_face_values(fe, face_quadrature,
                                    update_values | update_face_normal_vectors |
-                                   update_quadrature_points | update_JxW_values);
+                                       update_quadrature_points | update_JxW_values);
 
     const unsigned int dofs_per_cell = fe.dofs_per_cell;
     const unsigned int n_q_points = quadrature.size();
@@ -84,21 +83,17 @@ void Solvers::ElasticitySolver::assemble_system()
     Vector<double> cell_rhs(dofs_per_cell);
     std::vector<types::global_dof_index> local_dof_indices(dofs_per_cell);
 
-    for (auto cell: dof_handler.active_cell_iterators())
-    {
+    for (auto cell: dof_handler.active_cell_iterators()) {
         cell_matrix = 0;
         cell_rhs = 0;
 
         fe_values.reinit(cell);
 
         //Assemble matrix
-        for (unsigned int q = 0; q < n_q_points; ++q)
-        {
+        for (unsigned int q = 0; q < n_q_points; ++q) {
             const double jxw = fe_values.JxW(q);
-            for (unsigned int i = 0; i < dofs_per_cell; ++i)
-            {
-                for (unsigned int j = 0; j < dofs_per_cell; ++j)
-                {
+            for (unsigned int i = 0; i < dofs_per_cell; ++i) {
+                for (unsigned int j = 0; j < dofs_per_cell; ++j) {
                     const SymmetricTensor<2, 3> eps_phi_i = fe_values[displacement].symmetric_gradient(i, q);
                     const SymmetricTensor<2, 3> eps_phi_j = fe_values[displacement].symmetric_gradient(j, q);
 
@@ -108,25 +103,21 @@ void Solvers::ElasticitySolver::assemble_system()
         }
 
         //Assemble rhs
-        for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f)
-        {
-            if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == 1)
-            {
+        for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
+            if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == 1) {
                 fe_face_values.reinit(cell, f);
 
                 std::vector<double> pressure(n_face_q_points);
                 fairing_function.value_list(fe_face_values.get_quadrature_points(), pressure);
 
-                for (unsigned int i = 0; i < dofs_per_cell; ++i)
-                {
+                for (unsigned int i = 0; i < dofs_per_cell; ++i) {
                     const unsigned int component_i = fe.system_to_component_index(i).first;
 
-                    for (unsigned int q = 0; q < n_face_q_points; ++q)
-                    {
+                    for (unsigned int q = 0; q < n_face_q_points; ++q) {
                         cell_rhs(i) += -pressure[q] *
-                                       fe_face_values.shape_value(i, q) *
-                                       fe_face_values.normal_vector(q)[component_i] *
-                                       fe_face_values.JxW(q);
+                            fe_face_values.shape_value(i, q) *
+                            fe_face_values.normal_vector(q)[component_i] *
+                            fe_face_values.JxW(q);
                     }
                 }
             }
@@ -150,12 +141,10 @@ unsigned int Solvers::ElasticitySolver::solve_linear_system()
     PreconditionJacobi<> precondition;
     precondition.initialize(system_matrix);
 
-    try
-    {
+    try {
         solver.solve(system_matrix, solution, system_rhs, precondition);
     }
-    catch (SolverControl::NoConvergence &exc)
-    {
+    catch (SolverControl::NoConvergence &exc) {
         std::cerr << "Solver does not converges." << std::endl
                   << "Residual " << exc.last_residual << std::endl;
     }
@@ -173,14 +162,12 @@ void Solvers::ElasticitySolver::compute_norm_of_stress()
 
     const size_t n_q_points = quadrature.size();
 
-    for (auto cell : dof_handler.active_cell_iterators())
-    {
+    for (auto cell : dof_handler.active_cell_iterators()) {
         fe_values.reinit(cell);
 
         fe_values[displacement].get_function_symmetric_gradients(solution, displacement_grads);
         SymmetricTensor<2, 3> stress;
-        for (unsigned int q = 0; q < n_q_points; ++q)
-        {
+        for (unsigned int q = 0; q < n_q_points; ++q) {
             stress += stress_strain * displacement_grads[q];
         }
         norm_of_stress(cell->active_cell_index()) = stress.norm() / n_q_points;

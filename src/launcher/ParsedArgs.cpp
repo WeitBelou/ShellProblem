@@ -15,18 +15,17 @@ ParsedArgs::ParsedArgs()
     output_dir_option->value_name("output")->default_value("./");
 
     desc.add_options()
-            ("help,H", "Show help")
-            ("task,T", task_file_option, "File with task")
-            ("output,O", output_dir_option, "Output directory");
+        ("help,H", "Show help")
+        ("task,T", task_file_option, "File with task")
+        ("output,O", output_dir_option, "Output directory");
 }
 
 void ParsedArgs::parse_args(int argc, char **argv)
 {
     po::variables_map vm;
-    po::store(po::parse_command_line(argc, const_cast<const char * const *>(argv), desc), vm);
+    po::store(po::parse_command_line(argc, const_cast<const char *const *>(argv), desc), vm);
 
-    if (vm.count("help"))
-    {
+    if (vm.count("help")) {
         std::cout << desc << std::endl;
         return;
     }

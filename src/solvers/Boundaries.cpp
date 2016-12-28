@@ -23,9 +23,9 @@ dealii::Tensor<1, 3> Solvers::SinSquare::gradient(const dealii::Point<3> &p, con
     const double z = p(2);
 
     Tensor<1, 3> grad;
-    grad[0] = -4 * x * std::pow(z, 2) / std::pow(r, 3);
-    grad[1] = -4 * y * std::pow(z, 2) / std::pow(r, 3);
-    grad[2] = 2 * z / std::pow(r, 2) - 2 * std::pow(z, 3) / std::pow(r, 4);
+    grad[0] = -4 * x * std::pow(z, 2.0) / std::pow(r, 3.0);
+    grad[1] = -4 * y * std::pow(z, 2.0) / std::pow(r, 3.0);
+    grad[2] = 2 * z / std::pow(r, 2.0) - 2 * std::pow(z, 3.0) / std::pow(r, 4.0);
     grad *= a;
 
     return grad;
@@ -37,8 +37,7 @@ void Solvers::SinSquare::value_list(const std::vector<Point<3>> &points,
 {
     const size_t n_points = points.size();
     Assert(n_points == values.size(), ExcDimensionMismatch(n_points, values.size()));
-    for (size_t j = 0; j < n_points; ++j)
-    {
+    for (size_t j = 0; j < n_points; ++j) {
         values[j] = SinSquare::value(points[j]);
     }
 }
@@ -50,8 +49,7 @@ void Solvers::SinSquare::gradient_list(const std::vector<Point<3>> &points,
     const size_t n_points = points.size();
     Assert(n_points == gradients.size(),
            ExcDimensionMismatch(n_points, gradients.size()));
-    for (size_t j = 0; j < n_points; ++j)
-    {
+    for (size_t j = 0; j < n_points; ++j) {
         gradients[j] = SinSquare::gradient(points[j]);
     }
 }

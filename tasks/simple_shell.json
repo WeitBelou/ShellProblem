@@ -1,5 +1,5 @@
 {
-  "solver" : {
+  "solver": {
     "type": "simple_heat",
     "material": {
       "thermal_diffusivity": 9.0e-2

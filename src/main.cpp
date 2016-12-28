@@ -8,12 +8,10 @@ using namespace TaskReader;
 int main(int argc, char **argv)
 {
     ParsedArgs args;
-    try
-    {
+    try {
         args.parse_args(argc, argv);
     }
-    catch (std::exception &exc)
-    {
+    catch (std::exception &exc) {
         std::cerr << "Error during parsing command line: " << std::endl
                   << exc.what() << std::endl;
         return 1;
