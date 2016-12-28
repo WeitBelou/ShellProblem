@@ -1,25 +1,18 @@
-#ifndef SHELL_PROBLEM_TASK_READER_HPP
-#define SHELL_PROBLEM_TASK_READER_HPP
+#ifndef SHELL_PROBLEM_LAUNCHER_HPP
+#define SHELL_PROBLEM_LAUNCHER_HPP
 
 #include <boost/filesystem/path.hpp>
 #include <deal.II/base/parameter_handler.h>
 #include <boost/program_options.hpp>
+#include <src/launcher/task/TaskFactory.hpp>
 
 #include "mesh/MeshWrappers.hpp"
-#include "SimpleMaterial.hpp"
+#include "src/material/SimpleMaterial.hpp"
+
+#include "task/TaskFactory.hpp"
 
 namespace TaskReader
 {
-
-enum class GeometryType
-{
-    Simple, Cube, InvalidType
-};
-
-enum class MaterialType
-{
-    Simple, InvalidType
-};
 
 class Launcher
 {
@@ -42,4 +35,4 @@ private:
 
 }
 
-#endif //SHELL_PROBLEM_TASK_READER_HPP
+#endif //SHELL_PROBLEM_LAUNCHER_HPP

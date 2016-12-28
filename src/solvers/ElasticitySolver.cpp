@@ -21,8 +21,10 @@
 using namespace dealii;
 
 Solvers::ElasticitySolver::ElasticitySolver(const MeshWrappers::Mesh &mesh,
-                                            const Material::SimpleElasticity &elasticity)
+                                            const Material::SimpleElasticity &elasticity,
+                                            const boost::filesystem::path &output_dir)
     :
+    output_dir(output_dir),
     tria(&mesh.mesh()),
     dof_handler(*tria),
     norm_of_stress(tria->n_active_cells()),
@@ -36,25 +38,6 @@ Solvers::ElasticitySolver::ElasticitySolver(const MeshWrappers::Mesh &mesh,
 
 }
 
-void Solvers::ElasticitySolver::run(const boost::filesystem::path &output_dir)
-{
-    std::cout << "    Setup system..." << std::endl << std::flush;
-    setup_system();
-    std::cout << "    Number of degrees of freedom: " << dof_handler.n_dofs() << std::endl;
-
-    std::cout << "    Assembling system..." << std::endl << std::flush;
-    assemble_system();
-
-    std::cout << "    Solving linear system..." << std::endl << std::flush;
-    const size_t n_iter = solve_linear_system();
-    std::cout << "    Solver converges in " << n_iter << " iterations." << std::endl;
-
-    std::cout << "    Compute norm of stress..."  << std::endl;
-    compute_norm_of_stress();
-
-    std::cout << "    Output solution..." << std::endl << std::flush;
-    output_solution(output_dir);
-}
 
 Solvers::ElasticitySolver::~ElasticitySolver()
 {
@@ -230,4 +213,18 @@ void Solvers::ElasticitySolver::output_solution(const boost::filesystem::path &o
     data_out.build_patches();
 
     data_out.write_vtu(out);
+}
+
+void Solvers::ElasticitySolver::do_postprocessing()
+{
+    std::cout << "    Compute norm of stress..." << std::endl;
+    compute_norm_of_stress();
+
+    std::cout << "    Output solution..." << std::endl;
+    output_solution(output_dir);
+}
+
+size_t Solvers::ElasticitySolver::get_n_dofs()
+{
+    return dof_handler.n_dofs();
 }

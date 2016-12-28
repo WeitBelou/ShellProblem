@@ -14,7 +14,7 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
 
-#include "launcher/SimpleMaterial.hpp"
+#include "src/material/SimpleMaterial.hpp"
 #include "mesh/MeshWrappers.hpp"
 #include "Boundaries.hpp"
 

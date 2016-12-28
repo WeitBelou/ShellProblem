@@ -1,4 +1,4 @@
-#include "TaskReader.hpp"
+#include "Launcher.hpp"
 #include <iostream>
 #include <memory>
 
@@ -40,9 +40,9 @@ void Launcher::run(const std::string &output_dir)
         }
 
         {
-            std::cout << "Solving elasticity." << std::endl;
-            Solvers::ElasticitySolver elasticity_solver(*mesh, simple_material.get_elasticity());
-            elasticity_solver.run(output_dir);
+            std::cout << "Solving e lasticity." << std::endl;
+            Solvers::ElasticitySolver elasticity_solver(*mesh, simple_material.get_elasticity(), output_dir);
+            elasticity_solver.run();
         }
 
     }
