@@ -15,7 +15,8 @@ class TaskRunner:
             print('Start task: {0}'.format(task.name))
             start_time = time()
             self.run_task(task)
-            print('Task: {0} takes \n'.format(task.name), time() - start_time)
+            print('Task: {0} takes {1:.2f}s\n'.format(task.name,
+                                                      time() - start_time))
 
     def run_task(self, task: Path):
 

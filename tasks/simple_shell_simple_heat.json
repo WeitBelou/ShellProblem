@@ -13,7 +13,7 @@
         "outer_radius": 5.3,
         "cylinder_length": 15.0
       },
-      "n_refines": 1
+      "n_refines": 2
     }
   }
 }

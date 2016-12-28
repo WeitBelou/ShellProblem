@@ -10,7 +10,7 @@
     "type": "cube",
     "geometry": {
       "size": 1,
-      "n_refines": 1
+      "n_refines": 2
     }
   }
 }
