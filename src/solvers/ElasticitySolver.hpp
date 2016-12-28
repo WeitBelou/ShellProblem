@@ -12,9 +12,7 @@
 #include <deal.II/lac/sparsity_pattern.h>
 #include <deal.II/lac/constraint_matrix.h>
 
-#include "src/material/SimpleMaterial.hpp"
-#include "mesh/CubeMesh.hpp"
-#include "Boundaries.hpp"
+#include "src/solvers/util/Boundaries.hpp"
 #include "SolverBase.hpp"
 #include "src/mesh/MeshBase.hpp"
 
@@ -24,8 +22,18 @@ namespace Solvers
 class ElasticitySolver: public SolverBase
 {
 public:
+    class Material
+    {
+    public:
+        Material(double E, double G);
+        dealii::SymmetricTensor<4, 3> get_stress_strain_tensor() const;
+    private:
+        const double E;
+        const double G;
+    };
+
     ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
-                     const Material::SimpleElasticity &elasticity,
+                     const Material &material,
                      const boost::filesystem::path &output_dir);
     ~ElasticitySolver();
 protected:

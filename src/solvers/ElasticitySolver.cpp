@@ -21,7 +21,7 @@
 using namespace dealii;
 
 Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
-                                            const Material::SimpleElasticity &elasticity,
+                                            const Material &material,
                                             const boost::filesystem::path &output_dir)
     :
     SolverBase(mesh),
@@ -32,7 +32,7 @@ Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> me
     displacement(0),
     quadrature(2),
     face_quadrature(2),
-    stress_strain(elasticity.get_stress_strain_tensor()),
+    stress_strain(material.get_stress_strain_tensor()),
     fairing_function(7.0e+07)
 {
 
@@ -214,4 +214,33 @@ void Solvers::ElasticitySolver::do_postprocessing()
 unsigned int Solvers::ElasticitySolver::get_n_dofs()
 {
     return dof_handler.n_dofs();
+}
+Solvers::ElasticitySolver::Material::Material(double E, double G)
+    :
+    E(E),
+    G(G)
+{
+
+}
+dealii::SymmetricTensor<4, 3> Solvers::ElasticitySolver::Material::get_stress_strain_tensor() const
+{
+    const double lambda = G * (E - 2 * G) / (3 * G - E);
+    const double mu = G;
+
+    auto d = [](size_t i, size_t j)
+    { return (i == j) ? (1) : (0); };
+
+    dealii::SymmetricTensor<4, 3> tmp;
+
+    for (size_t i = 0; i < 3; ++i) {
+        for (size_t j = 0; j < 3; ++j) {
+            for (size_t k = 0; k < 3; ++k) {
+                for (size_t m = 0; m < 3; ++m) {
+                    tmp[i][j][k][m] = lambda * d(i, j) * d(k, m) + mu * (d(i, k) * d(j, m) + d(i, m) * d(j, k));
+                }
+            }
+        }
+    }
+
+    return tmp;
 }

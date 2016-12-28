@@ -16,10 +16,11 @@
 using namespace dealii;
 
 Solvers::HeatSolver::HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
-                                const Material::SimpleHeat &heat_properties,
+                                const Material &material,
                                 const boost::filesystem::path &output_dir)
     :
     SolverBase(mesh),
+    material(material),
     output_dir(output_dir),
     dof_handler(mesh->mesh()),
     fairing_function(2000),
@@ -170,4 +171,10 @@ void Solvers::HeatSolver::do_postprocessing()
 unsigned int Solvers::HeatSolver::get_n_dofs()
 {
     return dof_handler.n_dofs();
+}
+
+Solvers::HeatSolver::Material::Material(const double thermal_diffusivity)
+    : thermal_diffusivity(thermal_diffusivity)
+{
+
 }

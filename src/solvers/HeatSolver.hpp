@@ -14,9 +14,7 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
 
-#include "src/material/SimpleMaterial.hpp"
-
-#include "Boundaries.hpp"
+#include "src/solvers/util/Boundaries.hpp"
 #include "SolverBase.hpp"
 #include "src/mesh/MeshBase.hpp"
 
@@ -26,8 +24,16 @@ namespace Solvers
 class HeatSolver: public SolverBase
 {
 public:
+    class Material
+    {
+    public:
+        Material(const double thermal_diffusivity);
+    public:
+        const double thermal_diffusivity;
+    };
+
     HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
-               const Material::SimpleHeat &heat_properties,
+               const Material &material,
                const boost::filesystem::path &output_dir);
     ~HeatSolver();
 protected:
@@ -39,6 +45,8 @@ protected:
 
 private:
     void output_solution(const boost::filesystem::path &output_dir);
+
+    Material material;
 
     const boost::filesystem::path output_dir;
 

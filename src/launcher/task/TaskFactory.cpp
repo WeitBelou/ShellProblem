@@ -2,6 +2,7 @@
 #include <src/mesh/SimpleShellMesh.hpp>
 #include "src/solvers/HeatSolver.hpp"
 #include "src/solvers/ElasticitySolver.hpp"
+
 #include "TaskFactory.hpp"
 
 using json = nlohmann::json;
@@ -56,12 +57,12 @@ TaskFactory::create_solver(const json &solver_properties,
 
     const json material = solver_properties["material"];
     if (problem_type == "simple_heat") {
-        Material::SimpleHeat heat(material["thermal_diffusivity"].get<double>());
+        Solvers::HeatSolver::Material heat(material["thermal_diffusivity"].get<double>());
         return std::make_shared<Solvers::HeatSolver>(mesh, heat, output_dir);
     }
     else if (problem_type == "simple_elasticity") {
-        Material::SimpleElasticity elasticity(material["E"].get<double>(),
-                                              material["G"].get<double>());
+        Solvers::ElasticitySolver::Material elasticity(material["E"].get<double>(),
+                                                material["G"].get<double>());
         return std::make_shared<Solvers::ElasticitySolver>(mesh, elasticity, output_dir);
     }
     else {
