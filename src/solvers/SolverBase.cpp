@@ -1,8 +1,11 @@
 #include <iostream>
 #include "SolverBase.hpp"
 
-Solvers::SolverBase::SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh)
-    : mesh(mesh)
+Solvers::SolverBase::SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh,
+                                const std::vector<std::shared_ptr<Postprocessor>> &postprocessors)
+    :
+    mesh(mesh),
+    postprocessors(postprocessors)
 {}
 
 void Solvers::SolverBase::run()

@@ -17,11 +17,10 @@ using namespace dealii;
 
 Solvers::HeatSolver::HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
                                 const Material &material,
-                                const boost::filesystem::path &output_dir)
+                                const std::vector<std::shared_ptr<Postprocessor>> & postprocessors)
     :
-    SolverBase(mesh),
+    SolverBase(mesh, postprocessors),
     material(material),
-    output_dir(output_dir),
     dof_handler(mesh->mesh()),
     fairing_function(2000),
     fe(2),
@@ -142,29 +141,12 @@ unsigned int Solvers::HeatSolver::solve_linear_system()
     return solver_control.last_step();
 }
 
-void Solvers::HeatSolver::output_solution(const boost::filesystem::path &output_dir)
-{
-    DataOut<3> data_out;
-
-    data_out.attach_dof_handler(dof_handler);
-    data_out.add_data_vector(solution, "T");
-
-    data_out.build_patches();
-
-    boost::filesystem::path output_filename = output_dir;
-    output_filename /= "heat_solution";
-    output_filename += ".vtu";
-
-    std::ofstream out(output_filename.c_str());
-
-    data_out.write_vtu(out);
-}
-
 void Solvers::HeatSolver::do_postprocessing()
 {
 
-    std::cout << "    Output solution..." << std::endl << std::flush;
-    output_solution(output_dir);
+    for (auto &&postprocessor : postprocessors) {
+        postprocessor->do_postprocess(dof_handler, solution);
+    }
 
 }
 

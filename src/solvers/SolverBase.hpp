@@ -1,17 +1,18 @@
 #ifndef SHELL_PROBLEM_SOLVER_BASE_HPP
 #define SHELL_PROBLEM_SOLVER_BASE_HPP
 
-#include <boost/filesystem/path.hpp>
 #include <deal.II/grid/tria.h>
-#include "src/mesh/CubeMesh.hpp"
+#include <boost/filesystem/path.hpp>
 #include "src/mesh/MeshBase.hpp"
+#include "src/solvers/postprocessors/Postprocessor.hpp"
 namespace Solvers
 {
 
 class SolverBase
 {
 public:
-    SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh);
+    SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh,
+               const std::vector<std::shared_ptr<Postprocessor>> &postprocessors);
 
     void run();
 protected:
@@ -23,6 +24,7 @@ protected:
     virtual unsigned int get_n_dofs() = 0;
 
     const std::shared_ptr<Meshes::MeshBase> mesh;
+    const std::vector<std::shared_ptr<Postprocessor>> postprocessors;
 };
 
 }

@@ -34,21 +34,19 @@ public:
 
     HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
                const Material &material,
-               const boost::filesystem::path &output_dir);
+               const std::vector<std::shared_ptr<Postprocessor>> &postprocessors);
     ~HeatSolver();
 protected:
     void setup_system() override;
     void assemble_system() override;
     unsigned int solve_linear_system() override;
+
     void do_postprocessing() override;
+
     unsigned int get_n_dofs() override;
 
 private:
-    void output_solution(const boost::filesystem::path &output_dir);
-
     Material material;
-
-    const boost::filesystem::path output_dir;
 
     dealii::DoFHandler<3> dof_handler;
 

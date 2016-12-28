@@ -34,7 +34,7 @@ public:
 
     ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
                      const Material &material,
-                     const boost::filesystem::path &output_dir);
+                     const std::vector<std::shared_ptr<Postprocessor>> & postprocessors);
     ~ElasticitySolver();
 protected:
     void setup_system() override;
@@ -44,7 +44,6 @@ protected:
     unsigned int get_n_dofs() override;
 private:
     void compute_norm_of_stress();
-    void output_solution(const boost::filesystem::path &output_dir);
 
     const boost::filesystem::path &output_dir;
 

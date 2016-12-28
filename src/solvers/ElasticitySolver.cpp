@@ -22,9 +22,9 @@ using namespace dealii;
 
 Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
                                             const Material &material,
-                                            const boost::filesystem::path &output_dir)
+                                            const std::vector<std::shared_ptr<Postprocessor>> &postprocessors)
     :
-    SolverBase(mesh),
+    SolverBase(mesh, postprocessors),
     output_dir(output_dir),
     dof_handler(mesh->mesh()),
     norm_of_stress(mesh->mesh().n_active_cells()),
@@ -174,41 +174,14 @@ void Solvers::ElasticitySolver::compute_norm_of_stress()
     }
 }
 
-void Solvers::ElasticitySolver::output_solution(const boost::filesystem::path &output_dir)
-{
-    auto output_file_name = output_dir;
-    output_file_name /= "elasticity_solution.vtu";
-    std::ofstream out(output_file_name.c_str());
-
-    DataOut<3> data_out;
-    data_out.attach_dof_handler(dof_handler);
-
-    //Output displacement
-    std::vector<std::string> solution_names(3, "displacement");
-
-    std::vector<DataComponentInterpretation::DataComponentInterpretation>
-        data_component_interpretation
-        (3, DataComponentInterpretation::component_is_part_of_vector);
-
-    data_out.add_data_vector(solution, solution_names,
-                             DataOut<3>::type_dof_data,
-                             data_component_interpretation);
-
-    //Output norm of stress
-    data_out.add_data_vector(norm_of_stress, "norm_of_stress");
-
-    data_out.build_patches();
-
-    data_out.write_vtu(out);
-}
-
 void Solvers::ElasticitySolver::do_postprocessing()
 {
     std::cout << "    Compute norm of stress..." << std::endl;
     compute_norm_of_stress();
 
-    std::cout << "    Output solution..." << std::endl;
-    output_solution(output_dir);
+    for (auto &&postprocessor : postprocessors) {
+        postprocessor->do_postprocess(dof_handler, norm_of_stress);
+    }
 }
 
 unsigned int Solvers::ElasticitySolver::get_n_dofs()

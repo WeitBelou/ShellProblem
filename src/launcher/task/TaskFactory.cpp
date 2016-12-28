@@ -1,9 +1,13 @@
+#include "TaskFactory.hpp"
+
 #include <fstream>
 #include <src/mesh/SimpleShellMesh.hpp>
-#include "src/solvers/HeatSolver.hpp"
-#include "src/solvers/ElasticitySolver.hpp"
 
-#include "TaskFactory.hpp"
+#include <src/mesh/CubeMesh.hpp>
+#include <src/solvers/postprocessors/OutputWriter.hpp>
+#include "src/solvers/HeatSolver.hpp"
+
+#include "src/solvers/ElasticitySolver.hpp"
 
 using json = nlohmann::json;
 
@@ -58,12 +62,15 @@ TaskFactory::create_solver(const json &solver_properties,
     const json material = solver_properties["material"];
     if (problem_type == "simple_heat") {
         Solvers::HeatSolver::Material heat(material["thermal_diffusivity"].get<double>());
-        return std::make_shared<Solvers::HeatSolver>(mesh, heat, output_dir);
+        std::vector<std::shared_ptr<Postprocessor>> postprocessors{std::make_shared<OutputWriter>(output_dir, "T")};
+        return std::make_shared<Solvers::HeatSolver>(mesh, heat, postprocessors);
     }
     else if (problem_type == "simple_elasticity") {
         Solvers::ElasticitySolver::Material elasticity(material["E"].get<double>(),
-                                                material["G"].get<double>());
-        return std::make_shared<Solvers::ElasticitySolver>(mesh, elasticity, output_dir);
+                                                       material["G"].get<double>());
+        std::vector<std::shared_ptr<Postprocessor>> postprocessors{std::make_shared<OutputWriter>(output_dir,
+                                                                                                  "norm_of_stress")};
+        return std::make_shared<Solvers::ElasticitySolver>(mesh, elasticity, postprocessors);
     }
     else {
         AssertThrow(false, dealii::ExcNotImplemented())
