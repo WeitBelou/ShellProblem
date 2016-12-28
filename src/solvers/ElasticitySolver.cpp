@@ -28,7 +28,7 @@ Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> me
     output_dir(output_dir),
     dof_handler(mesh->mesh()),
     norm_of_stress(mesh->mesh().n_active_cells()),
-    fe(FE_Q<3>(2), 3),
+    fe(FE_Q<3>(1), 3),
     displacement(0),
     quadrature(2),
     face_quadrature(2),
@@ -135,7 +135,7 @@ unsigned int Solvers::ElasticitySolver::solve_linear_system()
                                  2e-14 * system_rhs.l2_norm(),
                                  true, true);
 
-    SolverGMRES<>::AdditionalData additional(30, false, true, true);
+    SolverGMRES<>::AdditionalData additional(60, false, true, true);
     SolverGMRES<> solver(solver_control, additional);
 
     PreconditionJacobi<> precondition;
