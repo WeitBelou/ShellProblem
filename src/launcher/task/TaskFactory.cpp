@@ -24,21 +24,25 @@ json TaskFactory::get_json(const std::string &task_file) const
 
 std::shared_ptr<MeshWrappers::Mesh> TaskFactory::create_mesh(const json &mesh_properties) const
 {
-    MeshType mesh_type = get_mesh_type(mesh_properties["type"].get<std::string>());
-    unsigned int n_refines = mesh_properties["geometry"]["n_refines"].get<unsigned>();
-
-    switch (mesh_type) {
-        case MeshType::cube:
-            return std::make_shared<MeshWrappers::CubeMesh>(mesh_properties["geometry"]["size"]
-                                                                .get<double>(), n_refines);
-        case MeshType::simple_shell:
-            return std::make_shared<MeshWrappers::SimpleShellMesh>(
-                mesh_properties["geometry"]["sizes"]["inner_radius"].get<double>(),
-                mesh_properties["geometry"]["sizes"]["outer_radius"].get<double>(),
-                mesh_properties["geometry"]["sizes"]["cylinder_length"].get<double>(),
-                n_refines
-            );
-        case MeshType::invalid_type: AssertThrow(false, dealii::ExcNotImplemented());
+    std::string mesh_type = mesh_properties["type"].get<std::string>();
+    const json geometry = mesh_properties["geometry"];
+    if (mesh_type == "cube") {
+        return std::make_shared<MeshWrappers::CubeMesh>(
+            geometry["size"].get<double>(),
+            geometry["n_refines"].get<unsigned>());
+    }
+    else if (mesh_type == "simple_shell") {
+        const json sizes = geometry["sizes"];
+        return std::make_shared<MeshWrappers::SimpleShellMesh>(
+            sizes["inner_radius"].get<double>(),
+            sizes["outer_radius"].get<double>(),
+            sizes["cylinder_length"].get<double>(),
+            geometry["n_refines"].get<unsigned>()
+        );
+    }
+    else {
+        AssertThrow(false, dealii::ExcNotImplemented());
+        return nullptr;
     }
 }
 
@@ -47,44 +51,21 @@ TaskFactory::create_solver(const json &solver_properties,
                            std::shared_ptr<MeshWrappers::Mesh> mesh,
                            const std::string &output_dir) const
 {
-    ProblemType problem_type = get_problem_type(solver_properties["type"]);
+    std::string problem_type = solver_properties["type"].get<std::string>();
 
-    switch (problem_type) {
-        case ProblemType::simple_heat: {
-            Material::SimpleHeat heat(solver_properties["material"]["thermal_diffusivity"].get<double>());
-            return std::make_shared<Solvers::HeatSolver>(mesh, heat, output_dir);
-        }
-        case ProblemType::simple_elasticity: {
-            Material::SimpleElasticity elasticity(solver_properties["material"]["E"].get<double>(),
-                                                  solver_properties["material"]["G"].get<double>());
-            return std::make_shared<Solvers::ElasticitySolver>(mesh, elasticity, output_dir);
-        }
-        case ProblemType::invalid_type: AssertThrow(false, dealii::ExcNotImplemented());
+    const json material = solver_properties["material"];
+    if (problem_type == "simple_heat") {
+        Material::SimpleHeat heat(material["thermal_diffusivity"].get<double>());
+        return std::make_shared<Solvers::HeatSolver>(mesh, heat, output_dir);
     }
-}
-
-MeshType TaskFactory::get_mesh_type(const std::string &type) const
-{
-    if (type == "cube") {
-        return MeshType::cube;
-    }
-    else if (type == "simple_shell") {
-        return MeshType::simple_shell;
+    else if (problem_type == "simple_elasticity") {
+        Material::SimpleElasticity elasticity(material["E"].get<double>(),
+                                              material["G"].get<double>());
+        return std::make_shared<Solvers::ElasticitySolver>(mesh, elasticity, output_dir);
     }
     else {
-        return MeshType::invalid_type;
-    }
+        AssertThrow(false, dealii::ExcNotImplemented())
+        return nullptr;
+    };
 }
 
-ProblemType TaskFactory::get_problem_type(const std::string &type) const
-{
-    if (type == "simple_heat") {
-        return ProblemType::simple_heat;
-    }
-    else if (type == "simple_elasticity") {
-        return ProblemType::simple_elasticity;
-    }
-    else {
-        return ProblemType::invalid_type;
-    }
-}

@@ -8,16 +8,6 @@
 
 using json = nlohmann::json;
 
-enum class ProblemType
-{
-    simple_heat, simple_elasticity, invalid_type
-};
-
-enum class MeshType
-{
-    simple_shell, cube, invalid_type
-};
-
 class TaskFactory
 {
 public:
@@ -34,8 +24,6 @@ private:
                   std::shared_ptr<MeshWrappers::Mesh> mesh,
                   const std::string &output_dir) const;
 
-    MeshType get_mesh_type(const std::string &type) const;
-    ProblemType get_problem_type(const std::string &type) const;
 };
 
 
