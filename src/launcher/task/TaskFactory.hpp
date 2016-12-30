@@ -3,27 +3,22 @@
 
 #include <memory>
 #include "Task.hpp"
-#include <src/third_party/json.hpp>
+#include "TaskUtil.hpp"
 #include "src/mesh/MeshBase.hpp"
-
-using json = nlohmann::json;
 
 class TaskFactory
 {
 public:
-    TaskFactory() = default;
+    TaskFactory(const std::string &output_dir);
 
-    std::shared_ptr<Task> create_task(const std::string &task_file, const std::string &output_dir) const;
+    std::shared_ptr<Task> create_task_from_json(json task) const;
 
 private:
-    nlohmann::basic_json<> get_json(const std::string &task_file) const;
+    const std::string output_dir;
 
     std::shared_ptr<Meshes::MeshBase> create_mesh(const json &mesh_properties) const;
     std::shared_ptr<Solvers::SolverBase>
-    create_solver(const json &solver_properties,
-                  std::shared_ptr<Meshes::MeshBase> mesh,
-                  const std::string &output_dir) const;
-
+    create_solver(const json &solver_properties, std::shared_ptr<Meshes::MeshBase> mesh) const;
 };
 
 
