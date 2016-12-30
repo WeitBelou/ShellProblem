@@ -8,7 +8,7 @@
 #include "src/solvers/HeatSolver.hpp"
 
 #include "src/solvers/ElasticitySolver.hpp"
-#include "MeshFactory.hpp"
+#include "src/mesh/MeshFactory.hpp"
 
 TaskFactory::TaskFactory(const std::string &output_dir)
     : output_dir(output_dir)
