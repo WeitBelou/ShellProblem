@@ -32,26 +32,22 @@ public:
         const double G;
     };
 
-    ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
-                     const Material &material,
-                     const std::vector<std::shared_ptr<Postprocessor>> & postprocessors);
+    ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh, const Material &material);
     ~ElasticitySolver();
 protected:
     void setup_system() override;
     void assemble_system() override;
     unsigned int solve_linear_system() override;
-    void do_postprocessing() override;
+    void do_postprocessing(const std::string &output_dir) override;
     unsigned int get_n_dofs() override;
 private:
     void compute_norm_of_stress();
-
-    const boost::filesystem::path &output_dir;
 
     dealii::DoFHandler<3> dof_handler;
 
     dealii::Vector<double> norm_of_stress;
     const dealii::FESystem<3> fe;
-    const dealii::FEValuesExtractors::Vector displacement;
+    const dealii::FEValuesExtractors::Vector displacement_extractor;
     const dealii::QGauss<3> quadrature;
 
     const dealii::QGauss<2> face_quadrature;
@@ -65,7 +61,7 @@ private:
     dealii::SparseMatrix<double> system_matrix;
     dealii::Vector<double> system_rhs;
 
-    dealii::Vector<double> solution;
+    dealii::Vector<double> displacement;
 };
 
 }

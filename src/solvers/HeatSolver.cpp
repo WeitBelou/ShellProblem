@@ -12,14 +12,13 @@
 #include <deal.II/lac/precondition.h>
 #include <deal.II/numerics/data_out.h>
 #include <fstream>
+#include <src/solvers/postprocessors/OutputWriter.hpp>
 
 using namespace dealii;
 
-Solvers::HeatSolver::HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
-                                const Material &material,
-                                const std::vector<std::shared_ptr<Postprocessor>> & postprocessors)
+Solvers::HeatSolver::HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh, const Material &material)
     :
-    SolverBase(mesh, postprocessors),
+    SolverBase(mesh),
     material(material),
     dof_handler(mesh->mesh()),
     fairing_function(2000),
@@ -141,13 +140,11 @@ unsigned int Solvers::HeatSolver::solve_linear_system()
     return solver_control.last_step();
 }
 
-void Solvers::HeatSolver::do_postprocessing()
+void Solvers::HeatSolver::do_postprocessing(const std::string &output_dir)
 {
-
-    for (auto &&postprocessor : postprocessors) {
-        postprocessor->do_postprocess(dof_handler, solution);
-    }
-
+    std::cout << "    Output temperature..." << std::endl << std::flush;
+    OutputWriter writer{output_dir, "temperature"};
+    writer.do_postprocess(dof_handler, solution);
 }
 
 unsigned int Solvers::HeatSolver::get_n_dofs()

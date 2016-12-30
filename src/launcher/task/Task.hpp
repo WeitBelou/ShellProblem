@@ -6,11 +6,13 @@
 class Task
 {
 public:
-    Task(std::shared_ptr<Solvers::SolverBase> solver);
+    Task(std::shared_ptr<Solvers::SolverBase> solver,
+         const std::string output_dir);
 
     void execute();
 private:
     const std::shared_ptr<Solvers::SolverBase> solver;
+    const std::string output_dir;
 };
 
 

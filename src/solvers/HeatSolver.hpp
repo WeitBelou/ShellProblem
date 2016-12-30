@@ -32,16 +32,14 @@ public:
         const double thermal_diffusivity;
     };
 
-    HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
-               const Material &material,
-               const std::vector<std::shared_ptr<Postprocessor>> &postprocessors);
+    HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh, const Material &material);
     ~HeatSolver();
 protected:
     void setup_system() override;
     void assemble_system() override;
     unsigned int solve_linear_system() override;
 
-    void do_postprocessing() override;
+    void do_postprocessing(const std::string &output_dir) override;
 
     unsigned int get_n_dofs() override;
 

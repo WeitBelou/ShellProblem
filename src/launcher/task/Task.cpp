@@ -1,13 +1,13 @@
 #include "Task.hpp"
 
-Task::Task(std::shared_ptr<Solvers::SolverBase> solver)
+Task::Task(std::shared_ptr<Solvers::SolverBase> solver, const std::string output_dir)
     :
-    solver(solver)
+    solver(solver), output_dir(output_dir)
 {
 
 }
 
 void Task::execute()
 {
-    solver->run();
+    solver->run(output_dir);
 }

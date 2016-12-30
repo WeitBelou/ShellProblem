@@ -24,7 +24,7 @@ std::shared_ptr<Task> TaskFactory::create_task_from_json(json task) const
     const json &solver_properties = task["solver"];
     std::shared_ptr<Solvers::SolverBase> solver = create_solver(solver_properties, mesh);
 
-    return std::make_shared<Task>(solver);
+    return std::make_shared<Task>(solver, output_dir);
 }
 
 std::shared_ptr<Meshes::MeshBase> TaskFactory::create_mesh(const json &mesh_properties) const
@@ -52,15 +52,12 @@ TaskFactory::create_solver(const json &solver_properties, std::shared_ptr<Meshes
     const json material = solver_properties["material"];
     if (problem_type == "simple_heat") {
         Solvers::HeatSolver::Material heat(material["thermal_diffusivity"].get<double>());
-        std::vector<std::shared_ptr<Postprocessor>> postprocessors{std::make_shared<OutputWriter>(output_dir, "T")};
-        return std::make_shared<Solvers::HeatSolver>(mesh, heat, postprocessors);
+        return std::make_shared<Solvers::HeatSolver>(mesh, heat);
     }
     else if (problem_type == "simple_elasticity") {
         Solvers::ElasticitySolver::Material elasticity(material["E"].get<double>(),
                                                        material["G"].get<double>());
-        std::vector<std::shared_ptr<Postprocessor>> postprocessors{std::make_shared<OutputWriter>(output_dir,
-                                                                                                  "norm_of_stress")};
-        return std::make_shared<Solvers::ElasticitySolver>(mesh, elasticity, postprocessors);
+        return std::make_shared<Solvers::ElasticitySolver>(mesh, elasticity);
     }
     else {
         AssertThrow(false, dealii::ExcNotImplemented())

@@ -1,14 +1,12 @@
 #include <iostream>
 #include "SolverBase.hpp"
 
-Solvers::SolverBase::SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh,
-                                const std::vector<std::shared_ptr<Postprocessor>> &postprocessors)
+Solvers::SolverBase::SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh)
     :
-    mesh(mesh),
-    postprocessors(postprocessors)
+    mesh(mesh)
 {}
 
-void Solvers::SolverBase::run()
+void Solvers::SolverBase::run(const std::string &output_dir)
 {
     std::cout << "    Setup system..." << std::endl << std::flush;
     setup_system();
@@ -19,8 +17,9 @@ void Solvers::SolverBase::run()
 
     std::cout << "    Solving linear system..." << std::endl << std::flush;
     const size_t n_iter = solve_linear_system();
-    std::cout << "    Solver converges in " << n_iter << " iterations." << std::endl;
+    std::cout << "    Solver converges in " << n_iter << " iterations." << std::endl << std::flush;
 
     std::cout << "    Do postprocessing..." << std::endl << std::flush;
-    do_postprocessing();
+    std::cout << "    Results will be written in " <<  output_dir << std::endl << std::flush;
+    do_postprocessing(output_dir);
 }

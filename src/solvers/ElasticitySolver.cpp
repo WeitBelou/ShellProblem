@@ -15,21 +15,20 @@
 
 #include <deal.II/lac/precondition_block.h>
 #include <deal.II/lac/precondition.h>
+#include <src/solvers/postprocessors/VectorOutputWriter.hpp>
+#include <src/solvers/postprocessors/OutputWriter.hpp>
 
 #include "ElasticitySolver.hpp"
 
 using namespace dealii;
 
-Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
-                                            const Material &material,
-                                            const std::vector<std::shared_ptr<Postprocessor>> &postprocessors)
+Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh, const Material &material)
     :
-    SolverBase(mesh, postprocessors),
-    output_dir(output_dir),
+    SolverBase(mesh),
     dof_handler(mesh->mesh()),
     norm_of_stress(mesh->mesh().n_active_cells()),
     fe(FE_Q<3>(1), 3),
-    displacement(0),
+    displacement_extractor(0),
     quadrature(2),
     face_quadrature(2),
     stress_strain(material.get_stress_strain_tensor()),
@@ -59,7 +58,7 @@ void Solvers::ElasticitySolver::setup_system()
 
     system_matrix.reinit(sparsity_pattern);
     system_rhs.reinit(dof_handler.n_dofs());
-    solution.reinit(dof_handler.n_dofs());
+    displacement.reinit(dof_handler.n_dofs());
 }
 
 void Solvers::ElasticitySolver::assemble_system()
@@ -94,8 +93,8 @@ void Solvers::ElasticitySolver::assemble_system()
             const double jxw = fe_values.JxW(q);
             for (unsigned int i = 0; i < dofs_per_cell; ++i) {
                 for (unsigned int j = 0; j < dofs_per_cell; ++j) {
-                    const SymmetricTensor<2, 3> eps_phi_i = fe_values[displacement].symmetric_gradient(i, q);
-                    const SymmetricTensor<2, 3> eps_phi_j = fe_values[displacement].symmetric_gradient(j, q);
+                    const SymmetricTensor<2, 3> eps_phi_i = fe_values[displacement_extractor].symmetric_gradient(i, q);
+                    const SymmetricTensor<2, 3> eps_phi_j = fe_values[displacement_extractor].symmetric_gradient(j, q);
 
                     cell_matrix(i, j) += eps_phi_i * stress_strain * eps_phi_j * jxw;
                 }
@@ -142,14 +141,14 @@ unsigned int Solvers::ElasticitySolver::solve_linear_system()
     precondition.initialize(system_matrix);
 
     try {
-        solver.solve(system_matrix, solution, system_rhs, precondition);
+        solver.solve(system_matrix, displacement, system_rhs, precondition);
     }
     catch (SolverControl::NoConvergence &exc) {
         std::cerr << "Solver does not converges." << std::endl
                   << "Residual " << exc.last_residual << std::endl;
     }
 
-    constraints.distribute(solution);
+    constraints.distribute(displacement);
 
     return solver_control.last_step();
 }
@@ -165,7 +164,7 @@ void Solvers::ElasticitySolver::compute_norm_of_stress()
     for (auto cell : dof_handler.active_cell_iterators()) {
         fe_values.reinit(cell);
 
-        fe_values[displacement].get_function_symmetric_gradients(solution, displacement_grads);
+        fe_values[displacement_extractor].get_function_symmetric_gradients(displacement, displacement_grads);
         SymmetricTensor<2, 3> stress;
         for (unsigned int q = 0; q < n_q_points; ++q) {
             stress += stress_strain * displacement_grads[q];
@@ -174,13 +173,21 @@ void Solvers::ElasticitySolver::compute_norm_of_stress()
     }
 }
 
-void Solvers::ElasticitySolver::do_postprocessing()
+void Solvers::ElasticitySolver::do_postprocessing(const std::string &output_dir)
 {
-    std::cout << "    Compute norm of stress..." << std::endl;
-    compute_norm_of_stress();
+    std::cout << "    Output displacement..." << std::endl;
+    {
+        VectorOutputWriter writer{output_dir, "displacement"};
+        writer.do_postprocess(dof_handler, displacement);
+    }
 
-    for (auto &&postprocessor : postprocessors) {
-        postprocessor->do_postprocess(dof_handler, norm_of_stress);
+    std::cout << "    Output norm of stress..." << std::endl;
+    {
+        std::cout << "    Compute norm of stress..." << std::endl;
+        compute_norm_of_stress();
+
+        OutputWriter writer(output_dir, "norm_of_stress");
+        writer.do_postprocess(dof_handler, norm_of_stress);
     }
 }
 
