@@ -22,7 +22,9 @@
 
 using namespace dealii;
 
-Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh, const Material &material)
+Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
+                                            const Material &material,
+                                            SolverGMRES<>::AdditionalData linear_solver_data)
     :
     SolverBase(mesh),
     dof_handler(mesh->mesh()),
@@ -32,7 +34,8 @@ Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> me
     quadrature(2),
     face_quadrature(2),
     stress_strain(material.get_stress_strain_tensor()),
-    fairing_function(7.0e+07)
+    fairing_function(7.0e+07),
+    linear_solver_data(linear_solver_data)
 {
 
 }
@@ -134,8 +137,7 @@ unsigned int Solvers::ElasticitySolver::solve_linear_system()
                                  2e-14 * system_rhs.l2_norm(),
                                  true, true);
 
-    SolverGMRES<>::AdditionalData additional(60, false, true, true);
-    SolverGMRES<> solver(solver_control, additional);
+    SolverGMRES<> solver(solver_control, linear_solver_data);
 
     PreconditionJacobi<> precondition;
     precondition.initialize(system_matrix);
@@ -175,17 +177,18 @@ void Solvers::ElasticitySolver::compute_norm_of_stress()
 
 void Solvers::ElasticitySolver::do_postprocessing(const std::string &output_dir)
 {
-    std::cout << "    Output displacement..." << std::endl;
+    std::cout << "    Output displacement..." << std::endl << std::flush;
     {
         VectorOutputWriter writer{output_dir, "displacement"};
         writer.do_postprocess(dof_handler, displacement);
     }
 
-    std::cout << "    Output norm of stress..." << std::endl;
     {
-        std::cout << "    Compute norm of stress..." << std::endl;
+        std::cout << "    Compute norm of stress..." << std::endl << std::flush;
         compute_norm_of_stress();
-
+    }
+    {
+        std::cout << "    Output norm of stress..." << std::endl << std::flush;
         OutputWriter writer(output_dir, "norm_of_stress");
         writer.do_postprocess(dof_handler, norm_of_stress);
     }

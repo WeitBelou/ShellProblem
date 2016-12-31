@@ -2,6 +2,7 @@
 #define SHELL_PROBLEM_TASK_FACTORY_HPP
 
 #include <memory>
+#include <deal.II/lac/solver_gmres.h>
 #include "Task.hpp"
 #include "TaskUtil.hpp"
 #include "src/mesh/MeshBase.hpp"
@@ -19,6 +20,7 @@ private:
     std::shared_ptr<Meshes::MeshBase> create_mesh(const json &mesh_properties) const;
     std::shared_ptr<Solvers::SolverBase>
     create_solver(const json &solver_properties, std::shared_ptr<Meshes::MeshBase> mesh) const;
+    dealii::SolverGMRES<>::AdditionalData get_gmres_additional_data(const json &linear_solver_properties) const;
 };
 
 

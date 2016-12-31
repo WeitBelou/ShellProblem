@@ -57,11 +57,23 @@ TaskFactory::create_solver(const json &solver_properties, std::shared_ptr<Meshes
     else if (problem_type == "simple_elasticity") {
         Solvers::ElasticitySolver::Material elasticity(material["E"].get<double>(),
                                                        material["G"].get<double>());
-        return std::make_shared<Solvers::ElasticitySolver>(mesh, elasticity);
+
+        json linear_solver_properties = solver_properties["linear_solver_data"];
+        dealii::SolverGMRES<>::AdditionalData linear_solver_data = get_gmres_additional_data(linear_solver_properties);
+        return std::make_shared<Solvers::ElasticitySolver>(mesh, elasticity, linear_solver_data);
     }
     else {
         AssertThrow(false, dealii::ExcNotImplemented())
         return nullptr;
     };
+}
+dealii::SolverGMRES<>::AdditionalData TaskFactory::get_gmres_additional_data(const json &linear_solver_properties) const
+{
+    return dealii::SolverGMRES<>::AdditionalData
+        {linear_solver_properties["max_n_tmp_vectors"].get<unsigned>(),
+         linear_solver_properties["right_preconditioning"].get<bool>(),
+         linear_solver_properties["use_default_residual"].get<bool>(),
+         linear_solver_properties["force_re_orthogonalization"].get<bool>()
+        };
 }
 

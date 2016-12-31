@@ -11,6 +11,7 @@
 #include <deal.II/lac/sparse_matrix.h>
 #include <deal.II/lac/sparsity_pattern.h>
 #include <deal.II/lac/constraint_matrix.h>
+#include <deal.II/lac/solver_gmres.h>
 
 #include "src/solvers/util/Boundaries.hpp"
 #include "SolverBase.hpp"
@@ -32,7 +33,9 @@ public:
         const double G;
     };
 
-    ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh, const Material &material);
+    ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
+                         const Material &material,
+                         dealii::SolverGMRES<>::AdditionalData linear_solver_data);
     ~ElasticitySolver();
 protected:
     void setup_system() override;
@@ -62,6 +65,8 @@ private:
     dealii::Vector<double> system_rhs;
 
     dealii::Vector<double> displacement;
+
+    dealii::SolverGMRES<>::AdditionalData linear_solver_data;
 };
 
 }

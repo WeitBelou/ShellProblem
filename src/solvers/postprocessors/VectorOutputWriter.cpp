@@ -15,10 +15,8 @@ VectorOutputWriter::VectorOutputWriter(const std::string &output_dir,
 void VectorOutputWriter::do_postprocess(const dealii::DoFHandler<3> &dof_handler,
                                         const dealii::Vector<double> &solution)
 {
-    std::cout << "    Output displacement..." << std::endl;
-
     boost::filesystem::path output_file_name = output_dir;
-    output_file_name /= "displacement.vtu";
+    output_file_name /= (solution_name + ".vtu");
     std::ofstream out(output_file_name.c_str());
 
     DataOut<3> data_out;

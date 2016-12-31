@@ -4,6 +4,12 @@
     "material": {
       "E": 1.0e+12,
       "G": 4.7e+11
+    },
+    "linear_solver_data": {
+      "max_n_tmp_vectors": 60,
+      "right_preconditioning": false,
+      "use_default_residual": true,
+      "force_re_orthogonalization": false
     }
   },
   "mesh": {
