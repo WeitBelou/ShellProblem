@@ -1,7 +1,7 @@
 #include <fstream>
 #include "TaskUtil.hpp"
 
-json get_json(const std::string &task_file)
+json TaskUtil::read_json_from_file(const std::string &task_file)
 {
     json j;
     std::ifstream input(task_file);

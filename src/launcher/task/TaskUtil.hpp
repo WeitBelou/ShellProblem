@@ -5,6 +5,10 @@
 
 using json = nlohmann::json;
 
-json get_json(const std::string &task_file);
+class TaskUtil
+{
+public:
+    static json read_json_from_file(const std::string &task_file);
+};
 
 #endif //SHELL_PROBLEM_TASK_UTIL_HPP
