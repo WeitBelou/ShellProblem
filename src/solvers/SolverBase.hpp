@@ -23,6 +23,12 @@ protected:
     virtual unsigned int get_n_dofs() = 0;
 
     const std::shared_ptr<Meshes::MeshBase> mesh;
+
+private:
+    void do_logged_setup_system();
+    void do_logged_assemble_system();
+    void do_logged_do_postprocessing(const std::string &output_dir);
+    void do_logged_solve_linear_system();
 };
 
 }
