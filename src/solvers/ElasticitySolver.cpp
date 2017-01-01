@@ -146,8 +146,8 @@ unsigned int Solvers::ElasticitySolver::solve_linear_system()
         solver.solve(system_matrix, displacement, system_rhs, precondition);
     }
     catch (SolverControl::NoConvergence &exc) {
-        std::cerr << "Solver does not converges." << std::endl
-                  << "Residual " << exc.last_residual << std::endl;
+        deallog << "Solver does not converges." << std::endl
+                << "Residual " << exc.last_residual << std::endl;
     }
 
     constraints.distribute(displacement);
@@ -177,18 +177,18 @@ void Solvers::ElasticitySolver::compute_norm_of_stress()
 
 void Solvers::ElasticitySolver::do_postprocessing(const std::string &output_dir)
 {
-    deallog << "    Output displacement..." << std::endl << std::flush;
+    deallog << "    Output displacement..." << std::endl;
     {
         VectorOutputWriter writer{output_dir, "displacement"};
         writer.do_postprocess(dof_handler, displacement);
     }
 
     {
-        deallog << "    Compute norm of stress..." << std::endl << std::flush;
+        deallog << "    Compute norm of stress..." << std::endl;
         compute_norm_of_stress();
     }
     {
-        deallog << "    Output norm of stress..." << std::endl << std::flush;
+        deallog << "    Output norm of stress..." << std::endl;
         OutputWriter writer(output_dir, "norm_of_stress");
         writer.do_postprocess(dof_handler, norm_of_stress);
     }
