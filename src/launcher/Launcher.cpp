@@ -13,16 +13,12 @@ Launcher::Launcher()
 
 void Launcher::run(const std::string &task_file, const std::string &output_dir)
 {
-    setup_logger(output_dir);
-
-    TaskFactory task_factory(output_dir);
-    auto task = task_factory.create_task_from_json(TaskUtil::read_json_from_file(task_file));
-    task->execute();
-}
-void Launcher::setup_logger(const std::string &output_dir) const
-{
     std::ofstream file_logstream;
     file_logstream.open(output_dir + "/log.txt");
     deallog.depth_console(1);
     deallog.attach(file_logstream);
+
+    TaskFactory task_factory(output_dir);
+    auto task = task_factory.create_task_from_json(TaskUtil::read_json_from_file(task_file));
+    task->execute();
 }
