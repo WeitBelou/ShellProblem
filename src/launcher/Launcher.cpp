@@ -14,7 +14,7 @@ void Launcher::run(const std::string &task_file, const std::string &output_dir)
 {
     std::ofstream file_logstream;
     file_logstream.open(output_dir + "/log.txt");
-    deallog.depth_console(2);
+    deallog.depth_console(1);
     deallog.attach(file_logstream);
 
     TaskFactory task_factory(output_dir);
