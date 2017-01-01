@@ -142,7 +142,7 @@ unsigned int Solvers::HeatSolver::solve_linear_system()
 
 void Solvers::HeatSolver::do_postprocessing(const std::string &output_dir)
 {
-    std::cout << "    Output temperature..." << std::endl << std::flush;
+    dealii::deallog << "    Output temperature..." << std::endl << std::flush;
     OutputWriter writer{output_dir, "temperature"};
     writer.do_postprocess(dof_handler, solution);
 }
