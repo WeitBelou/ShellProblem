@@ -8,7 +8,6 @@
 #include "MeshUtilities.hpp"
 
 using namespace Meshes;
-using namespace MeshUtilities;
 using namespace dealii;
 
 SimpleShellMesh::SimpleShellMesh(double inner_radius,
@@ -42,14 +41,14 @@ void SimpleShellMesh::create_coarse_mesh()
         dealii::Point<3> result = p;
 
         if (p(0) < -1e-10) {
-            if (is_point_on_sphere(p, fairing_center, inner_radius)) {
+            if (MeshUtilities::is_point_on_sphere(p, fairing_center, inner_radius)) {
                 const double a = inner_radius / std::sqrt(2);
                 result(0) = -cylinder_length + thickness;
 
                 result(1) = (p(1) < 0) ? (-a) : (a);
                 result(2) = (p(2) < 0) ? (-a) : (a);
             }
-            else if (is_point_on_sphere(p, fairing_center, outer_radius)) {
+            else if (MeshUtilities::is_point_on_sphere(p, fairing_center, outer_radius)) {
                 const double a = outer_radius / std::sqrt(2);
                 result(0) = -cylinder_length;
 
@@ -93,7 +92,7 @@ void SimpleShellMesh::apply_boundary_ids()
         for (unsigned int f = 0; f < dealii::GeometryInfo<3>::faces_per_cell; ++f) {
             if (cell->face(f)->at_boundary()) {
                 dealii::Triangulation<3>::face_iterator face = cell->face(f);
-                if (is_face_on_sphere(face, dealii::Point<3>(0, 0, 0), outer_radius)) {
+                if (MeshUtilities::is_face_on_sphere(face, dealii::Point<3>(0, 0, 0), outer_radius)) {
                     face->set_all_boundary_ids(1);
                 }
                 else {

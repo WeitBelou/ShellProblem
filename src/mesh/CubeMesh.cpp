@@ -10,7 +10,6 @@
 #include <deal.II/grid/grid_out.h>
 
 using namespace Meshes;
-using namespace MeshUtilities;
 using namespace dealii;
 
 CubeMesh::CubeMesh(double size,
@@ -39,7 +38,7 @@ void CubeMesh::apply_boundary_ids()
         for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
             if (cell->face(f)->at_boundary()) {
                 Triangulation<3>::active_face_iterator face = cell->face(f);
-                if (is_face_on_plane(face, Point<3>(0, 0, size / 2), 2)) {
+                if (MeshUtilities::is_face_on_plane(face, Point<3>(0, 0, size / 2), 2)) {
                     face->set_all_boundary_ids(1);
                 }
                 else {

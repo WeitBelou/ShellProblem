@@ -8,8 +8,6 @@
 
 #include "MeshUtilities.hpp"
 
-using namespace MeshUtilities;
-
 
 bool MeshUtilities::is_point_on_sphere(const dealii::Point<3> &point,
                                        const dealii::Point<3> &center,
