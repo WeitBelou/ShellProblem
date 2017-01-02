@@ -1,4 +1,3 @@
-#include "TaskFactory.hpp"
 #include "MeshFactory.hpp"
 
 #include "src/mesh/SimpleShellMesh.hpp"

@@ -22,7 +22,7 @@
 
 using namespace dealii;
 
-ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
+ElasticitySolver::ElasticitySolver(std::shared_ptr<MeshBase> mesh,
                                    const Material &material,
                                    const BoundariesMap neumann,
                                    dealii::SolverGMRES<>::AdditionalData linear_solver_data)

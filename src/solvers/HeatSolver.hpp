@@ -29,7 +29,7 @@ public:
         const double thermal_diffusivity;
     };
 
-    HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
+    HeatSolver(std::shared_ptr<MeshBase> mesh,
                    const Material &material,
                    const BoundariesMap boundary_functions);
     ~HeatSolver();

@@ -8,7 +8,7 @@
 class SolverBase
 {
 public:
-    SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh);
+    SolverBase(const std::shared_ptr<MeshBase> &mesh);
 
     void run(const std::string &output_dir);
 protected:
@@ -19,7 +19,7 @@ protected:
 
     virtual unsigned int get_n_dofs() = 0;
 
-    const std::shared_ptr<Meshes::MeshBase> mesh;
+    const std::shared_ptr<MeshBase> mesh;
 
 private:
     void do_logged_setup_system();

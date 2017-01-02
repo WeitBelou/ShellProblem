@@ -5,7 +5,7 @@
 
 using namespace std::chrono;
 
-SolverBase::SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh)
+SolverBase::SolverBase(const std::shared_ptr<MeshBase> &mesh)
     :
     mesh(mesh)
 {}
