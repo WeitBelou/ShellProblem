@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <deal.II/lac/solver_gmres.h>
-#include <src/boundaries/BoundariesMap.hpp>
 #include "Task.hpp"
 #include "TaskUtil.hpp"
 #include "src/mesh/MeshBase.hpp"
@@ -22,7 +21,6 @@ private:
     std::shared_ptr<SolverBase>
     create_solver(const json &solver_properties, std::shared_ptr<Meshes::MeshBase> mesh) const;
     dealii::SolverGMRES<>::AdditionalData get_gmres_additional_data(const json &linear_solver_properties) const;
-    BoundariesMap create_boundaries(const json &solver_properties) const;
 };
 
 

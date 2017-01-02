@@ -8,7 +8,7 @@
 
 #include "src/solvers/ElasticitySolver.hpp"
 #include "src/mesh/MeshFactory.hpp"
-#include "src/boundaries/BoundariesMap.hpp"
+#include "src/boundaries/BoundariesFactory.hpp"
 
 TaskFactory::TaskFactory(const std::string &output_dir)
     : output_dir(output_dir)
@@ -49,8 +49,9 @@ TaskFactory::create_solver(const json &solver_properties, std::shared_ptr<Meshes
 {
     std::string problem_type = solver_properties["type"].get<std::string>();
 
+    BoundariesMap boundaries = BoundariesFactory::create_boundaries(solver_properties);
+
     const json material = solver_properties["material"];
-    BoundariesMap boundaries = create_boundaries(solver_properties);
 
     if (problem_type == "simple_heat") {
         HeatSolver::Material heat(material["thermal_diffusivity"].get<double>());
@@ -67,21 +68,6 @@ TaskFactory::create_solver(const json &solver_properties, std::shared_ptr<Meshes
         AssertThrow(false, dealii::ExcNotImplemented())
         return nullptr;
     };
-}
-BoundariesMap TaskFactory::create_boundaries(const json &solver_properties) const
-{
-    BoundariesMap boundaries;
-    const json boundaries_array = solver_properties["boundaries"];
-    for (json boundary: boundaries_array) {
-        const dealii::types::boundary_id id = boundary["id"].get<dealii::types::boundary_id>();
-        if (boundary["type"] == "sin_square") {
-            boundaries.add_function(id, std::make_shared<SinSquare>(boundary["amplitude"].get<double>()));
-        }
-        else {
-            AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented())
-        }
-    }
-    return boundaries;
 }
 dealii::SolverGMRES<>::AdditionalData TaskFactory::get_gmres_additional_data(const json &linear_solver_properties) const
 {
