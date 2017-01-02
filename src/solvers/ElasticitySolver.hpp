@@ -33,6 +33,7 @@ public:
 
     ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
                      const Material &material,
+                     const BoundariesMap neumann,
                      dealii::SolverGMRES<>::AdditionalData linear_solver_data);
     ~ElasticitySolver();
 protected:
@@ -43,6 +44,7 @@ protected:
     unsigned int get_n_dofs() override;
 private:
     void compute_norm_of_stress();
+    const BoundariesMap neumann;
 
     dealii::DoFHandler<3> dof_handler;
 
@@ -55,8 +57,6 @@ private:
 
     dealii::ConstraintMatrix constraints;
     const dealii::SymmetricTensor<4, 3> stress_strain;
-
-    const SinSquare fairing_function;
 
     dealii::SparsityPattern sparsity_pattern;
     dealii::SparseMatrix<double> system_matrix;

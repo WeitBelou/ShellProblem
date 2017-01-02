@@ -24,9 +24,11 @@ using namespace dealii;
 
 ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
                                    const Material &material,
-                                   SolverGMRES<>::AdditionalData linear_solver_data)
+                                   const BoundariesMap neumann,
+                                   dealii::SolverGMRES<>::AdditionalData linear_solver_data)
     :
     SolverBase(mesh),
+    neumann(neumann),
     dof_handler(mesh->mesh()),
     norm_of_stress(mesh->mesh().n_active_cells()),
     fe(FE_Q<3>(1), 3),
@@ -34,7 +36,6 @@ ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
     quadrature(2),
     face_quadrature(2),
     stress_strain(material.get_stress_strain_tensor()),
-    fairing_function(7.0e+07),
     linear_solver_data(linear_solver_data)
 {
 
@@ -106,20 +107,22 @@ void ElasticitySolver::assemble_system()
 
         //Assemble rhs
         for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
-            if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == 1) {
-                fe_face_values.reinit(cell, f);
+            for (auto&& it: neumann.conditions()) {
+                if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == it.first) {
+                    fe_face_values.reinit(cell, f);
 
-                std::vector<double> pressure(n_face_q_points);
-                fairing_function.value_list(fe_face_values.get_quadrature_points(), pressure);
+                    std::vector<double> pressure(n_face_q_points);
+                    it.second->value_list(fe_face_values.get_quadrature_points(), pressure);
 
-                for (unsigned int i = 0; i < dofs_per_cell; ++i) {
-                    const unsigned int component_i = fe.system_to_component_index(i).first;
+                    for (unsigned int i = 0; i < dofs_per_cell; ++i) {
+                        const unsigned int component_i = fe.system_to_component_index(i).first;
 
-                    for (unsigned int q = 0; q < n_face_q_points; ++q) {
-                        cell_rhs(i) += -pressure[q] *
-                            fe_face_values.shape_value(i, q) *
-                            fe_face_values.normal_vector(q)[component_i] *
-                            fe_face_values.JxW(q);
+                        for (unsigned int q = 0; q < n_face_q_points; ++q) {
+                            cell_rhs(i) += -pressure[q] *
+                                fe_face_values.shape_value(i, q) *
+                                fe_face_values.normal_vector(q)[component_i] *
+                                fe_face_values.JxW(q);
+                        }
                     }
                 }
             }

@@ -50,19 +50,20 @@ TaskFactory::create_solver(const json &solver_properties, std::shared_ptr<Meshes
     std::string problem_type = solver_properties["type"].get<std::string>();
 
     const json material = solver_properties["material"];
-    BoundariesMap dirichlet;
     if (problem_type == "simple_heat") {
+        BoundariesMap dirichlet;
         dirichlet.add_function(1, std::make_shared<SinSquare>(2000));
         HeatSolver::Material heat(material["thermal_diffusivity"].get<double>());
         return std::make_shared<HeatSolver>(mesh, heat, dirichlet);
     }
     else if (problem_type == "simple_elasticity") {
+        BoundariesMap neumann;
+        neumann.add_function(1, std::make_shared<SinSquare>(7.0e+07));
         ElasticitySolver::Material elasticity(material["E"].get<double>(),
                                               material["G"].get<double>());
-
         json linear_solver_properties = solver_properties["linear_solver_data"];
         dealii::SolverGMRES<>::AdditionalData linear_solver_data = get_gmres_additional_data(linear_solver_properties);
-        return std::make_shared<ElasticitySolver>(mesh, elasticity, linear_solver_data);
+        return std::make_shared<ElasticitySolver>(mesh, elasticity, neumann, linear_solver_data);
     }
     else {
         AssertThrow(false, dealii::ExcNotImplemented())
