@@ -1,22 +1,14 @@
 #include "TaskFactory.hpp"
 
 #include <fstream>
-#include "src/mesh/SimpleShellMesh.hpp"
 
-#include "src/mesh/CubeMesh.hpp"
 #include "src/solvers/HeatSolver.hpp"
 
 #include "src/solvers/ElasticitySolver.hpp"
 #include "src/mesh/MeshFactory.hpp"
 #include "src/boundaries/BoundariesFactory.hpp"
 
-TaskFactory::TaskFactory(const std::string &output_dir)
-    : output_dir(output_dir)
-{
-
-}
-
-std::shared_ptr<Task> TaskFactory::create_task_from_json(json task) const
+std::shared_ptr<Task> TaskFactory::create_task_from_json(json task, const std::string &output_dir)
 {
     const json &mesh_properties = task["mesh"];
     std::shared_ptr<MeshBase> mesh = MeshFactory::create_mesh(mesh_properties);
@@ -28,7 +20,7 @@ std::shared_ptr<Task> TaskFactory::create_task_from_json(json task) const
 }
 
 std::shared_ptr<SolverBase>
-TaskFactory::create_solver(const json &solver_properties, std::shared_ptr<MeshBase> mesh) const
+TaskFactory::create_solver(const json &solver_properties, std::shared_ptr<MeshBase> mesh)
 {
     std::string problem_type = solver_properties["type"].get<std::string>();
 
@@ -52,7 +44,7 @@ TaskFactory::create_solver(const json &solver_properties, std::shared_ptr<MeshBa
         return nullptr;
     };
 }
-dealii::SolverGMRES<>::AdditionalData TaskFactory::get_gmres_additional_data(const json &linear_solver_properties) const
+dealii::SolverGMRES<>::AdditionalData TaskFactory::get_gmres_additional_data(const json &linear_solver_properties)
 {
     return dealii::SolverGMRES<>::AdditionalData
         {linear_solver_properties["max_n_tmp_vectors"].get<unsigned>(),

@@ -6,7 +6,6 @@
 class Launcher
 {
 public:
-    Launcher();
     void run(const std::string &task_file, const std::string &output_dir);
 };
 
