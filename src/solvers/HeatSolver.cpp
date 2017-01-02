@@ -16,15 +16,17 @@
 
 using namespace dealii;
 
-Solvers::HeatSolver::HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh, const Material &material)
+Solvers::HeatSolver::HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
+                                const Material &material,
+                                const Solvers::DirichletBoundaries boundary_functions)
     :
     SolverBase(mesh),
     material(material),
     dof_handler(mesh->mesh()),
-    fairing_function(2000),
     fe(2),
     quadrature(2),
-    face_quadrature(2)
+    face_quadrature(2),
+    boundary_functions(boundary_functions)
 {
 
 }
@@ -46,7 +48,7 @@ void Solvers::HeatSolver::setup_system()
     dirichlet_boundary_constraints.clear();
     VectorTools::interpolate_boundary_values(dof_handler, 0, ZeroFunction<3>(1),
                                              dirichlet_boundary_constraints);
-    VectorTools::interpolate_boundary_values(dof_handler, 1, fairing_function,
+    VectorTools::interpolate_boundary_values(dof_handler, 1, *boundary_functions.get_function_by_id(1),
                                              dirichlet_boundary_constraints);
     dirichlet_boundary_constraints.close();
 
@@ -106,8 +108,9 @@ void Solvers::HeatSolver::assemble_system()
             if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == 1) {
                 fe_face_values.reinit(cell, f);
                 for (unsigned int q = 0; q < n_face_q_points; ++q) {
-                    const double boundary_value = fairing_function.gradient(fe_face_values.quadrature_point(q))
-                        * fe_face_values.normal_vector(q);
+                    const double boundary_value =
+                        boundary_functions.get_function_by_id(1)->gradient(fe_face_values.quadrature_point(q))
+                            * fe_face_values.normal_vector(q);
                     for (unsigned int i = 0; i < dofs_per_cell; ++i) {
                         const double phi_i = fe_face_values.shape_value(i, q);
                         cell_rhs(i) += boundary_value * phi_i * fe_face_values.JxW(q);

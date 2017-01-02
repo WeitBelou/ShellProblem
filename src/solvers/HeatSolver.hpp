@@ -32,7 +32,9 @@ public:
         const double thermal_diffusivity;
     };
 
-    HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh, const Material &material);
+    HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
+                   const Material &material,
+                   const Solvers::DirichletBoundaries boundary_functions);
     ~HeatSolver();
 protected:
     void setup_system() override;
@@ -48,7 +50,7 @@ private:
 
     dealii::DoFHandler<3> dof_handler;
 
-    const SinSquare fairing_function;
+    const DirichletBoundaries boundary_functions;
 
     const dealii::FE_Q<3> fe;
     const dealii::QGauss<3> quadrature;

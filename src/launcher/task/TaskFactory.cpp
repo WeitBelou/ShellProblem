@@ -4,11 +4,11 @@
 #include "src/mesh/SimpleShellMesh.hpp"
 
 #include "src/mesh/CubeMesh.hpp"
-#include "src/solvers/postprocessors/OutputWriter.hpp"
 #include "src/solvers/HeatSolver.hpp"
 
 #include "src/solvers/ElasticitySolver.hpp"
 #include "src/mesh/MeshFactory.hpp"
+#include "src/solvers/util/Boundaries.hpp"
 
 TaskFactory::TaskFactory(const std::string &output_dir)
     : output_dir(output_dir)
@@ -50,9 +50,11 @@ TaskFactory::create_solver(const json &solver_properties, std::shared_ptr<Meshes
     std::string problem_type = solver_properties["type"].get<std::string>();
 
     const json material = solver_properties["material"];
+    Solvers::DirichletBoundaries dirichlet;
     if (problem_type == "simple_heat") {
+        dirichlet.add_function(1, std::make_shared<Solvers::SinSquare>(2000));
         Solvers::HeatSolver::Material heat(material["thermal_diffusivity"].get<double>());
-        return std::make_shared<Solvers::HeatSolver>(mesh, heat);
+        return std::make_shared<Solvers::HeatSolver>(mesh, heat, dirichlet);
     }
     else if (problem_type == "simple_elasticity") {
         Solvers::ElasticitySolver::Material elasticity(material["E"].get<double>(),

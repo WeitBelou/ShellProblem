@@ -2,6 +2,22 @@
 
 using namespace dealii;
 
+void Solvers::DirichletBoundaries::add_function(dealii::types::boundary_id id,
+                                                std::shared_ptr<const dealii::Function<3>> function)
+{
+
+    boundary_functions.insert(std::make_pair<>(id, function));
+}
+std::shared_ptr<const dealii::Function<3>>
+Solvers::DirichletBoundaries::get_function_by_id(dealii::types::boundary_id id) const
+{
+    auto it = boundary_functions.find(id);
+
+    Assert(it != boundary_functions.end(), ExcNotInitialized());
+
+    return it->second;
+}
+
 Solvers::SinSquare::SinSquare(double amplitude)
     : Function<3>(1), a(amplitude)
 {
@@ -30,7 +46,6 @@ dealii::Tensor<1, 3> Solvers::SinSquare::gradient(const dealii::Point<3> &p, con
 
     return grad;
 }
-
 void Solvers::SinSquare::value_list(const std::vector<Point<3>> &points,
                                     std::vector<double> &values,
                                     const unsigned int /*component*/) const
@@ -41,7 +56,6 @@ void Solvers::SinSquare::value_list(const std::vector<Point<3>> &points,
         values[j] = SinSquare::value(points[j]);
     }
 }
-
 void Solvers::SinSquare::gradient_list(const std::vector<Point<3>> &points,
                                        std::vector<Tensor<1, 3, double>> &gradients,
                                        const unsigned int /*component*/) const
