@@ -12,7 +12,8 @@
 #include <deal.II/lac/precondition.h>
 #include <deal.II/numerics/data_out.h>
 #include <fstream>
-#include <src/solvers/postprocessors/OutputWriter.hpp>
+#include "src/postprocessors/OutputWriter.hpp"
+#include "src/boundaries/DirichletBoundaries.hpp"
 
 using namespace dealii;
 

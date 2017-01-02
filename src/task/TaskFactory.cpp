@@ -8,7 +8,7 @@
 
 #include "src/solvers/ElasticitySolver.hpp"
 #include "src/mesh/MeshFactory.hpp"
-#include "src/solvers/util/Boundaries.hpp"
+#include "src/boundaries/DirichletBoundaries.hpp"
 
 TaskFactory::TaskFactory(const std::string &output_dir)
     : output_dir(output_dir)

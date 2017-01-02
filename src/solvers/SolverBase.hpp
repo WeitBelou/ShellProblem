@@ -4,7 +4,6 @@
 #include <deal.II/grid/tria.h>
 #include <boost/filesystem/path.hpp>
 #include "src/mesh/MeshBase.hpp"
-#include "src/solvers/postprocessors/Postprocessor.hpp"
 
 class SolverBase
 {

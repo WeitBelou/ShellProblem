@@ -15,8 +15,8 @@
 
 #include <deal.II/lac/precondition_block.h>
 #include <deal.II/lac/precondition.h>
-#include <src/solvers/postprocessors/VectorOutputWriter.hpp>
-#include <src/solvers/postprocessors/OutputWriter.hpp>
+#include <src/postprocessors/VectorOutputWriter.hpp>
+#include <src/postprocessors/OutputWriter.hpp>
 
 #include "ElasticitySolver.hpp"
 

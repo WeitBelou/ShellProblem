@@ -13,7 +13,8 @@
 #include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/lac/solver_gmres.h>
 
-#include "src/solvers/util/Boundaries.hpp"
+#include "src/boundaries/DirichletBoundaries.hpp"
+#include "src/boundaries/Boundaries.hpp"
 #include "SolverBase.hpp"
 #include "src/mesh/MeshBase.hpp"
 
@@ -31,8 +32,8 @@ public:
     };
 
     ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
-                         const Material &material,
-                         dealii::SolverGMRES<>::AdditionalData linear_solver_data);
+                     const Material &material,
+                     dealii::SolverGMRES<>::AdditionalData linear_solver_data);
     ~ElasticitySolver();
 protected:
     void setup_system() override;

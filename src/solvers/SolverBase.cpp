@@ -1,5 +1,6 @@
 #include <iostream>
 #include <chrono>
+#include <deal.II/base/logstream.h>
 #include "SolverBase.hpp"
 
 using namespace std::chrono;

@@ -13,8 +13,8 @@
 #include <deal.II/fe/fe_q.h>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
+#include <src/boundaries/DirichletBoundaries.hpp>
 
-#include "src/solvers/util/Boundaries.hpp"
 #include "SolverBase.hpp"
 #include "src/mesh/MeshBase.hpp"
 

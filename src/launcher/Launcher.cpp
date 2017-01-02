@@ -2,8 +2,8 @@
 #include <deal.II/base/logstream.h>
 #include <fstream>
 
-#include "src/launcher/task/TaskFactory.hpp"
-#include "src/launcher/task/TaskUtil.hpp"
+#include "src/task/TaskFactory.hpp"
+#include "src/task/TaskUtil.hpp"
 
 using namespace dealii;
 
