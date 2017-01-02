@@ -13,7 +13,6 @@
 #include <deal.II/numerics/data_out.h>
 #include <fstream>
 #include "src/postprocessors/OutputWriter.hpp"
-#include "src/boundaries/DirichletBoundaries.hpp"
 
 using namespace dealii;
 
@@ -45,17 +44,11 @@ void HeatSolver::setup_system()
     system_rhs.reinit(dof_handler.n_dofs());
 
 
-    ConstraintMatrix dirichlet_boundary_constraints;
-    dirichlet_boundary_constraints.clear();
-    VectorTools::interpolate_boundary_values(dof_handler, 0, ZeroFunction<3>(1),
-                                             dirichlet_boundary_constraints);
-    VectorTools::interpolate_boundary_values(dof_handler, 1, *boundary_functions.get_function_by_id(1),
-                                             dirichlet_boundary_constraints);
-    dirichlet_boundary_constraints.close();
-
     constraints.clear();
-    DoFTools::make_hanging_node_constraints(dof_handler, constraints);
-    constraints.merge(dirichlet_boundary_constraints, ConstraintMatrix::right_object_wins);
+    for (auto &&it : boundary_functions.conditions()) {
+        VectorTools::interpolate_boundary_values(dof_handler, it.first, *it.second,
+                                                 constraints);
+    }
     constraints.close();
 
     DynamicSparsityPattern dsp(dof_handler.n_dofs());
@@ -78,7 +71,6 @@ void HeatSolver::assemble_system()
 
     const unsigned int dofs_per_cell = fe.dofs_per_cell;
     const unsigned int n_q_points = quadrature.size();
-    const unsigned int n_face_q_points = face_quadrature.size();
 
     FullMatrix<double> cell_matrix(dofs_per_cell, dofs_per_cell);
     Vector<double> cell_rhs(dofs_per_cell);
@@ -101,21 +93,6 @@ void HeatSolver::assemble_system()
                     cell_matrix(i, j) += grad_phi_i *
                         grad_phi_j *
                         fe_values.JxW(q);
-                }
-            }
-        }
-
-        for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
-            if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == 1) {
-                fe_face_values.reinit(cell, f);
-                for (unsigned int q = 0; q < n_face_q_points; ++q) {
-                    const double boundary_value =
-                        boundary_functions.get_function_by_id(1)->gradient(fe_face_values.quadrature_point(q))
-                            * fe_face_values.normal_vector(q);
-                    for (unsigned int i = 0; i < dofs_per_cell; ++i) {
-                        const double phi_i = fe_face_values.shape_value(i, q);
-                        cell_rhs(i) += boundary_value * phi_i * fe_face_values.JxW(q);
-                    }
                 }
             }
         }

@@ -16,3 +16,8 @@ DirichletBoundaries::get_function_by_id(dealii::types::boundary_id id) const
 
     return it->second;
 }
+const std::map<dealii::types::boundary_id, std::shared_ptr<const dealii::Function<3>>>
+DirichletBoundaries::conditions() const
+{
+    return boundary_functions;
+}
