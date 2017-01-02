@@ -177,18 +177,18 @@ void ElasticitySolver::compute_norm_of_stress()
 
 void ElasticitySolver::do_postprocessing(const std::string &output_dir)
 {
-    deallog << "    Output displacement..." << std::endl;
+    deallog << "Output displacement..." << std::endl;
     {
         VectorOutputWriter writer{output_dir, "displacement"};
         writer.do_postprocess(dof_handler, displacement);
     }
 
     {
-        deallog << "    Compute norm of stress..." << std::endl;
+        deallog << "Compute norm of stress..." << std::endl;
         compute_norm_of_stress();
     }
     {
-        deallog << "    Output norm of stress..." << std::endl;
+        deallog << "Output norm of stress..." << std::endl;
         OutputWriter writer(output_dir, "norm_of_stress");
         writer.do_postprocess(dof_handler, norm_of_stress);
     }
