@@ -8,7 +8,7 @@
 
 #include "src/solvers/ElasticitySolver.hpp"
 #include "src/mesh/MeshFactory.hpp"
-#include "src/boundaries/DirichletBoundaries.hpp"
+#include "src/boundaries/BoundariesMap.hpp"
 
 TaskFactory::TaskFactory(const std::string &output_dir)
     : output_dir(output_dir)
@@ -50,7 +50,7 @@ TaskFactory::create_solver(const json &solver_properties, std::shared_ptr<Meshes
     std::string problem_type = solver_properties["type"].get<std::string>();
 
     const json material = solver_properties["material"];
-    DirichletBoundaries dirichlet;
+    BoundariesMap dirichlet;
     if (problem_type == "simple_heat") {
         dirichlet.add_function(1, std::make_shared<SinSquare>(2000));
         HeatSolver::Material heat(material["thermal_diffusivity"].get<double>());

@@ -4,10 +4,10 @@
 #include <memory>
 #include <deal.II/base/function.h>
 
-class DirichletBoundaries
+class BoundariesMap
 {
 public:
-    DirichletBoundaries() = default;
+    BoundariesMap() = default;
 
     void add_function(dealii::types::boundary_id id, std::shared_ptr<const dealii::Function<3>> function);
     std::shared_ptr<const dealii::Function<3>> get_function_by_id(dealii::types::boundary_id id) const;

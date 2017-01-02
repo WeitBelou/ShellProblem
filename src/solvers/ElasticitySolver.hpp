@@ -13,7 +13,7 @@
 #include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/lac/solver_gmres.h>
 
-#include "src/boundaries/DirichletBoundaries.hpp"
+#include "src/boundaries/BoundariesMap.hpp"
 #include "src/boundaries/Boundaries.hpp"
 #include "SolverBase.hpp"
 #include "src/mesh/MeshBase.hpp"

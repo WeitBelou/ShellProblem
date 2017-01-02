@@ -13,7 +13,7 @@
 #include <deal.II/fe/fe_q.h>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
-#include <src/boundaries/DirichletBoundaries.hpp>
+#include <src/boundaries/BoundariesMap.hpp>
 
 #include "SolverBase.hpp"
 #include "src/mesh/MeshBase.hpp"
@@ -31,7 +31,7 @@ public:
 
     HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
                    const Material &material,
-                   const DirichletBoundaries boundary_functions);
+                   const BoundariesMap boundary_functions);
     ~HeatSolver();
 protected:
     void setup_system() override;
@@ -45,7 +45,7 @@ protected:
 private:
     Material material;
 
-    const DirichletBoundaries boundary_functions;
+    const BoundariesMap boundary_functions;
 
     dealii::DoFHandler<3> dof_handler;
 
