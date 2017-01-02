@@ -18,7 +18,7 @@ private:
     const std::string output_dir;
 
     std::shared_ptr<Meshes::MeshBase> create_mesh(const json &mesh_properties) const;
-    std::shared_ptr<Solvers::SolverBase>
+    std::shared_ptr<SolverBase>
     create_solver(const json &solver_properties, std::shared_ptr<Meshes::MeshBase> mesh) const;
     dealii::SolverGMRES<>::AdditionalData get_gmres_additional_data(const json &linear_solver_properties) const;
 };

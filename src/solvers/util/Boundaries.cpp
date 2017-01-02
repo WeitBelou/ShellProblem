@@ -2,14 +2,15 @@
 
 using namespace dealii;
 
-void Solvers::DirichletBoundaries::add_function(dealii::types::boundary_id id,
-                                                std::shared_ptr<const dealii::Function<3>> function)
+void DirichletBoundaries::add_function(dealii::types::boundary_id id,
+                                       std::shared_ptr<const dealii::Function<3>> function)
 {
 
     boundary_functions.insert(std::make_pair<>(id, function));
 }
+
 std::shared_ptr<const dealii::Function<3>>
-Solvers::DirichletBoundaries::get_function_by_id(dealii::types::boundary_id id) const
+DirichletBoundaries::get_function_by_id(dealii::types::boundary_id id) const
 {
     auto it = boundary_functions.find(id);
 
@@ -18,20 +19,20 @@ Solvers::DirichletBoundaries::get_function_by_id(dealii::types::boundary_id id) 
     return it->second;
 }
 
-Solvers::SinSquare::SinSquare(double amplitude)
+SinSquare::SinSquare(double amplitude)
     : Function<3>(1), a(amplitude)
 {
 
 }
 
-double Solvers::SinSquare::value(const dealii::Point<3> &point, const unsigned int /*component*/) const
+double SinSquare::value(const dealii::Point<3> &point, const unsigned int /*component*/) const
 {
     const double z = point(2);
 
     return a * (z * z) / point.norm_square();
 }
 
-dealii::Tensor<1, 3> Solvers::SinSquare::gradient(const dealii::Point<3> &p, const unsigned int /*component*/) const
+dealii::Tensor<1, 3> SinSquare::gradient(const dealii::Point<3> &p, const unsigned int /*component*/) const
 {
     const double r = p.norm();
     const double x = p(0);
@@ -46,9 +47,9 @@ dealii::Tensor<1, 3> Solvers::SinSquare::gradient(const dealii::Point<3> &p, con
 
     return grad;
 }
-void Solvers::SinSquare::value_list(const std::vector<Point<3>> &points,
-                                    std::vector<double> &values,
-                                    const unsigned int /*component*/) const
+void SinSquare::value_list(const std::vector<Point<3>> &points,
+                           std::vector<double> &values,
+                           const unsigned int /*component*/) const
 {
     const size_t n_points = points.size();
     Assert(n_points == values.size(), ExcDimensionMismatch(n_points, values.size()));
@@ -56,9 +57,9 @@ void Solvers::SinSquare::value_list(const std::vector<Point<3>> &points,
         values[j] = SinSquare::value(points[j]);
     }
 }
-void Solvers::SinSquare::gradient_list(const std::vector<Point<3>> &points,
-                                       std::vector<Tensor<1, 3, double>> &gradients,
-                                       const unsigned int /*component*/) const
+void SinSquare::gradient_list(const std::vector<Point<3>> &points,
+                              std::vector<Tensor<1, 3, double>> &gradients,
+                              const unsigned int /*component*/) const
 {
     const size_t n_points = points.size();
     Assert(n_points == gradients.size(),

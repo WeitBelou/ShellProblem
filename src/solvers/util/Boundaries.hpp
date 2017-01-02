@@ -6,8 +6,6 @@
 #include <deal.II/base/function.h>
 #include <deal.II/dofs/function_map.h>
 
-namespace Solvers
-{
 
 class DirichletBoundaries
 {
@@ -40,7 +38,5 @@ public:
 private:
     const double a;
 };
-
-}
 
 #endif //SHELL_PROBLEM_BOUNDARIES_HPP

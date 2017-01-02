@@ -4,19 +4,19 @@
 
 using namespace std::chrono;
 
-Solvers::SolverBase::SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh)
+SolverBase::SolverBase(const std::shared_ptr<Meshes::MeshBase> &mesh)
     :
     mesh(mesh)
 {}
 
-void Solvers::SolverBase::run(const std::string &output_dir)
+void SolverBase::run(const std::string &output_dir)
 {
     do_logged_setup_system();
     do_logged_assemble_system();
     do_logged_solve_linear_system();
     do_logged_do_postprocessing(output_dir);
 }
-void Solvers::SolverBase::do_logged_do_postprocessing(const std::string &output_dir)
+void SolverBase::do_logged_do_postprocessing(const std::string &output_dir)
 {
     auto start = system_clock::now();
     dealii::deallog << "Do postprocessing..." << std::endl;
@@ -26,7 +26,7 @@ void Solvers::SolverBase::do_logged_do_postprocessing(const std::string &output_
     dealii::deallog << "It takes: " << duration_cast<duration<double>>(end - start).count() << "s" << std::endl;
 }
 
-void Solvers::SolverBase::do_logged_solve_linear_system()
+void SolverBase::do_logged_solve_linear_system()
 {
     auto start = system_clock::now();
     dealii::deallog << "Solving linear system..." << std::endl;
@@ -36,7 +36,7 @@ void Solvers::SolverBase::do_logged_solve_linear_system()
     dealii::deallog << "It takes: " << duration_cast<duration<double>>(end - start).count() << "s" << std::endl;
 }
 
-void Solvers::SolverBase::do_logged_assemble_system()
+void SolverBase::do_logged_assemble_system()
 {
     auto start = system_clock::now();
     dealii::deallog << "Assembling system..." << std::endl;
@@ -45,7 +45,7 @@ void Solvers::SolverBase::do_logged_assemble_system()
     dealii::deallog << "It takes: " << duration_cast<duration<double>>(end - start).count() << "s" << std::endl;
 }
 
-void Solvers::SolverBase::do_logged_setup_system()
+void SolverBase::do_logged_setup_system()
 {
     auto start = system_clock::now();
     dealii::deallog << "Setup system..." << std::endl;

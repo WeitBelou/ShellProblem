@@ -22,9 +22,9 @@
 
 using namespace dealii;
 
-Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
-                                            const Material &material,
-                                            SolverGMRES<>::AdditionalData linear_solver_data)
+ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> mesh,
+                                   const Material &material,
+                                   SolverGMRES<>::AdditionalData linear_solver_data)
     :
     SolverBase(mesh),
     dof_handler(mesh->mesh()),
@@ -40,12 +40,12 @@ Solvers::ElasticitySolver::ElasticitySolver(std::shared_ptr<Meshes::MeshBase> me
 
 }
 
-Solvers::ElasticitySolver::~ElasticitySolver()
+ElasticitySolver::~ElasticitySolver()
 {
     dof_handler.clear();
 }
 
-void Solvers::ElasticitySolver::setup_system()
+void ElasticitySolver::setup_system()
 {
     dof_handler.distribute_dofs(fe);
 
@@ -64,7 +64,7 @@ void Solvers::ElasticitySolver::setup_system()
     displacement.reinit(dof_handler.n_dofs());
 }
 
-void Solvers::ElasticitySolver::assemble_system()
+void ElasticitySolver::assemble_system()
 {
     system_matrix = 0;
     system_rhs = 0;
@@ -131,7 +131,7 @@ void Solvers::ElasticitySolver::assemble_system()
     }
 }
 
-unsigned int Solvers::ElasticitySolver::solve_linear_system()
+unsigned int ElasticitySolver::solve_linear_system()
 {
     SolverControl solver_control(dof_handler.n_dofs(),
                                  2e-14 * system_rhs.l2_norm(),
@@ -155,7 +155,7 @@ unsigned int Solvers::ElasticitySolver::solve_linear_system()
     return solver_control.last_step();
 }
 
-void Solvers::ElasticitySolver::compute_norm_of_stress()
+void ElasticitySolver::compute_norm_of_stress()
 {
     FEValues<3> fe_values(fe, quadrature,
                           update_values | update_gradients);
@@ -175,7 +175,7 @@ void Solvers::ElasticitySolver::compute_norm_of_stress()
     }
 }
 
-void Solvers::ElasticitySolver::do_postprocessing(const std::string &output_dir)
+void ElasticitySolver::do_postprocessing(const std::string &output_dir)
 {
     deallog << "    Output displacement..." << std::endl;
     {
@@ -194,18 +194,20 @@ void Solvers::ElasticitySolver::do_postprocessing(const std::string &output_dir)
     }
 }
 
-unsigned int Solvers::ElasticitySolver::get_n_dofs()
+unsigned int ElasticitySolver::get_n_dofs()
 {
     return dof_handler.n_dofs();
 }
-Solvers::ElasticitySolver::Material::Material(double E, double G)
+
+ElasticitySolver::Material::Material(double E, double G)
     :
     E(E),
     G(G)
 {
 
 }
-dealii::SymmetricTensor<4, 3> Solvers::ElasticitySolver::Material::get_stress_strain_tensor() const
+
+dealii::SymmetricTensor<4, 3> ElasticitySolver::Material::get_stress_strain_tensor() const
 {
     const double lambda = G * (E - 2 * G) / (3 * G - E);
     const double mu = G;

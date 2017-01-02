@@ -16,27 +16,27 @@
 
 using namespace dealii;
 
-Solvers::HeatSolver::HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
-                                const Material &material,
-                                const Solvers::DirichletBoundaries boundary_functions)
+HeatSolver::HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
+                       const Material &material,
+                       const DirichletBoundaries boundary_functions)
     :
     SolverBase(mesh),
     material(material),
+    boundary_functions(boundary_functions),
     dof_handler(mesh->mesh()),
     fe(2),
     quadrature(2),
-    face_quadrature(2),
-    boundary_functions(boundary_functions)
+    face_quadrature(2)
 {
 
 }
 
-Solvers::HeatSolver::~HeatSolver()
+HeatSolver::~HeatSolver()
 {
     dof_handler.clear();
 }
 
-void Solvers::HeatSolver::setup_system()
+void HeatSolver::setup_system()
 {
     dof_handler.distribute_dofs(fe);
 
@@ -64,7 +64,7 @@ void Solvers::HeatSolver::setup_system()
     system_matrix.reinit(sparsity_pattern);
 }
 
-void Solvers::HeatSolver::assemble_system()
+void HeatSolver::assemble_system()
 {
     FEValues<3> fe_values(fe, quadrature,
                           update_values | update_gradients |
@@ -128,7 +128,7 @@ void Solvers::HeatSolver::assemble_system()
     }
 }
 
-unsigned int Solvers::HeatSolver::solve_linear_system()
+unsigned int HeatSolver::solve_linear_system()
 {
     SolverControl solver_control(dof_handler.n_dofs(), 1e-3);
     SolverCG<> solver(solver_control);
@@ -143,19 +143,19 @@ unsigned int Solvers::HeatSolver::solve_linear_system()
     return solver_control.last_step();
 }
 
-void Solvers::HeatSolver::do_postprocessing(const std::string &output_dir)
+void HeatSolver::do_postprocessing(const std::string &output_dir)
 {
     dealii::deallog << "    Output temperature..." << std::endl;
     OutputWriter writer{output_dir, "temperature"};
     writer.do_postprocess(dof_handler, solution);
 }
 
-unsigned int Solvers::HeatSolver::get_n_dofs()
+unsigned int HeatSolver::get_n_dofs()
 {
     return dof_handler.n_dofs();
 }
 
-Solvers::HeatSolver::Material::Material(const double thermal_diffusivity)
+HeatSolver::Material::Material(const double thermal_diffusivity)
     : thermal_diffusivity(thermal_diffusivity)
 {
 

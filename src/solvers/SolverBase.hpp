@@ -5,8 +5,6 @@
 #include <boost/filesystem/path.hpp>
 #include "src/mesh/MeshBase.hpp"
 #include "src/solvers/postprocessors/Postprocessor.hpp"
-namespace Solvers
-{
 
 class SolverBase
 {
@@ -30,8 +28,6 @@ private:
     void do_logged_do_postprocessing(const std::string &output_dir);
     void do_logged_solve_linear_system();
 };
-
-}
 
 
 #endif //SHELL_PROBLEM_SOLVER_BASE_HPP

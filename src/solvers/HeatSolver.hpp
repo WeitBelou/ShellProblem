@@ -18,9 +18,6 @@
 #include "SolverBase.hpp"
 #include "src/mesh/MeshBase.hpp"
 
-namespace Solvers
-{
-
 class HeatSolver: public SolverBase
 {
 public:
@@ -34,7 +31,7 @@ public:
 
     HeatSolver(std::shared_ptr<Meshes::MeshBase> mesh,
                    const Material &material,
-                   const Solvers::DirichletBoundaries boundary_functions);
+                   const DirichletBoundaries boundary_functions);
     ~HeatSolver();
 protected:
     void setup_system() override;
@@ -48,9 +45,9 @@ protected:
 private:
     Material material;
 
-    dealii::DoFHandler<3> dof_handler;
-
     const DirichletBoundaries boundary_functions;
+
+    dealii::DoFHandler<3> dof_handler;
 
     const dealii::FE_Q<3> fe;
     const dealii::QGauss<3> quadrature;
@@ -63,8 +60,6 @@ private:
     dealii::Vector<double> system_rhs;
     dealii::Vector<double> solution;
 };
-
-}
 
 
 #endif //SHELL_PROBLEM_HEAT_SOLVER_HPP

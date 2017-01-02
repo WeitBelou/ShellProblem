@@ -17,9 +17,6 @@
 #include "SolverBase.hpp"
 #include "src/mesh/MeshBase.hpp"
 
-namespace Solvers
-{
-
 class ElasticitySolver: public SolverBase
 {
 public:
@@ -68,8 +65,6 @@ private:
 
     dealii::SolverGMRES<>::AdditionalData linear_solver_data;
 };
-
-}
 
 
 #endif //SHELL_PROBLEM_ELASTICITY_SOLVER_HPP

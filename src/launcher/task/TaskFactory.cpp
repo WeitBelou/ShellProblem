@@ -22,7 +22,7 @@ std::shared_ptr<Task> TaskFactory::create_task_from_json(json task) const
     std::shared_ptr<Meshes::MeshBase> mesh = create_mesh(mesh_properties);
 
     const json &solver_properties = task["solver"];
-    std::shared_ptr<Solvers::SolverBase> solver = create_solver(solver_properties, mesh);
+    std::shared_ptr<SolverBase> solver = create_solver(solver_properties, mesh);
 
     return std::make_shared<Task>(solver, output_dir);
 }
@@ -44,25 +44,25 @@ std::shared_ptr<Meshes::MeshBase> TaskFactory::create_mesh(const json &mesh_prop
         return nullptr;
     }
 }
-std::shared_ptr<Solvers::SolverBase>
+std::shared_ptr<SolverBase>
 TaskFactory::create_solver(const json &solver_properties, std::shared_ptr<Meshes::MeshBase> mesh) const
 {
     std::string problem_type = solver_properties["type"].get<std::string>();
 
     const json material = solver_properties["material"];
-    Solvers::DirichletBoundaries dirichlet;
+    DirichletBoundaries dirichlet;
     if (problem_type == "simple_heat") {
-        dirichlet.add_function(1, std::make_shared<Solvers::SinSquare>(2000));
-        Solvers::HeatSolver::Material heat(material["thermal_diffusivity"].get<double>());
-        return std::make_shared<Solvers::HeatSolver>(mesh, heat, dirichlet);
+        dirichlet.add_function(1, std::make_shared<SinSquare>(2000));
+        HeatSolver::Material heat(material["thermal_diffusivity"].get<double>());
+        return std::make_shared<HeatSolver>(mesh, heat, dirichlet);
     }
     else if (problem_type == "simple_elasticity") {
-        Solvers::ElasticitySolver::Material elasticity(material["E"].get<double>(),
-                                                       material["G"].get<double>());
+        ElasticitySolver::Material elasticity(material["E"].get<double>(),
+                                              material["G"].get<double>());
 
         json linear_solver_properties = solver_properties["linear_solver_data"];
         dealii::SolverGMRES<>::AdditionalData linear_solver_data = get_gmres_additional_data(linear_solver_properties);
-        return std::make_shared<Solvers::ElasticitySolver>(mesh, elasticity, linear_solver_data);
+        return std::make_shared<ElasticitySolver>(mesh, elasticity, linear_solver_data);
     }
     else {
         AssertThrow(false, dealii::ExcNotImplemented())
