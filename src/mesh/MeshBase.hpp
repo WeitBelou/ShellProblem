@@ -3,9 +3,6 @@
 
 #include <deal.II/grid/tria.h>
 
-
-namespace Meshes
-{
 class MeshBase
 {
 public:
@@ -24,5 +21,4 @@ protected:
     unsigned int n_global_refinements;
 };
 
-}
 #endif //SHELL_PROBLEM_MESH_BASE_HPP

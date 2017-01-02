@@ -3,8 +3,6 @@
 #include <deal.II/grid/grid_tools.h>
 #include "MeshBase.hpp"
 
-using namespace Meshes;
-
 MeshBase::MeshBase(unsigned int n_global_refinements)
     : n_global_refinements(n_global_refinements)
 {}

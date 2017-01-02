@@ -9,7 +9,6 @@
 #include <deal.II/grid/grid_in.h>
 #include <deal.II/grid/grid_out.h>
 
-using namespace Meshes;
 using namespace dealii;
 
 CubeMesh::CubeMesh(double size,

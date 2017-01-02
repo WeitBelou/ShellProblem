@@ -7,7 +7,6 @@
 #include "SimpleShellMesh.hpp"
 #include "MeshUtilities.hpp"
 
-using namespace Meshes;
 using namespace dealii;
 
 SimpleShellMesh::SimpleShellMesh(double inner_radius,

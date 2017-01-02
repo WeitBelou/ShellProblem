@@ -4,9 +4,6 @@
 #include "MeshBase.hpp"
 
 
-namespace Meshes
-{
-
 class CubeMesh: public MeshBase
 {
 
@@ -20,7 +17,5 @@ protected:
 private:
     double size;
 };
-
-}
 
 #endif //SHELL_PROBLEM_CUBE_MESH_HPP

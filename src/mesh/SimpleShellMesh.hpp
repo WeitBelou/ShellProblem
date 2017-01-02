@@ -3,8 +3,6 @@
 
 #include "MeshBase.hpp"
 
-namespace Meshes
-{
 class SimpleShellMesh: public MeshBase
 {
 public:
@@ -25,5 +23,4 @@ private:
     double cylinder_length;
 };
 
-}
 #endif //SHELL_PROBLEM_SIMPLE_SHELL_MESH_HPP
