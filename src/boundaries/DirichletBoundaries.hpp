@@ -1,5 +1,5 @@
-#ifndef SHELLPROBLEM_DIRICHLETBOUNDARIES_HPP
-#define SHELLPROBLEM_DIRICHLETBOUNDARIES_HPP
+#ifndef SHELL_PROBLEM_DIRICHLET_BOUNDARIES_HPP
+#define SHELL_PROBLEM_DIRICHLET_BOUNDARIES_HPP
 
 #include <memory>
 #include <deal.II/base/function.h>
@@ -15,4 +15,4 @@ public:
 private:
     std::map<dealii::types::boundary_id, std::shared_ptr<const dealii::Function<3>>> boundary_functions;
 };
-#endif //SHELLPROBLEM_DIRICHLETBOUNDARIES_HPP
+#endif //SHELL_PROBLEM_DIRICHLET_BOUNDARIES_HPP
