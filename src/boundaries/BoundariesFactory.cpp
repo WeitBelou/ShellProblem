@@ -10,6 +10,9 @@ BoundariesMap BoundariesFactory::create_boundaries(const json &solver_properties
         if (boundary["type"] == "sin_square") {
             boundaries.add_function(id, std::make_shared<SinSquare>(boundary["amplitude"].get<double>()));
         }
+        else if (boundary["type"] == "constant") {
+            boundaries.add_function(id, std::make_shared<dealii::ConstantFunction<3>>(boundary["value"].get<double>()));
+        }
         else {
             AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented())
         }
