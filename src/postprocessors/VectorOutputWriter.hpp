@@ -3,7 +3,7 @@
 
 
 #include "Postprocessor.hpp"
-class VectorOutputWriter : public Postprocessor
+class VectorOutputWriter: public Postprocessor
 {
 public:
     void do_postprocess(const dealii::DoFHandler<3> &dof_handler,

@@ -31,9 +31,9 @@ public:
     };
 
     HeatSolver(std::shared_ptr<MeshBase> mesh,
-                   const Material &material,
-                   const BoundariesMap boundary_functions,
-                   const std::shared_ptr<LinearSolverBase> &linear_solver);
+               const Material &material,
+               const BoundariesMap boundary_functions,
+               const std::shared_ptr<LinearSolverBase> &linear_solver);
     ~HeatSolver();
 protected:
     void setup_system() override;

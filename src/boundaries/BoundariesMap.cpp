@@ -2,7 +2,7 @@
 #include "BoundariesMap.hpp"
 
 void BoundariesMap::add_function(dealii::types::boundary_id id,
-                                       std::shared_ptr<const dealii::Function<3>> function)
+                                 std::shared_ptr<const dealii::Function<3>> function)
 {
 
     boundary_functions.insert(std::make_pair<>(id, function));

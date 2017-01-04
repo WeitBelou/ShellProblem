@@ -33,9 +33,9 @@ public:
     };
 
     ElasticitySolver(std::shared_ptr<MeshBase> mesh,
-                         const Material &material,
-                         const BoundariesMap neumann,
-                         std::shared_ptr<LinearSolverBase> linear_solver);
+                     const Material &material,
+                     const BoundariesMap neumann,
+                     std::shared_ptr<LinearSolverBase> linear_solver);
     ~ElasticitySolver();
 protected:
     void setup_system() override;
