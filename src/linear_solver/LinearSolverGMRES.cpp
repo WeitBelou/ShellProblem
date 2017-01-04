@@ -15,9 +15,9 @@ Result LinearSolverGMRES::solve(const dealii::SparseMatrix<double> &a, const dea
 {
     dealii::Vector<double> solution(static_cast<const unsigned int>(b.size()));
 
-    dealii::PreconditionIdentity preconditioner;
+    dealii::PreconditionJacobi<> preconditioner;
     preconditioner.initialize(a);
 
-    solver.solve(a, solution, b, dealii::PreconditionIdentity());
+    solver.solve(a, solution, b, preconditioner);
     return {solver_control, solution};
 }
