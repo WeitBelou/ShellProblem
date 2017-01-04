@@ -1,9 +1,7 @@
 #include "TaskFactory.hpp"
 
-#include <fstream>
+#include <src/solvers/SolverBuilder.hpp>
 #include "src/linear_solver/LinearSolverFactory.hpp"
-#include "src/solvers/HeatSolver.hpp"
-#include "src/solvers/ElasticitySolver.hpp"
 #include "src/mesh/MeshFactory.hpp"
 #include "src/boundaries/BoundariesFactory.hpp"
 
@@ -20,33 +18,9 @@ std::shared_ptr<Task> TaskFactory::create_task_from_json(json task, const std::s
     BoundariesMap boundaries = BoundariesFactory::create_boundaries(boundaries_properties);
 
     const json &solver_properties = task["solver"];
-    std::shared_ptr<SolverBase> solver = create_solver(solver_properties, mesh, linear_solver, boundaries);
+    std::shared_ptr<SolverBase> solver = SolverBuilder::create_solver(solver_properties, mesh,
+                                                                      linear_solver, boundaries);
 
     return std::make_shared<Task>(solver, output_dir);
-}
-
-std::shared_ptr<SolverBase> TaskFactory::create_solver(const json &solver_properties,
-                                                       std::shared_ptr<MeshBase> mesh,
-                                                       std::shared_ptr<LinearSolverBase> linear_solver,
-                                                       BoundariesMap boundaries)
-{
-    std::string problem_type = solver_properties["type"].get<std::string>();
-
-    const json material = solver_properties["material"];
-
-    if (problem_type == "simple_heat") {
-        HeatSolver::Material heat(material["thermal_diffusivity"].get<double>());
-        return std::make_shared<HeatSolver>(mesh, heat, boundaries, linear_solver);
-    }
-    else if (problem_type == "simple_elasticity") {
-        ElasticitySolver::Material elasticity(material["E"].get<double>(),
-                                              material["G"].get<double>());
-
-        return std::make_shared<ElasticitySolver>(mesh, elasticity, boundaries, linear_solver);
-    }
-    else {
-        AssertThrow(false, dealii::ExcNotImplemented())
-        return nullptr;
-    };
 }
 
