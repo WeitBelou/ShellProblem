@@ -19,7 +19,7 @@ bool MeshUtilities::is_point_on_sphere(const dealii::Point<3> &point,
 
 bool MeshUtilities::is_point_on_plane(const dealii::Point<3> &point,
                                       const dealii::Point<3> &point_on_plane,
-                                      const size_t axis,
+                                      const unsigned int axis,
                                       const double tolerance)
 {
     //Plane: (n, r) == (n, r_0)
@@ -31,7 +31,7 @@ bool MeshUtilities::is_point_on_plane(const dealii::Point<3> &point,
 bool MeshUtilities::is_point_on_circle(const dealii::Point<3> &point,
                                        const dealii::Point<3> &center,
                                        const double radius,
-                                       const size_t axis,
+                                       const unsigned int axis,
                                        const double tolerance)
 {
     if (!is_point_on_plane(point, center, axis, tolerance)) {
@@ -46,7 +46,7 @@ bool MeshUtilities::is_face_on_sphere(const dealii::Triangulation<3>::active_fac
                                       const double radius,
                                       const double tolerance)
 {
-    for (size_t v = 0; v < dealii::GeometryInfo<3>::vertices_per_face; ++v) {
+    for (unsigned int v = 0; v < dealii::GeometryInfo<3>::vertices_per_face; ++v) {
         const dealii::Point<3> current_point = face->vertex(v);
         if (!is_point_on_sphere(current_point, center, radius, tolerance)) {
             return false;
@@ -57,10 +57,10 @@ bool MeshUtilities::is_face_on_sphere(const dealii::Triangulation<3>::active_fac
 
 bool MeshUtilities::is_face_on_plane(const dealii::Triangulation<3>::active_face_iterator &face,
                                      const dealii::Point<3> &point_on_plane,
-                                     const size_t axis,
+                                     const unsigned int axis,
                                      const double tolerance)
 {
-    for (size_t v = 0; v < dealii::GeometryInfo<3>::vertices_per_face; ++v) {
+    for (unsigned int v = 0; v < dealii::GeometryInfo<3>::vertices_per_face; ++v) {
         const dealii::Point<3> current_point = face->vertex(v);
         if (!is_point_on_plane(current_point, point_on_plane, axis, tolerance)) {
             return false;
@@ -72,10 +72,10 @@ bool MeshUtilities::is_face_on_plane(const dealii::Triangulation<3>::active_face
 bool MeshUtilities::is_face_inscribed_in_circle(const dealii::Triangulation<3>::active_face_iterator &face,
                                                 const dealii::Point<3> &center,
                                                 const double radius,
-                                                const size_t axis,
+                                                const unsigned int axis,
                                                 const double tolerance)
 {
-    for (size_t v = 0; v < dealii::GeometryInfo<3>::vertices_per_face; ++v) {
+    for (unsigned int v = 0; v < dealii::GeometryInfo<3>::vertices_per_face; ++v) {
         const dealii::Point<3> current_point = face->vertex(v);
         if (!is_point_on_circle(current_point, center, radius, axis, tolerance)) {
             return false;
@@ -86,14 +86,14 @@ bool MeshUtilities::is_face_inscribed_in_circle(const dealii::Triangulation<3>::
 
 bool MeshUtilities::is_face_on_cylinder(const dealii::Triangulation<3>::active_face_iterator &face,
                                         const dealii::Point<3> &center,
-                                        const size_t axis,
+                                        const unsigned int axis,
                                         const double radius,
                                         const double length,
                                         const double tolerance)
 {
     dealii::Point<3> axis_vector = get_axis_from_number(axis);
 
-    for (size_t v = 0; v < dealii::GeometryInfo<3>::vertices_per_face; ++v) {
+    for (unsigned int v = 0; v < dealii::GeometryInfo<3>::vertices_per_face; ++v) {
         const dealii::Point<3> shifted_vertex = face->vertex(v) + (-center);
         const double distance_to_axis = (shifted_vertex - (axis_vector * shifted_vertex) * axis_vector).norm();
 
@@ -107,7 +107,7 @@ bool MeshUtilities::is_face_on_cylinder(const dealii::Triangulation<3>::active_f
     return true;
 }
 
-dealii::Point<3> MeshUtilities::get_axis_from_number(size_t axis_no)
+dealii::Point<3> MeshUtilities::get_axis_from_number(const unsigned int axis_no)
 {
     switch (axis_no) {
         case 0:
