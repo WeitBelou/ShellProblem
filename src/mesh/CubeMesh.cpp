@@ -8,6 +8,7 @@
 
 #include <deal.II/grid/grid_in.h>
 #include <deal.II/grid/grid_out.h>
+#include <src/mesh_markers/PlaneMarker.hpp>
 
 using namespace dealii;
 
@@ -33,18 +34,7 @@ void CubeMesh::apply_manifold_ids()
 }
 void CubeMesh::apply_boundary_ids()
 {
-    for (auto cell : tria.active_cell_iterators()) {
-        for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
-            if (cell->face(f)->at_boundary()) {
-                Triangulation<3>::active_face_iterator face = cell->face(f);
-                if (MeshUtilities::is_face_on_plane(face, Point<3>(0, 0, size / 2), 2)) {
-                    face->set_all_boundary_ids(1);
-                }
-                else {
-                    face->set_all_boundary_ids(0);
-                }
-            }
-        }
-    }
+    PlaneMarker marker(1, Point<3>(0, 0, size / 2), 2);
+    marker.mark_mesh(tria);
 }
 

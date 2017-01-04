@@ -15,13 +15,13 @@
   "mesh": {
     "type": "cube",
     "geometry": {
-      "size": 1,
+      "size": 10,
       "n_refines": 2
     }
   },
   "linear_solver": {
     "type": "CG",
-    "eps": 1e-2,
+    "eps": 1e-6,
     "n_steps": 100,
     "additional_data": {
     }
