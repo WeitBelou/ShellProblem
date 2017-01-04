@@ -1,7 +1,6 @@
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/precondition.h>
 #include "LinearSolverGMRES.hpp"
-#include "LinearSolverBase.hpp"
 LinearSolverGMRES::LinearSolverGMRES(const double eps,
                                      const unsigned int n_steps,
                                      const dealii::SolverGMRES<>::AdditionalData &data)

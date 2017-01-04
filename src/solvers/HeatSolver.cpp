@@ -8,7 +8,6 @@
 
 #include <deal.II/fe/fe_values.h>
 
-#include <deal.II/lac/solver.h>
 #include <deal.II/lac/precondition.h>
 #include <deal.II/numerics/data_out.h>
 #include <fstream>
