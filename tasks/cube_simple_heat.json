@@ -3,15 +3,15 @@
     "type": "simple_heat",
     "material": {
       "thermal_diffusivity": 9.0e-2
-    },
-    "boundaries": [
-      {
-        "id": 1,
-        "type": "constant",
-        "value": 2000
-      }
-    ]
+    }
   },
+  "boundaries": [
+    {
+      "id": 1,
+      "type": "constant",
+      "value": 2000
+    }
+  ],
   "mesh": {
     "type": "cube",
     "geometry": {

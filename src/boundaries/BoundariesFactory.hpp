@@ -10,7 +10,7 @@
 class BoundariesFactory
 {
 public:
-    static BoundariesMap create_boundaries(const json &solver_properties);
+    static BoundariesMap create_boundaries(const json &boundaries_properties);
 };
 
 

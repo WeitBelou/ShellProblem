@@ -4,15 +4,15 @@
     "material": {
       "E": 1.0e+12,
       "G": 4.7e+11
-    },
-    "boundaries": [
-      {
-        "id": 1,
-        "type": "constant",
-        "value": 7.0e+03
-      }
-    ]
+    }
   },
+  "boundaries": [
+    {
+      "id": 1,
+      "type": "constant",
+      "value": 7.0e+03
+    }
+  ],
   "mesh": {
     "type": "cube",
     "geometry": {

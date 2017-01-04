@@ -4,15 +4,15 @@
     "material": {
       "E": 1.0e+12,
       "G": 4.7e+11
-    },
-    "boundaries": [
-      {
-        "id": 1,
-        "type" : "sin_square",
-        "amplitude" : 7.0e+07
-      }
-    ]
+    }
   },
+  "boundaries": [
+    {
+      "id": 1,
+      "type": "sin_square",
+      "amplitude": 7.0e+07
+    }
+  ],
   "mesh": {
     "type": "simple_shell",
     "geometry": {
@@ -24,8 +24,8 @@
       "n_refines": 2
     }
   },
-  "linear_solver" : {
-    "type" : "GMRES",
+  "linear_solver": {
+    "type": "GMRES",
     "eps": 1e-2,
     "n_steps": 10000,
     "additional_data": {
