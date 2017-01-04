@@ -14,6 +14,7 @@
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
 #include <src/boundaries/BoundariesMap.hpp>
+#include <src/linear_solver/LinearSolverBase.hpp>
 
 #include "SolverBase.hpp"
 #include "src/mesh/MeshBase.hpp"
@@ -31,7 +32,8 @@ public:
 
     HeatSolver(std::shared_ptr<MeshBase> mesh,
                    const Material &material,
-                   const BoundariesMap boundary_functions);
+                   const BoundariesMap boundary_functions,
+                   const std::shared_ptr<LinearSolverBase> &linear_solver);
     ~HeatSolver();
 protected:
     void setup_system() override;
@@ -46,6 +48,8 @@ private:
     Material material;
 
     const BoundariesMap boundary_functions;
+
+    std::shared_ptr<LinearSolverBase> linear_solver;
 
     dealii::DoFHandler<3> dof_handler;
 

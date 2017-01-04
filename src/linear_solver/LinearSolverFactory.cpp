@@ -18,7 +18,7 @@ std::shared_ptr<LinearSolverBase> LinearSolverFactory::create_linear_solver(cons
     }
 }
 
-dealii::SolverCG::AdditionalData LinearSolverFactory::create_cg_additional_data(const json &additional_data)
+dealii::SolverCG<>::AdditionalData LinearSolverFactory::create_cg_additional_data(const json &additional_data)
 {
-    return dealii::SolverCG::AdditionalData();
+    return dealii::SolverCG<>::AdditionalData();
 }

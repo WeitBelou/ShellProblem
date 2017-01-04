@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <deal.II/lac/solver_gmres.h>
+#include <src/linear_solver/LinearSolverBase.hpp>
 #include "Task.hpp"
 #include "TaskUtil.hpp"
 #include "src/mesh/MeshBase.hpp"
@@ -14,7 +15,9 @@ public:
 
 private:
     static std::shared_ptr<SolverBase>
-    create_solver(const json &solver_properties, std::shared_ptr<MeshBase> mesh);
+    create_solver(const json &solver_properties,
+                     std::shared_ptr<MeshBase> mesh,
+                     std::shared_ptr<LinearSolverBase> linear_solver);
 
     static dealii::SolverGMRES<>::AdditionalData get_gmres_additional_data(const json &linear_solver_properties);
 };

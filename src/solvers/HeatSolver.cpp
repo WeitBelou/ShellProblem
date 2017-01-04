@@ -18,11 +18,13 @@ using namespace dealii;
 
 HeatSolver::HeatSolver(std::shared_ptr<MeshBase> mesh,
                        const Material &material,
-                       const BoundariesMap boundary_functions)
+                       const BoundariesMap boundary_functions,
+                       const std::shared_ptr<LinearSolverBase> &linear_solver)
     :
     SolverBase(mesh),
     material(material),
     boundary_functions(boundary_functions),
+    linear_solver(linear_solver),
     dof_handler(mesh->mesh()),
     fe(2),
     quadrature(2),
@@ -108,17 +110,9 @@ void HeatSolver::assemble_system()
 
 unsigned int HeatSolver::solve_linear_system()
 {
-    SolverControl solver_control(dof_handler.n_dofs(), 1e-3);
-    SolverCG<> solver(solver_control);
-
-    PreconditionSSOR<> preconditioner;
-    preconditioner.initialize(system_matrix, 1.2);
-
-    constraints.set_zero(solution);
-    solver.solve(system_matrix, solution, system_rhs, preconditioner);
-    constraints.distribute(solution);
-
-    return solver_control.last_step();
+    auto res = linear_solver->solve(system_matrix, system_rhs);
+    solution = res.result;
+    return res.control.last_step();
 }
 
 void HeatSolver::do_postprocessing(const std::string &output_dir)

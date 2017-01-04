@@ -7,8 +7,8 @@
     "boundaries": [
       {
         "id": 1,
-        "type" : "sin_square",
-        "amplitude" : 2000
+        "type": "constant",
+        "value": 2000
       }
     ]
   },
@@ -17,6 +17,13 @@
     "geometry": {
       "size": 1,
       "n_refines": 2
+    }
+  },
+  "linear_solver": {
+    "type": "CG",
+    "eps": 1e-2,
+    "n_steps": 100,
+    "additional_data": {
     }
   }
 }

@@ -13,7 +13,7 @@ LinearSolverCG::LinearSolverCG(const double eps,
 
 Result LinearSolverCG::solve(const dealii::SparseMatrix<double> &a, const dealii::Vector<double> &b)
 {
-    dealii::Vector<double> solution;
+    dealii::Vector<double> solution(static_cast<const unsigned int>(b.size()));
 
     dealii::PreconditionIdentity preconditioner;
     preconditioner.initialize(a);
