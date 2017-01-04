@@ -11,13 +11,7 @@
         "type" : "sin_square",
         "amplitude" : 7.0e+07
       }
-    ],
-    "linear_solver_data": {
-      "max_n_tmp_vectors": 60,
-      "right_preconditioning": false,
-      "use_default_residual": true,
-      "force_re_orthogonalization": false
-    }
+    ]
   },
   "mesh": {
     "type": "simple_shell",
@@ -28,6 +22,17 @@
         "cylinder_length": 15.0
       },
       "n_refines": 2
+    }
+  },
+  "linear_solver" : {
+    "type" : "GMRES",
+    "eps": 1e-2,
+    "n_steps": 10000,
+    "additional_data": {
+      "max_n_tmp_vectors": 1000,
+      "right_preconditioning": false,
+      "use_default_residual": true,
+      "force_re_orthogonalization": false
     }
   }
 }

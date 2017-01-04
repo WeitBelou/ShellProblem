@@ -14,12 +14,11 @@ public:
     static std::shared_ptr<Task> create_task_from_json(json task, const std::string &output_dir);
 
 private:
+
     static std::shared_ptr<SolverBase>
     create_solver(const json &solver_properties,
                      std::shared_ptr<MeshBase> mesh,
                      std::shared_ptr<LinearSolverBase> linear_solver);
-
-    static dealii::SolverGMRES<>::AdditionalData get_gmres_additional_data(const json &linear_solver_properties);
 };
 
 

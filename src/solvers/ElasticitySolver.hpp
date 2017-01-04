@@ -12,6 +12,7 @@
 #include <deal.II/lac/sparsity_pattern.h>
 #include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/lac/solver_gmres.h>
+#include <src/linear_solver/LinearSolverBase.hpp>
 
 #include "src/boundaries/BoundariesMap.hpp"
 #include "src/boundaries/Boundaries.hpp"
@@ -32,9 +33,9 @@ public:
     };
 
     ElasticitySolver(std::shared_ptr<MeshBase> mesh,
-                     const Material &material,
-                     const BoundariesMap neumann,
-                     dealii::SolverGMRES<>::AdditionalData linear_solver_data);
+                         const Material &material,
+                         const BoundariesMap neumann,
+                         std::shared_ptr<LinearSolverBase> linear_solver);
     ~ElasticitySolver();
 protected:
     void setup_system() override;
@@ -45,6 +46,7 @@ protected:
 private:
     void compute_norm_of_stress();
     const BoundariesMap neumann;
+    std::shared_ptr<LinearSolverBase> linear_solver;
 
     dealii::DoFHandler<3> dof_handler;
 

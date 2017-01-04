@@ -25,18 +25,18 @@ using namespace dealii;
 ElasticitySolver::ElasticitySolver(std::shared_ptr<MeshBase> mesh,
                                    const Material &material,
                                    const BoundariesMap neumann,
-                                   dealii::SolverGMRES<>::AdditionalData linear_solver_data)
+                                   std::shared_ptr<LinearSolverBase> linear_solver)
     :
     SolverBase(mesh),
     neumann(neumann),
+    linear_solver(linear_solver),
     dof_handler(mesh->mesh()),
     norm_of_stress(mesh->mesh().n_active_cells()),
     fe(FE_Q<3>(1), 3),
     displacement_extractor(0),
     quadrature(2),
     face_quadrature(2),
-    stress_strain(material.get_stress_strain_tensor()),
-    linear_solver_data(linear_solver_data)
+    stress_strain(material.get_stress_strain_tensor())
 {
 
 }
@@ -107,7 +107,7 @@ void ElasticitySolver::assemble_system()
 
         //Assemble rhs
         for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
-            for (auto&& it: neumann.conditions()) {
+            for (auto &&it: neumann.conditions()) {
                 if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == it.first) {
                     fe_face_values.reinit(cell, f);
 
@@ -136,26 +136,9 @@ void ElasticitySolver::assemble_system()
 
 unsigned int ElasticitySolver::solve_linear_system()
 {
-    SolverControl solver_control(dof_handler.n_dofs(),
-                                 2e-14 * system_rhs.l2_norm(),
-                                 true, true);
-
-    SolverGMRES<> solver(solver_control, linear_solver_data);
-
-    PreconditionJacobi<> precondition;
-    precondition.initialize(system_matrix);
-
-    try {
-        solver.solve(system_matrix, displacement, system_rhs, precondition);
-    }
-    catch (SolverControl::NoConvergence &exc) {
-        deallog << "Solver does not converges." << std::endl
-                << "Residual " << exc.last_residual << std::endl;
-    }
-
-    constraints.distribute(displacement);
-
-    return solver_control.last_step();
+    auto res = linear_solver->solve(system_matrix, system_rhs);
+    displacement = res.result;
+    return res.control.last_step();
 }
 
 void ElasticitySolver::compute_norm_of_stress()
