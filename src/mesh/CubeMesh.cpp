@@ -13,9 +13,10 @@
 using namespace dealii;
 
 CubeMesh::CubeMesh(double size,
-                   unsigned int n_refines)
+                   unsigned int n_refines,
+                   std::shared_ptr<MeshMarkerBase> marker)
     :
-    MeshBase(n_refines),
+    MeshBase(n_refines, marker),
     size(size)
 {
     create();
@@ -32,9 +33,3 @@ void CubeMesh::apply_manifold_ids()
     tria.set_manifold(0, flate_manifold);
     tria.set_all_manifold_ids(0);
 }
-void CubeMesh::apply_boundary_ids()
-{
-    PlaneMarker marker(1, Point<3>(0, 0, size / 2), 2);
-    marker.mark_mesh(tria);
-}
-

@@ -13,9 +13,10 @@ using namespace dealii;
 SimpleShellMesh::SimpleShellMesh(double inner_radius,
                                  double outer_radius,
                                  double cylinder_length,
-                                 unsigned int n_refines)
+                                 unsigned int n_refines,
+                                 std::shared_ptr<MeshMarkerBase> marker)
     :
-    MeshBase(n_refines),
+    MeshBase(n_refines, marker),
     inner_radius(inner_radius),
     outer_radius(outer_radius),
     thickness(outer_radius - inner_radius),
@@ -63,9 +64,4 @@ void SimpleShellMesh::apply_manifold_ids()
             cell->set_all_manifold_ids(2);
         }
     }
-}
-void SimpleShellMesh::apply_boundary_ids()
-{
-    SphereMarker marker(1, Point<3>(0, 0, 0), outer_radius);
-    marker.mark_mesh(tria);
 }

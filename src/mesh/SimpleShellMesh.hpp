@@ -9,13 +9,11 @@ public:
     SimpleShellMesh(double inner_radius,
                     double outer_radius,
                     double cylinder_length,
-                    unsigned int n_refines);
+                    unsigned int n_refines,
+                    std::shared_ptr<MeshMarkerBase> marker);
 protected:
     virtual void create_coarse_mesh() override;
-
     virtual void apply_manifold_ids() override;
-    virtual void apply_boundary_ids() override;
-
 private:
     double inner_radius;
     double outer_radius;
