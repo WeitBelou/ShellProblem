@@ -9,6 +9,14 @@
 #include "MeshUtilities.hpp"
 
 
+bool
+MeshUtilities::is_point_in_sphere(const dealii::Point<3> point,
+                                  const dealii::Point<3> &center,
+                                  const double radius)
+{
+    return ((point - center).norm() < radius) || is_point_on_sphere(point, center, radius);
+}
+
 bool MeshUtilities::is_point_on_sphere(const dealii::Point<3> &point,
                                        const dealii::Point<3> &center,
                                        const double radius)
@@ -69,4 +77,23 @@ dealii::Point<3> MeshUtilities::get_axis_from_number(const unsigned int axis_no)
 bool MeshUtilities::fuzzy_equal(const double x, const double y)
 {
     return std::fabs(x - y) < std::numeric_limits<double>::epsilon();
+}
+
+bool MeshUtilities::is_face_in_circle(dealii::Triangulation<3, 3>::active_face_iterator face,
+                                      const dealii::Point<3> &center,
+                                      const double radius,
+                                      const unsigned int axis)
+{
+    if (!is_face_on_plane(face, center, axis)) {
+        return false;
+    }
+
+    for (unsigned int v = 0; v < dealii::GeometryInfo<3>::vertices_per_face; ++v) {
+        const dealii::Point<3> current_point = face->vertex(v);
+        if (!is_point_in_sphere(current_point, center, radius)) {
+            return false;
+        }
+    }
+
+    return true;
 }
