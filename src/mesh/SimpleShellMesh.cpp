@@ -2,6 +2,7 @@
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/manifold.h>
 #include <deal.II/grid/manifold_lib.h>
+#include <src/mesh_markers/SphereMarker.hpp>
 
 #include "CubeMesh.hpp"
 #include "SimpleShellMesh.hpp"
@@ -39,7 +40,7 @@ void SimpleShellMesh::create_coarse_mesh()
     {
         dealii::Point<3> result = p;
 
-        if (p(0) < -1e-10) {
+        if (p(0) < 0) {
             if (MeshUtilities::is_point_on_sphere(p, fairing_center, inner_radius)) {
                 const double a = inner_radius / std::sqrt(2);
                 result(0) = -cylinder_length + thickness;
@@ -87,17 +88,6 @@ void SimpleShellMesh::apply_manifold_ids()
 }
 void SimpleShellMesh::apply_boundary_ids()
 {
-    for (auto cell : tria.active_cell_iterators()) {
-        for (unsigned int f = 0; f < dealii::GeometryInfo<3>::faces_per_cell; ++f) {
-            if (cell->face(f)->at_boundary()) {
-                dealii::Triangulation<3>::face_iterator face = cell->face(f);
-                if (MeshUtilities::is_face_on_sphere(face, dealii::Point<3>(0, 0, 0), outer_radius)) {
-                    face->set_all_boundary_ids(1);
-                }
-                else {
-                    face->set_all_boundary_ids(0);
-                }
-            }
-        }
-    }
+    SphereMarker marker(1, Point<3>(0, 0, 0), outer_radius);
+    marker.mark_mesh(tria);
 }
