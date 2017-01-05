@@ -30,40 +30,18 @@ void SimpleShellMesh::create_coarse_mesh()
     const dealii::Point<3> fairing_center;
     GridGenerator::half_hyper_shell(fairing, fairing_center,
                                     inner_radius, outer_radius);
+    GridTools::rotate(-numbers::PI_2, 1, fairing);
 
     //Shell cylinder
     dealii::Triangulation<3> shell_cylinder;
-    GridGenerator::half_hyper_shell(shell_cylinder, fairing_center,
-                                    inner_radius, outer_radius);
-    dealii::GridTools::rotate(dealii::numbers::PI, 1, shell_cylinder);
-    auto shell_to_cylinder = [fairing_center, this](const dealii::Point<3> &p)
-    {
-        dealii::Point<3> result = p;
-
-        if (p(0) < 0) {
-            if (MeshUtilities::is_point_on_sphere(p, fairing_center, inner_radius)) {
-                const double a = inner_radius / std::sqrt(2);
-                result(0) = -cylinder_length + thickness;
-
-                result(1) = (p(1) < 0) ? (-a) : (a);
-                result(2) = (p(2) < 0) ? (-a) : (a);
-            }
-            else if (MeshUtilities::is_point_on_sphere(p, fairing_center, outer_radius)) {
-                const double a = outer_radius / std::sqrt(2);
-                result(0) = -cylinder_length;
-
-                result(1) = (p(1) < 0) ? (-a) : (a);
-                result(2) = (p(2) < 0) ? (-a) : (a);
-            }
-        }
-
-        return result;
-    };
-    dealii::GridTools::transform(shell_to_cylinder, shell_cylinder);
+    GridGenerator::cylinder_shell(shell_cylinder, cylinder_length,
+                                  inner_radius, outer_radius,
+                                  4, 4);
+    GridTools::rotate(numbers::PI, 1, shell_cylinder);
+    GridTools::rotate(numbers::PI_4, 2, shell_cylinder);
 
     //Merge
     GridGenerator::merge_triangulations(fairing, shell_cylinder, tria);
-    dealii::GridTools::rotate(-dealii::numbers::PI_2, 1, tria);
 }
 void SimpleShellMesh::apply_manifold_ids()
 {
