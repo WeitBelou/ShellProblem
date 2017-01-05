@@ -111,6 +111,7 @@ unsigned int HeatSolver::solve_linear_system()
 {
     auto res = linear_solver->solve(system_matrix, system_rhs);
     solution = res.result;
+    constraints.distribute(solution);
     return res.control.last_step();
 }
 
