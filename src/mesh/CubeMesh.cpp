@@ -25,11 +25,12 @@ CubeMesh::CubeMesh(double size,
 void CubeMesh::create_coarse_mesh()
 {
     GridGenerator::hyper_cube(tria, -size / 2, size / 2);
+    tria.refine_global(2);
 }
 
 void CubeMesh::apply_manifold_ids()
 {
-    static const dealii::FlatManifold<3> flate_manifold(Point<3>(0, 0, 0));
-    tria.set_manifold(0, flate_manifold);
+    static const dealii::FlatManifold<3> flat_manifold(Point<3>(0, 0, 0));
+    tria.set_manifold(0, flat_manifold);
     tria.set_all_manifold_ids(0);
 }
