@@ -5,7 +5,7 @@
 
 #include "src/linear_solver/LinearSolverBase.hpp"
 #include "src/boundaries/BoundariesMap.hpp"
-#include "src/task/TaskUtil.hpp"
+#include "src/util/JsonUtil.hpp"
 #include "SolverBase.hpp"
 
 class SolverBuilder

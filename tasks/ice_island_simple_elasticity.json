@@ -20,6 +20,19 @@
       "n_refines": 2
     }
   },
+  "mesh_markers" : [
+    {
+      "type" : "circle_marker",
+      "id": 1,
+      "center" : {
+        "x" : 0,
+        "y" : 0,
+        "z" : 5
+      },
+      "axis" : 2,
+      "radius" : 5
+    }
+  ],
   "linear_solver": {
     "type": "GMRES",
     "eps": 7.0e-9,

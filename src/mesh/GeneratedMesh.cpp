@@ -1,9 +1,9 @@
 #include "GeneratedMesh.hpp"
 GeneratedMesh::GeneratedMesh(unsigned int n_global_refinements,
-                             std::shared_ptr<MeshMarkerBase> marker)
+                             const MeshMarkersGroup &markers)
     :
     n_global_refinements(n_global_refinements),
-    marker(marker)
+    markers(markers)
 {}
 
 void GeneratedMesh::create()
@@ -21,5 +21,5 @@ void GeneratedMesh::refine_mesh(unsigned int n_refines)
 
 void GeneratedMesh::apply_boundary_ids()
 {
-    marker->mark_mesh(tria);
+    markers.apply_markers(tria);
 }

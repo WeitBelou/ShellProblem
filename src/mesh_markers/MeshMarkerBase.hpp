@@ -6,9 +6,9 @@
 class MeshMarkerBase
 {
 public:
-    void mark_mesh(dealii::Triangulation<3, 3> &mesh);
+    void mark_mesh(dealii::Triangulation<3, 3> &mesh) const;
 protected:
-    virtual void apply_boundary_ids(dealii::Triangulation<3, 3> &triangulation) = 0;
+    virtual void apply_boundary_ids(dealii::Triangulation<3, 3> &triangulation) const = 0;
 };
 
 

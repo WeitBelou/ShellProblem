@@ -10,7 +10,7 @@ class CubeMesh: public GeneratedMesh
 public:
     CubeMesh(double size,
                  unsigned int n_refines,
-                 std::shared_ptr<MeshMarkerBase> marker);
+                 const MeshMarkersGroup marker);
 protected:
     virtual void create_coarse_mesh() override;
     virtual void apply_manifold_ids() override;

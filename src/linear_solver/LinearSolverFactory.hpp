@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <deal.II/lac/solver_gmres.h>
-#include <src/task/TaskUtil.hpp>
+#include <src/util/JsonUtil.hpp>
 #include "LinearSolverBase.hpp"
 
 class LinearSolverFactory

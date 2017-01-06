@@ -11,7 +11,7 @@ SphereMarker::SphereMarker(const dealii::types::boundary_id boundary_id,
     radius(radius)
 {}
 
-void SphereMarker::apply_boundary_ids(dealii::Triangulation<3, 3> &triangulation)
+void SphereMarker::apply_boundary_ids(dealii::Triangulation<3, 3> &triangulation) const
 {
     for (auto cell : triangulation.active_cell_iterators()) {
         for (unsigned int f = 0; f < dealii::GeometryInfo<3>::faces_per_cell; ++f) {

@@ -12,7 +12,7 @@ using namespace dealii;
 
 CubeMesh::CubeMesh(double size,
                    unsigned int n_refines,
-                   std::shared_ptr<MeshMarkerBase> marker)
+                   const MeshMarkersGroup marker)
     :
     GeneratedMesh(n_refines, marker),
     size(size)

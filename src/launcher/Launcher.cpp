@@ -14,7 +14,7 @@ void Launcher::run(const std::string &task_file, const std::string &output_dir)
     deallog.attach(file_logstream);
 
     try {
-        auto task = TaskFactory::create_task_from_json(TaskUtil::read_json_from_file(task_file), output_dir);
+        auto task = TaskFactory::create_task_from_json(JsonUtil::read_json_from_file(task_file), output_dir);
         task->execute();
     }
     catch (std::exception &e) {

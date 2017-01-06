@@ -15,7 +15,7 @@ SimpleShellMesh::SimpleShellMesh(double inner_radius,
                                  double outer_radius,
                                  double cylinder_length,
                                  unsigned int n_refines,
-                                 std::shared_ptr<MeshMarkerBase> marker)
+                                 const MeshMarkersGroup marker)
     :
     GeneratedMesh(n_refines, marker),
     inner_radius(inner_radius),
