@@ -6,13 +6,16 @@
       "G": 4.7e+11
     }
   },
-  "boundaries": [
-    {
-      "id": 1,
-      "type": "sin_square",
-      "amplitude": 7.0e+07
-    }
-  ],
+  "boundaries": {
+    "dirichlet": [],
+    "neumann": [
+      {
+        "id": 1,
+        "type": "sin_square",
+        "amplitude": 7.0e+07
+      }
+    ]
+  },
   "mesh": {
     "type": "simple_shell",
     "geometry": {
@@ -26,14 +29,14 @@
   },
   "mesh_markers": [
     {
-      "type" : "sphere_marker",
+      "type": "sphere_marker",
       "id": 1,
-      "center" : {
-        "x" : 0,
-        "y" : 0,
-        "z" : 0
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
       },
-      "radius" : 5.3
+      "radius": 5.3
     }
   ],
   "linear_solver": {

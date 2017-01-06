@@ -5,13 +5,17 @@
       "thermal_diffusivity": 9.0e-2
     }
   },
-  "boundaries": [
-    {
-      "id": 1,
-      "type": "sin_square",
-      "amplitude": 2000
-    }
-  ],
+  "boundaries": {
+    "dirichlet": [
+      {
+        "id": 1,
+        "type": "constant",
+        "value": 2000
+      }
+    ],
+    "neumann": [
+    ]
+  },
   "mesh": {
     "type": "simple_shell",
     "geometry": {
@@ -25,20 +29,20 @@
   },
   "mesh_markers": [
     {
-      "type" : "sphere_marker",
+      "type": "sphere_marker",
       "id": 1,
-      "center" : {
-        "x" : 0,
-        "y" : 0,
-        "z" : 0
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
       },
-      "radius" : 5.3
+      "radius": 5.3
     }
   ],
   "linear_solver": {
     "type": "CG",
     "eps": 1,
-    "n_steps": 2000,
+    "n_steps": 3000,
     "additional_data": {
     }
   }

@@ -6,13 +6,18 @@
       "G": 4.7e+11
     }
   },
-  "boundaries": [
-    {
-      "id": 1,
-      "type": "constant",
-      "value": 7.0e+03
-    }
-  ],
+  "boundaries": {
+    "dirichlet": [
+
+    ],
+    "neumann": [
+      {
+        "id" : 1,
+        "type" : "constant",
+        "value" : 7.0e+3
+      }
+    ]
+  },
   "mesh_markers": [
     {
       "type": "plane_marker",
