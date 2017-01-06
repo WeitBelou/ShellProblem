@@ -20,13 +20,25 @@
         "outer_radius": 5.3,
         "cylinder_length": 15.0
       },
-      "n_refines": 2
+      "n_refines": 3
     }
   },
+  "mesh_markers": [
+    {
+      "type" : "sphere_marker",
+      "id": 1,
+      "center" : {
+        "x" : 0,
+        "y" : 0,
+        "z" : 0
+      },
+      "radius" : 5.3
+    }
+  ],
   "linear_solver": {
     "type": "CG",
-    "eps": 1e-2,
-    "n_steps": 100,
+    "eps": 1,
+    "n_steps": 2000,
     "additional_data": {
     }
   }

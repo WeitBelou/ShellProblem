@@ -24,9 +24,21 @@
       "n_refines": 2
     }
   },
+  "mesh_markers": [
+    {
+      "type" : "sphere_marker",
+      "id": 1,
+      "center" : {
+        "x" : 0,
+        "y" : 0,
+        "z" : 0
+      },
+      "radius" : 5.3
+    }
+  ],
   "linear_solver": {
     "type": "GMRES",
-    "eps": 1e-2,
+    "eps": 5e-7,
     "n_steps": 10000,
     "additional_data": {
       "max_n_tmp_vectors": 1000,
