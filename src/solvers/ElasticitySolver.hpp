@@ -14,7 +14,7 @@
 #include <deal.II/lac/solver_gmres.h>
 #include <src/linear_solver/LinearSolverBase.hpp>
 
-#include "src/boundaries/BoundariesMap.hpp"
+#include "src/boundaries/BoundariesGroup.hpp"
 #include "src/boundaries/Boundaries.hpp"
 #include "SolverBase.hpp"
 #include "src/mesh/MeshBase.hpp"
@@ -34,7 +34,7 @@ public:
 
     ElasticitySolver(std::shared_ptr<MeshBase> mesh,
                      const Material &material,
-                     const BoundariesMap neumann,
+                     const BoundariesGroup boundaries,
                      std::shared_ptr<LinearSolverBase> linear_solver);
     ~ElasticitySolver();
 protected:
@@ -45,7 +45,7 @@ protected:
     unsigned int get_n_dofs() override;
 private:
     void compute_norm_of_stress();
-    const BoundariesMap neumann;
+    const BoundariesGroup boundaries;
     std::shared_ptr<LinearSolverBase> linear_solver;
 
     dealii::DoFHandler<3> dof_handler;

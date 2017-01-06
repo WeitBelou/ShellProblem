@@ -13,7 +13,7 @@
 #include <deal.II/fe/fe_q.h>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
-#include <src/boundaries/BoundariesMap.hpp>
+#include <src/boundaries/BoundariesGroup.hpp>
 #include <src/linear_solver/LinearSolverBase.hpp>
 
 #include "SolverBase.hpp"
@@ -32,7 +32,7 @@ public:
 
     HeatSolver(std::shared_ptr<MeshBase> mesh,
                const Material &material,
-               const BoundariesMap boundary_functions,
+               const BoundariesGroup boundaries,
                const std::shared_ptr<LinearSolverBase> &linear_solver);
     ~HeatSolver();
 protected:
@@ -47,7 +47,7 @@ protected:
 private:
     Material material;
 
-    const BoundariesMap boundary_functions;
+    const BoundariesGroup boundaries;
 
     std::shared_ptr<LinearSolverBase> linear_solver;
 

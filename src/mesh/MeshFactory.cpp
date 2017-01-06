@@ -7,23 +7,35 @@
 std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,
                                                    const MeshMarkersGroup &markers)
 {
-    std::string mesh_type = mesh_properties["type"].get<std::string>();
-
+    MeshType mesh_type = get_type(mesh_properties["type"]);
     const json geometry = mesh_properties["geometry"];
 
-    if (mesh_type == "cube") {
-        return create_cube_mesh(geometry, markers);
+    switch (mesh_type) {
+        case MeshType::Cube:
+            return create_cube_mesh(geometry, markers);
+        case MeshType::SimpleShell:
+            return create_simple_shell_mesh(geometry, markers);
+        case MeshType::SimpleIceIsland:
+            return create_simple_ice_island(geometry, markers);
     }
-    else if (mesh_type == "simple_shell") {
-        return create_simple_shell_mesh(geometry, markers);
+}
+MeshFactory::MeshType MeshFactory::get_type(const json &type)
+{
+    const std::string type_string = type.get<std::string>();
+    if (type_string == "cube") {
+        return MeshType::Cube;
     }
-    else if (mesh_type == "simple_ice_island") {
-        return create_simple_ice_island(geometry, markers);
+    else if (type_string == "simple_shell") {
+        return MeshType::SimpleShell;
+    }
+    else if (type_string == "simple_ice_island") {
+        return MeshType::SimpleIceIsland;
     }
     else {
-        AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented());
-        return nullptr;
-    }
+        AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
+            std::string("Mesh type " + type_string + " doesn\'t exist.")
+        ));
+    };
 }
 std::shared_ptr<MeshBase> MeshFactory::create_simple_shell_mesh(const json geometry, const MeshMarkersGroup &markers)
 {
@@ -40,6 +52,7 @@ std::shared_ptr<MeshBase> MeshFactory::create_simple_shell_mesh(const json geome
         markers
     );
 }
+
 std::shared_ptr<MeshBase> MeshFactory::create_cube_mesh(const json geometry, const MeshMarkersGroup &markers)
 {
     const double size = geometry["size"].get<double>();

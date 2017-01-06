@@ -17,6 +17,7 @@
 #include <deal.II/lac/precondition.h>
 #include <src/postprocessors/VectorOutputWriter.hpp>
 #include <src/postprocessors/OutputWriter.hpp>
+#include <deal.II/numerics/vector_tools.h>
 
 #include "ElasticitySolver.hpp"
 
@@ -24,11 +25,11 @@ using namespace dealii;
 
 ElasticitySolver::ElasticitySolver(std::shared_ptr<MeshBase> mesh,
                                    const Material &material,
-                                   const BoundariesMap neumann,
+                                   const BoundariesGroup boundaries,
                                    std::shared_ptr<LinearSolverBase> linear_solver)
     :
     SolverBase(mesh),
-    neumann(neumann),
+    boundaries(boundaries),
     linear_solver(linear_solver),
     dof_handler(mesh->mesh()),
     norm_of_stress(mesh->mesh().n_active_cells()),
@@ -51,8 +52,10 @@ void ElasticitySolver::setup_system()
     dof_handler.distribute_dofs(fe);
 
     constraints.clear();
-    DoFTools::make_hanging_node_constraints(dof_handler,
-                                            constraints);
+    for (auto &&it : boundaries.get_dirichlet()) {
+        VectorTools::interpolate_boundary_values(dof_handler, it.first, *it.second,
+                                                 constraints);
+    }
     constraints.close();
 
     DynamicSparsityPattern dsp(dof_handler.n_dofs(), dof_handler.n_dofs());
@@ -107,7 +110,7 @@ void ElasticitySolver::assemble_system()
 
         //Assemble rhs
         for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
-            for (auto &&it: neumann.conditions()) {
+            for (auto &&it: boundaries.get_neumann()) {
                 if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == it.first) {
                     fe_face_values.reinit(cell, f);
 

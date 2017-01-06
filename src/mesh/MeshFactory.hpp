@@ -18,6 +18,15 @@ private:
     static std::shared_ptr<MeshBase> create_cube_mesh(const json geometry, const MeshMarkersGroup &markers);
     static std::shared_ptr<MeshBase> create_simple_shell_mesh(const json geometry, const MeshMarkersGroup &markers);
     static std::shared_ptr<MeshBase> create_simple_ice_island(const json geometry, const MeshMarkersGroup &markers);
+
+    enum class MeshType
+    {
+        Cube,
+        SimpleShell,
+        SimpleIceIsland
+    };
+
+    static MeshType get_type(const json & type);
 };
 
 

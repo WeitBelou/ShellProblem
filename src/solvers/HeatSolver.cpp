@@ -17,12 +17,12 @@ using namespace dealii;
 
 HeatSolver::HeatSolver(std::shared_ptr<MeshBase> mesh,
                        const Material &material,
-                       const BoundariesMap boundary_functions,
+                       const BoundariesGroup boundaries,
                        const std::shared_ptr<LinearSolverBase> &linear_solver)
     :
     SolverBase(mesh),
     material(material),
-    boundary_functions(boundary_functions),
+    boundaries(boundaries),
     linear_solver(linear_solver),
     dof_handler(mesh->mesh()),
     fe(2),
@@ -46,7 +46,7 @@ void HeatSolver::setup_system()
 
 
     constraints.clear();
-    for (auto &&it : boundary_functions.conditions()) {
+    for (auto &&it : boundaries.get_dirichlet()) {
         VectorTools::interpolate_boundary_values(dof_handler, it.first, *it.second,
                                                  constraints);
     }

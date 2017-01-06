@@ -5,13 +5,18 @@
       "thermal_diffusivity": 9.0e-2
     }
   },
-  "boundaries": [
-    {
-      "id": 1,
-      "type": "constant",
-      "value": 2000
-    }
-  ],
+  "boundaries": {
+    "dirichlet": [
+      {
+        "id": 1,
+        "type": "constant",
+        "value": 2000
+      }
+    ],
+    "neumann" : [
+
+    ]
+  },
   "mesh": {
     "type": "cube",
     "geometry": {

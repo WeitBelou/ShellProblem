@@ -12,6 +12,15 @@ private:
     static std::shared_ptr<const MeshMarkerBase> create_circle_marker(const json &marker);
     static std::shared_ptr<const MeshMarkerBase> create_plane_marker(const json &marker);
     static std::shared_ptr<const MeshMarkerBase> create_sphere_marker(const json &marker);
+
+    enum class MeshMarkerType
+    {
+        CircleMarkerType,
+        PlaneMarkerType,
+        SphereMarkerType
+    };
+
+    static MeshMarkerType get_type(const json & type);
 };
 
 

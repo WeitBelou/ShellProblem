@@ -4,7 +4,7 @@
 std::shared_ptr<SolverBase> SolverBuilder::create_solver(const json &solver_properties,
                                                          std::shared_ptr<MeshBase> mesh,
                                                          std::shared_ptr<LinearSolverBase> linear_solver,
-                                                         BoundariesMap boundaries)
+                                                         BoundariesGroup boundaries)
 {
     std::string problem_type = solver_properties["type"].get<std::string>();
 

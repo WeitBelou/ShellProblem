@@ -20,7 +20,7 @@ std::shared_ptr<Task> TaskFactory::create_task_from_json(json task, const std::s
         linear_solver = LinearSolverFactory::create_linear_solver(linear_solver_properties);
 
     const json &boundaries_properties = task["boundaries"];
-    BoundariesMap boundaries = BoundariesFactory::create_boundaries(boundaries_properties);
+    BoundariesGroup boundaries = BoundariesFactory::create_boundaries(boundaries_properties);
 
     const json &solver_properties = task["solver"];
     std::shared_ptr<SolverBase> solver = SolverBuilder::create_solver(solver_properties, mesh,
