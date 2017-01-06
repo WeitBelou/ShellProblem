@@ -17,7 +17,7 @@
     "type": "simple_ice_island",
     "geometry": {
       "size": 10,
-      "n_refines": 2
+      "n_refines": 4
     }
   },
   "mesh_markers" : [
@@ -25,12 +25,45 @@
       "type" : "circle_marker",
       "id": 1,
       "center" : {
-        "x" : 0,
+        "x" : -2,
         "y" : 0,
         "z" : 5
       },
       "axis" : 2,
-      "radius" : 5
+      "radius" : 1
+    },
+    {
+      "type" : "circle_marker",
+      "id": 1,
+      "center" : {
+        "x" : 2,
+        "y" : 0,
+        "z" : 5
+      },
+      "axis" : 2,
+      "radius" : 1
+    },
+    {
+      "type" : "circle_marker",
+      "id": 1,
+      "center" : {
+        "x" : 0,
+        "y" : -2,
+        "z" : 5
+      },
+      "axis" : 2,
+      "radius" : 1
+    },
+    {
+      "type" : "circle_marker",
+      "id": 1,
+      "center" : {
+        "x" : 0,
+        "y" : 2,
+        "z" : 5
+      },
+      "axis" : 2,
+      "radius" : 1
     }
   ],
   "linear_solver": {

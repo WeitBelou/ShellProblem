@@ -23,7 +23,6 @@ CubeMesh::CubeMesh(double size,
 void CubeMesh::create_coarse_mesh()
 {
     GridGenerator::hyper_cube(tria, -size / 2, size / 2);
-    tria.refine_global(2);
 }
 
 void CubeMesh::apply_manifold_ids()
