@@ -1,7 +1,7 @@
-#ifndef SHELLPROBLEM_GENERATEDMESH_HPP
-#define SHELLPROBLEM_GENERATEDMESH_HPP
+#ifndef SHELL_PROBLEM_GENERATED_MESH_HPP
+#define SHELL_PROBLEM_GENERATED_MESH_HPP
 
-#include <src/mesh_markers/MeshMarkerBase.hpp>
+#include "src/mesh_markers/MeshMarkerBase.hpp"
 #include "MeshBase.hpp"
 class GeneratedMesh: public MeshBase
 {
@@ -24,4 +24,4 @@ protected:
 };
 
 
-#endif //SHELLPROBLEM_GENERATEDMESH_HPP
+#endif //SHELL_PROBLEM_GENERATED_MESH_HPP
