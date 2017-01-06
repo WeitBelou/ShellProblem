@@ -10,6 +10,7 @@ public:
     static const MeshMarkersGroup create_mesh_markers(const json & mesh_markers_properties);
 private:
     static std::shared_ptr<const MeshMarkerBase> create_circle_marker(const json &marker);
+    static std::shared_ptr<const MeshMarkerBase> create_plane_marker(const json &marker);
 };
 
 
