@@ -7,6 +7,7 @@
 #include "CubeMesh.hpp"
 #include "SimpleShellMesh.hpp"
 #include "MeshUtilities.hpp"
+#include "GeneratedMesh.hpp"
 
 using namespace dealii;
 
@@ -16,7 +17,7 @@ SimpleShellMesh::SimpleShellMesh(double inner_radius,
                                  unsigned int n_refines,
                                  std::shared_ptr<MeshMarkerBase> marker)
     :
-    MeshBase(n_refines, marker),
+    GeneratedMesh(n_refines, marker),
     inner_radius(inner_radius),
     outer_radius(outer_radius),
     thickness(outer_radius - inner_radius),

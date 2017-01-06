@@ -1,9 +1,9 @@
 #ifndef SHELL_PROBLEM_SIMPLE_SHELL_MESH_HPP
 #define SHELL_PROBLEM_SIMPLE_SHELL_MESH_HPP
 
-#include "MeshBase.hpp"
+#include "GeneratedMesh.hpp"
 
-class SimpleShellMesh: public MeshBase
+class SimpleShellMesh: public GeneratedMesh
 {
 public:
     SimpleShellMesh(double inner_radius,

@@ -1,5 +1,4 @@
 #include "CubeMesh.hpp"
-#include "MeshUtilities.hpp"
 
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/grid_tools.h>
@@ -8,7 +7,6 @@
 
 #include <deal.II/grid/grid_in.h>
 #include <deal.II/grid/grid_out.h>
-#include <src/mesh_markers/PlaneMarker.hpp>
 
 using namespace dealii;
 
@@ -16,7 +14,7 @@ CubeMesh::CubeMesh(double size,
                    unsigned int n_refines,
                    std::shared_ptr<MeshMarkerBase> marker)
     :
-    MeshBase(n_refines, marker),
+    GeneratedMesh(n_refines, marker),
     size(size)
 {
     create();

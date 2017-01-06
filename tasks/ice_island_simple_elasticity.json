@@ -17,12 +17,12 @@
     "type": "simple_ice_island",
     "geometry": {
       "size": 10,
-      "n_refines": 1
+      "n_refines": 2
     }
   },
   "linear_solver": {
     "type": "GMRES",
-    "eps": 2.0e-8,
+    "eps": 7.0e-9,
     "n_steps": 1000,
     "additional_data": {
       "max_n_tmp_vectors": 60,
