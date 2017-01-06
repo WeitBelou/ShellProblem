@@ -17,7 +17,9 @@ std::shared_ptr<LinearSolverBase> LinearSolverFactory::create_linear_solver(cons
         return std::make_shared<LinearSolverGMRES>(eps, n_steps, create_gmres_additional_data(additional_data));
     }
     else {
-        AssertThrow(false, dealii::ExcNotImplemented());
+        AssertThrow(false, dealii::ExcNotImplemented(
+            std::string("Solver with type " +
+                type + " doesn\'t exist.")));
         return nullptr;
     }
 }

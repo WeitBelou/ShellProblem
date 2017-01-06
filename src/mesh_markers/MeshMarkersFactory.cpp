@@ -8,39 +8,24 @@ const MeshMarkersGroup MeshMarkersFactory::create_mesh_markers(const json &mesh_
     MeshMarkersGroup markers;
 
     for (json marker: mesh_markers_properties) {
-        MeshMarkerType type = get_type(marker["type"]);
-        switch (type) {
-            case MeshMarkerType::CircleMarkerType:
-                markers.add_marker(create_circle_marker(marker));
-                break;
-            case MeshMarkerType::PlaneMarkerType:
-                markers.add_marker(create_plane_marker(marker));
-                break;
-            case MeshMarkerType::SphereMarkerType:
-                markers.add_marker(create_sphere_marker(marker));
-                break;
+        const std::string type = marker["type"].get<std::string>();
+
+        if (type == "circle_marker") {
+            markers.add_marker(create_circle_marker(marker));
+        }
+        else if (type == "plane_marker") {
+            markers.add_marker(create_plane_marker(marker));
+        }
+        else if (type == "sphere_marker") {
+            markers.add_marker(create_sphere_marker(marker));
+        }
+        else {
+            AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
+                std::string("Mesh marker with type ") + type + " doesn\'t exist!"));
         }
     }
 
     return markers;
-}
-
-MeshMarkersFactory::MeshMarkerType MeshMarkersFactory::get_type(const json &type)
-{
-    const std::string type_string = type.get<std::string>();
-    if (type == "circle_marker") {
-        return MeshMarkerType::CircleMarkerType;
-    }
-    if (type == "plane_marker") {
-        return MeshMarkerType::PlaneMarkerType;
-    }
-    if (type == "sphere_marker") {
-        return MeshMarkerType::SphereMarkerType;
-    }
-    else {
-        AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
-            std::string("Mesh marker with name ") + type_string + " doesn\'t exist!"));
-    }
 }
 
 std::shared_ptr<const MeshMarkerBase> MeshMarkersFactory::create_circle_marker(const json &marker)

@@ -21,7 +21,8 @@ std::shared_ptr<SolverBase> SolverBuilder::create_solver(const json &solver_prop
         return std::make_shared<ElasticitySolver>(mesh, elasticity, boundaries, linear_solver);
     }
     else {
-        AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented())
+        AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
+            std::string("Unknown problem type ") + problem_type + "."))
         return nullptr;
     };
 }
