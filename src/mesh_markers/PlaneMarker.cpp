@@ -1,4 +1,4 @@
-#include <src/mesh/MeshUtilities.hpp>
+#include <src/util/MeshUtilities.hpp>
 #include "PlaneMarker.hpp"
 PlaneMarker::PlaneMarker(const dealii::types::boundary_id boundary_id,
                          const dealii::Point<3> &point_on_plane,

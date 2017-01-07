@@ -6,7 +6,7 @@
 
 #include "CubeMesh.hpp"
 #include "SimpleShellMesh.hpp"
-#include "MeshUtilities.hpp"
+#include "src/util/MeshUtilities.hpp"
 #include "GeneratedMesh.hpp"
 
 using namespace dealii;

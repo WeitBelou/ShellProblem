@@ -8,6 +8,7 @@
 
 #include "MeshUtilities.hpp"
 
+using namespace dealii;
 
 bool
 MeshUtilities::is_point_in_sphere(const dealii::Point<3> point,
@@ -76,7 +77,7 @@ dealii::Point<3> MeshUtilities::get_axis_from_number(const unsigned int axis_no)
 
 bool MeshUtilities::fuzzy_equal(const double x, const double y)
 {
-    return std::fabs(x - y) < std::numeric_limits<double>::epsilon();
+    return std::fabs(x - y) < std::numeric_limits<double>::round_error();
 }
 
 bool MeshUtilities::is_face_in_circle(dealii::Triangulation<3, 3>::active_face_iterator face,
@@ -93,6 +94,36 @@ bool MeshUtilities::is_face_in_circle(dealii::Triangulation<3, 3>::active_face_i
         if (!is_point_in_sphere(current_point, center, radius)) {
             return false;
         }
+    }
+
+    return true;
+}
+
+bool MeshUtilities::is_face_on_half_sphere(const Triangulation<3, 3>::active_face_iterator &face,
+                                           const Point<3> &center,
+                                           const double radius,
+                                           const Point<3> &orientation)
+{
+    for (unsigned int v = 0; v < dealii::GeometryInfo<3>::vertices_per_face; ++v) {
+        const dealii::Point<3> current_point = face->vertex(v);
+        if (!is_point_on_half_sphere(current_point, center, radius, orientation)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool MeshUtilities::is_point_on_half_sphere(const Point<3> point,
+                                            const Point<3> &center,
+                                            const double radius,
+                                            const Point<3> &orientation)
+{
+    if (!is_point_on_sphere(point, center, radius)) {
+        return false;
+    }
+    if ((point - center) * orientation < 0) {
+        return false;
     }
 
     return true;
