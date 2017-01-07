@@ -2,8 +2,8 @@
   "solver": {
     "type": "simple_elasticity",
     "material": {
-      "E": 5.0e+10,
-      "G": 1.97e+10
+      "E": 5.0e+9,
+      "G": 1.97e+9
     }
   },
   "boundaries": {
@@ -18,7 +18,7 @@
       {
         "id": 1,
         "type": "constant",
-        "value": 4.0e+03
+        "value": 5.0e+05
       }
     ]
   },
@@ -26,7 +26,7 @@
     "type": "simple_ice_island",
     "geometry": {
       "size": 10,
-      "n_refines": 5
+      "n_refines": 6
     }
   },
   "mesh_markers": [
@@ -88,7 +88,7 @@
   "linear_solver": {
     "type": "GMRES",
     "eps": 6.0e-10,
-    "n_steps": 100,
+    "n_steps": 1000,
     "additional_data": {
       "max_n_tmp_vectors": 60,
       "right_preconditioning": false,
