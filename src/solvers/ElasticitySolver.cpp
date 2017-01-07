@@ -141,6 +141,7 @@ unsigned int ElasticitySolver::solve_linear_system()
 {
     auto res = linear_solver->solve(system_matrix, system_rhs);
     displacement = res.result;
+    constraints.distribute(displacement);
     return res.control.last_step();
 }
 
