@@ -2,19 +2,23 @@
   "solver": {
     "type": "simple_elasticity",
     "material": {
-      "E": 1.0e+12,
-      "G": 4.7e+11
+      "E": 5.0e+10,
+      "G": 1.97e+10
     }
   },
   "boundaries": {
     "dirichlet": [
-
+      {
+        "id": 2,
+        "type": "constant",
+        "value": 0
+      }
     ],
     "neumann": [
       {
         "id": 1,
         "type": "constant",
-        "value": 7.0e+03
+        "value": 4.0e+03
       }
     ]
   },
@@ -26,6 +30,16 @@
     }
   },
   "mesh_markers": [
+    {
+      "type" : "plane_marker",
+      "id" : 2,
+      "point_on_plane" : {
+        "x" : 0,
+        "y" : 0,
+        "z" : -5
+      },
+      "axis" : 2
+    },
     {
       "type": "circle_marker",
       "id": 1,
