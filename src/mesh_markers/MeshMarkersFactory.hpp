@@ -21,6 +21,7 @@ private:
     };
 
     static MeshMarkerType get_type(const json & type);
+    static std::shared_ptr<const MeshMarkerBase> create_half_sphere_marker(const json &marker);
 };
 
 

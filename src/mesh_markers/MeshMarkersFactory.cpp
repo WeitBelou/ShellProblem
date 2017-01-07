@@ -2,6 +2,7 @@
 #include "CircleMarker.hpp"
 #include "PlaneMarker.hpp"
 #include "SphereMarker.hpp"
+#include "HalfSphereMarker.hpp"
 
 const MeshMarkersGroup MeshMarkersFactory::create_mesh_markers(const json &mesh_markers_properties)
 {
@@ -18,6 +19,9 @@ const MeshMarkersGroup MeshMarkersFactory::create_mesh_markers(const json &mesh_
         }
         else if (type == "sphere_marker") {
             markers.add_marker(create_sphere_marker(marker));
+        }
+        else if (type == "half_sphere_marker") {
+            markers.add_marker(create_half_sphere_marker(marker));
         }
         else {
             AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
@@ -51,4 +55,13 @@ std::shared_ptr<const MeshMarkerBase> MeshMarkersFactory::create_sphere_marker(c
     const dealii::Point<3> center = JsonUtil::get_point(marker["center"]);
     const double radius = marker["radius"].get<double>();
     return std::make_shared<SphereMarker>(id, center, radius);
+}
+
+std::shared_ptr<const MeshMarkerBase> MeshMarkersFactory::create_half_sphere_marker(const json &marker)
+{
+    const dealii::types::boundary_id id = marker["id"].get<dealii::types::boundary_id>();
+    const dealii::Point<3> center = JsonUtil::get_point(marker["center"]);
+    const double radius = marker["radius"].get<double>();
+    const dealii::Point<3> orientation = JsonUtil::get_point(marker["orientation"]);
+    return std::make_shared<HalfSphereMarker>(id, center, radius, orientation);
 }

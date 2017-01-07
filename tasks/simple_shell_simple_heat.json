@@ -9,8 +9,8 @@
     "dirichlet": [
       {
         "id": 1,
-        "type": "constant",
-        "value": 2000
+        "type": "sin_square",
+        "amplitude": 2000
       }
     ],
     "neumann": [
@@ -29,14 +29,19 @@
   },
   "mesh_markers": [
     {
-      "type": "sphere_marker",
+      "type": "half_sphere_marker",
       "id": 1,
       "center": {
         "x": 0,
         "y": 0,
         "z": 0
       },
-      "radius": 5.3
+      "radius": 5.3,
+      "orientation" : {
+        "x" : 0,
+        "y" : 0,
+        "z" : 1
+      }
     }
   ],
   "linear_solver": {

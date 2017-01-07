@@ -29,20 +29,25 @@
   },
   "mesh_markers": [
     {
-      "type": "sphere_marker",
+      "type": "half_sphere_marker",
       "id": 1,
       "center": {
         "x": 0,
         "y": 0,
         "z": 0
       },
-      "radius": 5.3
+      "radius": 5.3,
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 1
+      }
     }
   ],
   "linear_solver": {
     "type": "GMRES",
-    "eps": 5e-7,
-    "n_steps": 10000,
+    "eps": 8e-7,
+    "n_steps": 5000,
     "additional_data": {
       "max_n_tmp_vectors": 1000,
       "right_preconditioning": false,
