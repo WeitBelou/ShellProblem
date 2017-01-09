@@ -1,7 +1,4 @@
-#ifndef SHELL_PROBLEM_VECTOR_OUTPUT_WRITER_HPP
-#define SHELL_PROBLEM_VECTOR_OUTPUT_WRITER_HPP
-
-
+#pragma once
 #include "Postprocessor.hpp"
 class VectorOutputWriter: public Postprocessor
 {
@@ -14,6 +11,3 @@ private:
 public:
     VectorOutputWriter(const std::string &output_dir, const std::string &solution_name);
 };
-
-
-#endif //SHELL_PROBLEM_VECTOR_OUTPUT_WRITER_HPP

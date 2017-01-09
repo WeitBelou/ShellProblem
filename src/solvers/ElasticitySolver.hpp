@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_ELASTICITY_SOLVER_HPP
-#define SHELL_PROBLEM_ELASTICITY_SOLVER_HPP
-
+#pragma once
 #include <boost/filesystem/path.hpp>
 
 #include <deal.II/dofs/dof_handler.h>
@@ -12,12 +10,12 @@
 #include <deal.II/lac/sparsity_pattern.h>
 #include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/lac/solver_gmres.h>
-#include <src/linear_solver/LinearSolverBase.hpp>
 
-#include "src/boundaries/BoundariesGroup.hpp"
-#include "src/boundaries/Boundaries.hpp"
+#include "linear_solver/LinearSolverBase.hpp"
+#include "boundaries/BoundariesGroup.hpp"
+#include "boundaries/Boundaries.hpp"
+
 #include "SolverBase.hpp"
-#include "src/mesh/MeshBase.hpp"
 
 class ElasticitySolver: public SolverBase
 {
@@ -68,6 +66,3 @@ private:
 
     dealii::SolverGMRES<>::AdditionalData linear_solver_data;
 };
-
-
-#endif //SHELL_PROBLEM_ELASTICITY_SOLVER_HPP

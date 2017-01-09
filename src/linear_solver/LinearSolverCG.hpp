@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_LINEAR_SOLVER_CG_HPP
-#define SHELL_PROBLEM_LINEAR_SOLVER_CG_HPP
-
+#pragma once
 #include <deal.II/lac/solver_cg.h>
 #include "LinearSolverBase.hpp"
 
@@ -16,6 +14,3 @@ public:
 private:
     dealii::SolverCG<> solver;
 };
-
-
-#endif //SHELL_PROBLEM_LINEAR_SOLVER_CG_HPP

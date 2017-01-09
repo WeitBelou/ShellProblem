@@ -1,7 +1,5 @@
-#ifndef SHELL_PROBLEM_TASK_HPP
-#define SHELL_PROBLEM_TASK_HPP
-
-#include <src/solvers/SolverBase.hpp>
+#pragma once
+#include "src/solvers/SolverBase.hpp"
 
 class Task
 {
@@ -14,6 +12,3 @@ private:
     const std::shared_ptr<SolverBase> solver;
     const std::string output_dir;
 };
-
-
-#endif //SHELL_PROBLEM_TASK_HPP

@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_BOUNDARY_MARKER_HPP
-#define SHELL_PROBLEM_BOUNDARY_MARKER_HPP
-
+#pragma once
 #include "MeshMarkerBase.hpp"
 
 class BoundaryMarker: public MeshMarkerBase
@@ -10,6 +8,3 @@ public:
 protected:
     virtual void apply_boundary_ids(dealii::Triangulation<3, 3> &mesh) const = 0;
 };
-
-
-#endif //SHELL_PROBLEM_BOUNDARY_MARKER_HPP

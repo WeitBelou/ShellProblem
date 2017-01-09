@@ -1,7 +1,6 @@
-#ifndef SHELL_PROBLEM_CUBE_MESH_HPP
-#define SHELL_PROBLEM_CUBE_MESH_HPP
+#pragma once
+#include "mesh_markers/MeshMarkerBase.hpp"
 
-#include <src/mesh_markers/MeshMarkerBase.hpp>
 #include "MeshBase.hpp"
 #include "GeneratedMesh.hpp"
 
@@ -19,5 +18,3 @@ private:
     const double size;
     const dealii::Point<3> center;
 };
-
-#endif //SHELL_PROBLEM_CUBE_MESH_HPP

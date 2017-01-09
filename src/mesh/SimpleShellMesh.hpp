@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_SIMPLE_SHELL_MESH_HPP
-#define SHELL_PROBLEM_SIMPLE_SHELL_MESH_HPP
-
+#pragma once
 #include "GeneratedMesh.hpp"
 
 class SimpleShellMesh: public GeneratedMesh
@@ -20,5 +18,3 @@ private:
     double thickness;
     double cylinder_length;
 };
-
-#endif //SHELL_PROBLEM_SIMPLE_SHELL_MESH_HPP

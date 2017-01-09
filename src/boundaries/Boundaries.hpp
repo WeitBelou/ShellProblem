@@ -1,7 +1,7 @@
-#ifndef SHELL_PROBLEM_BOUNDARIES_HPP
-#define SHELL_PROBLEM_BOUNDARIES_HPP
+#pragma once
 
 #include <memory>
+
 #include <deal.II/base/point.h>
 #include <deal.II/base/function.h>
 #include <deal.II/dofs/function_map.h>
@@ -27,5 +27,3 @@ public:
 private:
     const double a;
 };
-
-#endif //SHELL_PROBLEM_BOUNDARIES_HPP

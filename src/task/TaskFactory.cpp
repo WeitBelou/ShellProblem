@@ -1,11 +1,10 @@
 #include "TaskFactory.hpp"
 
-#include "src/linear_solver/LinearSolverFactory.hpp"
-#include "src/mesh_markers/MeshMarkersFactory.hpp"
-#include "src/mesh/MeshFactory.hpp"
-#include "src/boundaries/BoundariesFactory.hpp"
-
-#include "src/solvers/SolverBuilder.hpp"
+#include "mesh_markers/MeshMarkersFactory.hpp"
+#include "mesh/MeshFactory.hpp"
+#include "boundaries/BoundariesFactory.hpp"
+#include "linear_solver/LinearSolverFactory.hpp"
+#include "solvers/SolverBuilder.hpp"
 
 std::shared_ptr<Task> TaskFactory::create_task_from_json(json task, const std::string &output_dir)
 {

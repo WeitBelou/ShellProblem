@@ -1,7 +1,5 @@
-#ifndef SHELL_PROBLEM_MESH_MARKERS_FACTORY_HPP
-#define SHELL_PROBLEM_MESH_MARKERS_FACTORY_HPP
-
-#include "src/util/JsonUtil.hpp"
+#pragma once
+#include "util/JsonUtil.hpp"
 #include "MeshMarkersGroup.hpp"
 
 class MeshMarkersFactory
@@ -16,6 +14,3 @@ private:
     static void create_boundary_markers(const json &mesh_markers_properties, MeshMarkersGroup &markers);
     static void create_material_markers(const json &mesh_markers_properties, MeshMarkersGroup markers);
 };
-
-
-#endif //SHELL_PROBLEM_MESH_MARKERS_FACTORY_HPP

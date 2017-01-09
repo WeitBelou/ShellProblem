@@ -1,13 +1,9 @@
+#include "SimpleShellMesh.hpp"
+
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/manifold.h>
 #include <deal.II/grid/manifold_lib.h>
-#include <src/mesh_markers/SphereMarker.hpp>
-
-#include "CubeMesh.hpp"
-#include "SimpleShellMesh.hpp"
-#include "src/util/MeshUtilities.hpp"
-#include "GeneratedMesh.hpp"
 
 using namespace dealii;
 

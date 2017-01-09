@@ -1,25 +1,25 @@
-#include <fstream>
+#include "ElasticitySolver.hpp"
 
 #include <deal.II/fe/fe_q.h>
+
 #include <deal.II/fe/fe_values.h>
 
 #include <deal.II/dofs/dof_tools.h>
-
 #include <deal.II/lac/dynamic_sparsity_pattern.h>
+
 #include <deal.II/lac/matrix_out.h>
 
 #include <deal.II/numerics/data_out.h>
-
 #include <deal.II/lac/solver_control.h>
-#include <deal.II/lac/solver_gmres.h>
 
+#include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/precondition_block.h>
 #include <deal.II/lac/precondition.h>
-#include <src/postprocessors/VectorOutputWriter.hpp>
-#include <src/postprocessors/OutputWriter.hpp>
-#include <deal.II/numerics/vector_tools.h>
 
-#include "ElasticitySolver.hpp"
+#include <deal.II/numerics/vector_tools.h>
+#include "postprocessors/OutputWriter.hpp"
+
+#include "postprocessors/VectorOutputWriter.hpp"
 
 using namespace dealii;
 

@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_SPHERE_MARKER_HPP
-#define SHELL_PROBLEM_SPHERE_MARKER_HPP
-
+#pragma once
 #include "BoundaryMarker.hpp"
 class SphereMarker: public BoundaryMarker
 {
@@ -16,6 +14,3 @@ private:
     const dealii::Point<3> center;
     const double radius;
 };
-
-
-#endif //SHELL_PROBLEM_SPHERE_MARKER_HPP

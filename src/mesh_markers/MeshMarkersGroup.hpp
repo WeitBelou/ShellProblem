@@ -1,7 +1,4 @@
-#ifndef SHELL_PROBLEM_MESH_MARKERS_GROUP_HPP
-#define SHELL_PROBLEM_MESH_MARKERS_GROUP_HPP
-
-
+#pragma once
 #include <deal.II/base/types.h>
 #include "MeshMarkerBase.hpp"
 
@@ -15,6 +12,3 @@ public:
 private:
     std::vector<std::shared_ptr<const MeshMarkerBase>> markers;
 };
-
-
-#endif //SHELL_PROBLEM_MESH_MARKERS_GROUP_HPP

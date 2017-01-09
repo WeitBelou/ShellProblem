@@ -1,9 +1,8 @@
-#ifndef SHELL_PROBLEM_GENERATED_MESH_HPP
-#define SHELL_PROBLEM_GENERATED_MESH_HPP
+#pragma once
 
-#include <src/mesh_markers/MeshMarkersGroup.hpp>
-#include "src/mesh_markers/MeshMarkerBase.hpp"
 #include "MeshBase.hpp"
+#include "mesh_markers/MeshMarkersGroup.hpp"
+
 class GeneratedMesh: public MeshBase
 {
 
@@ -23,6 +22,3 @@ protected:
 
     const MeshMarkersGroup markers;
 };
-
-
-#endif //SHELL_PROBLEM_GENERATED_MESH_HPP

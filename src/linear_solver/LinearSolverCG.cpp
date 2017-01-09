@@ -1,4 +1,5 @@
 #include "LinearSolverCG.hpp"
+
 #include <deal.II/lac/precondition.h>
 
 LinearSolverCG::LinearSolverCG(const double eps,

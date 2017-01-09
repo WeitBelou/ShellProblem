@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_HEAT_SOLVER_HPP
-#define SHELL_PROBLEM_HEAT_SOLVER_HPP
-
+#pragma once
 #include <boost/filesystem/path.hpp>
 
 #include <deal.II/grid/tria.h>
@@ -13,11 +11,10 @@
 #include <deal.II/fe/fe_q.h>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
-#include <src/boundaries/BoundariesGroup.hpp>
-#include <src/linear_solver/LinearSolverBase.hpp>
 
+#include "boundaries/BoundariesGroup.hpp"
+#include "linear_solver/LinearSolverBase.hpp"
 #include "SolverBase.hpp"
-#include "src/mesh/MeshBase.hpp"
 
 class HeatSolver: public SolverBase
 {
@@ -64,6 +61,3 @@ private:
     dealii::Vector<double> system_rhs;
     dealii::Vector<double> solution;
 };
-
-
-#endif //SHELL_PROBLEM_HEAT_SOLVER_HPP

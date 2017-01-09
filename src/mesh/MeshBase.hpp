@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_MESH_BASE_HPP
-#define SHELL_PROBLEM_MESH_BASE_HPP
-
+#pragma once
 #include <deal.II/grid/tria.h>
 
 class MeshBase
@@ -10,5 +8,3 @@ public:
 protected:
     dealii::Triangulation<3> tria;
 };
-
-#endif //SHELL_PROBLEM_MESH_BASE_HPP

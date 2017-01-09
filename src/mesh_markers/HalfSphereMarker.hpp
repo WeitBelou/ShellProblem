@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_HALF_SPHERE_MARKER_HPP
-#define SHELL_PROBLEM_HALF_SPHERE_MARKER_HPP
-
+#pragma once
 #include "BoundaryMarker.hpp"
 
 class HalfSphereMarker: public BoundaryMarker
@@ -18,6 +16,3 @@ private:
     const double radius;
     const dealii::Point<3> orientation;
 };
-
-
-#endif //SHELL_PROBLEM_HALF_SPHERE_MARKER_HPP

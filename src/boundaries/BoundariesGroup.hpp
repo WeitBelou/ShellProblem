@@ -1,7 +1,6 @@
-#ifndef SHELL_PROBLEM_BOUNDARIES_GROUP_HPP
-#define SHELL_PROBLEM_BOUNDARIES_GROUP_HPP
-
+#pragma once
 #include <memory>
+
 #include <deal.II/base/function.h>
 
 class BoundariesGroup
@@ -18,4 +17,3 @@ private:
     std::map<dealii::types::boundary_id, std::shared_ptr<const dealii::Function<3>>> dirichlet;
     std::map<dealii::types::boundary_id, std::shared_ptr<const dealii::Function<3>>> neumann;
 };
-#endif //SHELL_PROBLEM_BOUNDARIES_GROUP_HPP

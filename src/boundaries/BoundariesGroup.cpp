@@ -1,5 +1,6 @@
-#include "Boundaries.hpp"
 #include "BoundariesGroup.hpp"
+
+#include "Boundaries.hpp"
 
 void BoundariesGroup::add_dirichlet(dealii::types::boundary_id id, std::shared_ptr<const dealii::Function<3>> function)
 {

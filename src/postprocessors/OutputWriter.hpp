@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_OUTPUT_WRITER_HPP
-#define SHELL_PROBLEM_OUTPUT_WRITER_HPP
-
+#pragma once
 #include "Postprocessor.hpp"
 
 class OutputWriter: public Postprocessor
@@ -14,6 +12,3 @@ private:
     const std::string output_dir;
     const std::string solution_name;
 };
-
-
-#endif //SHELL_PROBLEM_OUTPUT_WRITER_HPP

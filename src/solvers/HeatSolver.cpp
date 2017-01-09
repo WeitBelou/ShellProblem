@@ -10,8 +10,8 @@
 
 #include <deal.II/lac/precondition.h>
 #include <deal.II/numerics/data_out.h>
-#include <fstream>
-#include "src/postprocessors/OutputWriter.hpp"
+
+#include "postprocessors/OutputWriter.hpp"
 
 using namespace dealii;
 

@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_CIRCLE_MARKER_HPP
-#define SHELL_PROBLEM_CIRCLE_MARKER_HPP
-
+#pragma once
 #include "BoundaryMarker.hpp"
 
 class CircleMarker: public BoundaryMarker
@@ -18,6 +16,3 @@ private:
     const double radius;
     const unsigned int axis;
 };
-
-
-#endif //SHELL_PROBLEM_CIRCLE_MARKER_HPP

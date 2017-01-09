@@ -1,11 +1,11 @@
-#ifndef SHELL_PROBLEM_BOUNDARIES_FACTORY_HPP
-#define SHELL_PROBLEM_BOUNDARIES_FACTORY_HPP
-
+#pragma once
 
 #include <memory>
+
 #include <deal.II/lac/solver_gmres.h>
-#include <src/boundaries/BoundariesGroup.hpp>
-#include "src/util/JsonUtil.hpp"
+
+#include "boundaries/BoundariesGroup.hpp"
+#include "util/JsonUtil.hpp"
 
 class BoundariesFactory
 {
@@ -15,6 +15,3 @@ private:
     static void create_neumann_boundaries(const json &neumann_properties, BoundariesGroup &boundaries);
     static void create_dirichlet_boundaries(const json &drichlet_properties, BoundariesGroup &boundaries);
 };
-
-
-#endif //SHELL_PROBLEM_BOUNDARIES_FACTORY_HPP

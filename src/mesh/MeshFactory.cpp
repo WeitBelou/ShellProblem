@@ -1,8 +1,7 @@
-#include <src/mesh_markers/CircleMarker.hpp>
 #include "MeshFactory.hpp"
 
-#include "src/mesh/SimpleShellMesh.hpp"
-#include "src/mesh/CubeMesh.hpp"
+#include "mesh/SimpleShellMesh.hpp"
+#include "mesh/CubeMesh.hpp"
 
 std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,
                                                    const MeshMarkersGroup &markers)

@@ -1,5 +1,6 @@
-#include <iostream>
 #include "ParsedArgs.hpp"
+
+#include <iostream>
 
 namespace po = boost::program_options;
 using namespace TaskReader;

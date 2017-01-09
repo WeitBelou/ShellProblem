@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_PARSED_ARGS_HPP
-#define SHELL_PROBLEM_PARSED_ARGS_HPP
-
+#pragma once
 #include <boost/program_options.hpp>
 
 namespace TaskReader
@@ -23,6 +21,3 @@ private:
 };
 
 }
-
-
-#endif //SHELL_PROBLEM_PARSED_ARGS_HPP

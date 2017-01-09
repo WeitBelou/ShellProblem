@@ -1,6 +1,4 @@
-#ifndef SHELL_PROBLEM_PLANE_MARKER_HPP
-#define SHELL_PROBLEM_PLANE_MARKER_HPP
-
+#pragma once
 #include "BoundaryMarker.hpp"
 
 class PlaneMarker: public BoundaryMarker
@@ -19,6 +17,3 @@ private:
     const unsigned int axis;
     const dealii::types::boundary_id boundary_id;
 };
-
-
-#endif //SHELL_PROBLEM_PLANE_MARKER_HPP

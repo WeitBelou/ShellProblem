@@ -1,5 +1,4 @@
-#ifndef SHELL_PROBLEM_MESH_UTILITIES_HPP
-#define SHELL_PROBLEM_MESH_UTILITIES_HPP
+#pragma once
 #include "deal.II/grid/tria.h"
 
 class MeshUtilities
@@ -42,5 +41,3 @@ private:
     static dealii::Point<3> get_axis_from_number(const unsigned int axis_no);
     static bool fuzzy_equal(const double x, const double y);
 };
-
-#endif //SHELL_PROBLEM_MESH_UTILITIES_HPP

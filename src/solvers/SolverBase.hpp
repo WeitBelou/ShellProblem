@@ -1,9 +1,7 @@
-#ifndef SHELL_PROBLEM_SOLVER_BASE_HPP
-#define SHELL_PROBLEM_SOLVER_BASE_HPP
-
+#pragma once
 #include <deal.II/grid/tria.h>
 #include <boost/filesystem/path.hpp>
-#include "src/mesh/MeshBase.hpp"
+#include "mesh/MeshBase.hpp"
 
 class SolverBase
 {
@@ -27,6 +25,3 @@ private:
     void do_logged_do_postprocessing(const std::string &output_dir);
     void do_logged_solve_linear_system();
 };
-
-
-#endif //SHELL_PROBLEM_SOLVER_BASE_HPP

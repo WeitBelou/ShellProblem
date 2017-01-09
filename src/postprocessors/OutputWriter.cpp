@@ -1,7 +1,9 @@
+#include <fstream>
+#include <boost/filesystem/path.hpp>
+
 #include <deal.II/lac/vector.h>
 #include <deal.II/numerics/data_out.h>
-#include <boost/filesystem/path.hpp>
-#include <fstream>
+
 #include "OutputWriter.hpp"
 
 using namespace dealii;

@@ -1,11 +1,9 @@
-#ifndef SHELLPROBLEM_SOLVERBUILDER_HPP
-#define SHELLPROBLEM_SOLVERBUILDER_HPP
-
+#pragma once
 #include <memory>
 
-#include "src/linear_solver/LinearSolverBase.hpp"
-#include "src/boundaries/BoundariesGroup.hpp"
-#include "src/util/JsonUtil.hpp"
+#include "linear_solver/LinearSolverBase.hpp"
+#include "boundaries/BoundariesGroup.hpp"
+#include "util/JsonUtil.hpp"
 #include "SolverBase.hpp"
 
 class SolverBuilder
@@ -17,6 +15,3 @@ public:
                                                      std::shared_ptr<LinearSolverBase> linear_solver,
                                                      BoundariesGroup boundaries);
 };
-
-
-#endif //SHELLPROBLEM_SOLVERBUILDER_HPP
