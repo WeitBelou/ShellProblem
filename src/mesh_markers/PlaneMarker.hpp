@@ -1,9 +1,9 @@
 #ifndef SHELL_PROBLEM_PLANE_MARKER_HPP
 #define SHELL_PROBLEM_PLANE_MARKER_HPP
 
-#include "MeshMarkerBase.hpp"
+#include "BoundaryMarker.hpp"
 
-class PlaneMarker: public MeshMarkerBase
+class PlaneMarker: public BoundaryMarker
 {
 public:
 
@@ -13,7 +13,7 @@ public:
                     const dealii::Point<3> &point_on_plane,
                     const unsigned int axis);
 protected:
-    void apply_boundary_ids(dealii::Triangulation<3, 3> &triangulation) const override;
+    void apply_boundary_ids(dealii::Triangulation<3, 3> &mesh) const override;
 private:
     const dealii::Point<3> point_on_plane;
     const unsigned int axis;

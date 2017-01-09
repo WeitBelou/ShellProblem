@@ -13,8 +13,7 @@
         "value": 2000
       }
     ],
-    "neumann" : [
-
+    "neumann": [
     ]
   },
   "mesh": {
@@ -24,18 +23,22 @@
       "n_refines": 2
     }
   },
-  "mesh_markers": [
-    {
-      "type": "plane_marker",
-      "id": 1,
-      "point_on_plane": {
-        "x": 0,
-        "y": 0,
-        "z": 5
-      },
-      "axis": 2
-    }
-  ],
+  "mesh_markers": {
+    "boundary": [
+      {
+        "type": "plane_marker",
+        "id": 1,
+        "point_on_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 5
+        },
+        "axis": 2
+      }
+    ],
+    "material": [
+    ]
+  },
   "linear_solver": {
     "type": "CG",
     "eps": 1e-6,

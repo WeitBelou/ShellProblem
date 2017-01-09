@@ -8,6 +8,13 @@ const MeshMarkersGroup MeshMarkersFactory::create_mesh_markers(const json &mesh_
 {
     MeshMarkersGroup markers;
 
+    create_boundary_markers(mesh_markers_properties["boundary"], markers);
+    create_material_markers(mesh_markers_properties["material"], markers);
+
+    return markers;
+}
+void MeshMarkersFactory::create_boundary_markers(const json &mesh_markers_properties, MeshMarkersGroup &markers)
+{
     for (json marker: mesh_markers_properties) {
         const std::string type = marker["type"].get<std::string>();
 
@@ -25,11 +32,19 @@ const MeshMarkersGroup MeshMarkersFactory::create_mesh_markers(const json &mesh_
         }
         else {
             AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
-                std::string("Mesh marker with type ") + type + " doesn\'t exist!"));
+                std::string("Boundary marker with type ") + type + " doesn\'t exist!"));
         }
     }
+}
 
-    return markers;
+void MeshMarkersFactory::create_material_markers(const json &mesh_markers_properties, MeshMarkersGroup markers)
+{
+    for (json marker: mesh_markers_properties) {
+        const std::string type = marker["type"].get<std::string>();
+
+        AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
+            std::string("Material marker with type ") + type + " doesn\'t exist!"));
+    }
 }
 
 std::shared_ptr<const MeshMarkerBase> MeshMarkersFactory::create_circle_marker(const json &marker)
@@ -56,7 +71,6 @@ std::shared_ptr<const MeshMarkerBase> MeshMarkersFactory::create_sphere_marker(c
     const double radius = marker["radius"].get<double>();
     return std::make_shared<SphereMarker>(id, center, radius);
 }
-
 std::shared_ptr<const MeshMarkerBase> MeshMarkersFactory::create_half_sphere_marker(const json &marker)
 {
     const dealii::types::boundary_id id = marker["id"].get<dealii::types::boundary_id>();

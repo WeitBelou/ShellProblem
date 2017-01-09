@@ -29,62 +29,66 @@
       "n_refines": 6
     }
   },
-  "mesh_markers": [
-    {
-      "type" : "plane_marker",
-      "id" : 2,
-      "point_on_plane" : {
-        "x" : 0,
-        "y" : 0,
-        "z" : -5
+  "mesh_markers": {
+    "boundary": [
+      {
+        "type": "plane_marker",
+        "id": 2,
+        "point_on_plane": {
+          "x": 0,
+          "y": 0,
+          "z": -5
+        },
+        "axis": 2
       },
-      "axis" : 2
-    },
-    {
-      "type": "circle_marker",
-      "id": 1,
-      "center": {
-        "x": -2,
-        "y": 0,
-        "z": 5
+      {
+        "type": "circle_marker",
+        "id": 1,
+        "center": {
+          "x": -2,
+          "y": 0,
+          "z": 5
+        },
+        "axis": 2,
+        "radius": 1
       },
-      "axis": 2,
-      "radius": 1
-    },
-    {
-      "type": "circle_marker",
-      "id": 1,
-      "center": {
-        "x": 2,
-        "y": 0,
-        "z": 5
+      {
+        "type": "circle_marker",
+        "id": 1,
+        "center": {
+          "x": 2,
+          "y": 0,
+          "z": 5
+        },
+        "axis": 2,
+        "radius": 1
       },
-      "axis": 2,
-      "radius": 1
-    },
-    {
-      "type": "circle_marker",
-      "id": 1,
-      "center": {
-        "x": 0,
-        "y": -2,
-        "z": 5
+      {
+        "type": "circle_marker",
+        "id": 1,
+        "center": {
+          "x": 0,
+          "y": -2,
+          "z": 5
+        },
+        "axis": 2,
+        "radius": 1
       },
-      "axis": 2,
-      "radius": 1
-    },
-    {
-      "type": "circle_marker",
-      "id": 1,
-      "center": {
-        "x": 0,
-        "y": 2,
-        "z": 5
-      },
-      "axis": 2,
-      "radius": 1
-    }
-  ],
+      {
+        "type": "circle_marker",
+        "id": 1,
+        "center": {
+          "x": 0,
+          "y": 2,
+          "z": 5
+        },
+        "axis": 2,
+        "radius": 1
+      }
+    ],
+    "material": [
+    ]
+  },
   "linear_solver": {
     "type": "GMRES",
     "eps": 6.0e-10,

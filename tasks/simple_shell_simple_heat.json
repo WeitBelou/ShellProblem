@@ -27,23 +27,27 @@
       "n_refines": 3
     }
   },
-  "mesh_markers": [
-    {
-      "type": "half_sphere_marker",
-      "id": 1,
-      "center": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "radius": 5.3,
-      "orientation" : {
-        "x" : 0,
-        "y" : 0,
-        "z" : 1
+  "mesh_markers": {
+    "boundary": [
+      {
+        "type": "half_sphere_marker",
+        "id": 1,
+        "center": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "radius": 5.3,
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        }
       }
-    }
-  ],
+    ],
+    "material": [
+    ]
+  },
   "linear_solver": {
     "type": "CG",
     "eps": 1,

@@ -8,28 +8,31 @@
   },
   "boundaries": {
     "dirichlet": [
-
     ],
     "neumann": [
       {
-        "id" : 1,
-        "type" : "constant",
-        "value" : 7.0e+3
+        "id": 1,
+        "type": "constant",
+        "value": 7.0e+3
       }
     ]
   },
-  "mesh_markers": [
-    {
-      "type": "plane_marker",
-      "id": 1,
-      "point_on_plane": {
-        "x": 0,
-        "y": 0,
-        "z": 5
-      },
-      "axis": 2
-    }
-  ],
+  "mesh_markers": {
+    "boundary": [
+      {
+        "type": "plane_marker",
+        "id": 1,
+        "point_on_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 5
+        },
+        "axis": 2
+      }
+    ],
+    "material": [
+    ]
+  },
   "mesh": {
     "type": "cube",
     "geometry": {
