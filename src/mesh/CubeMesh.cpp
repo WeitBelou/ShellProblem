@@ -10,12 +10,14 @@
 
 using namespace dealii;
 
-CubeMesh::CubeMesh(double size,
+CubeMesh::CubeMesh(const double size,
+                   const Point<3> & center,
                    unsigned int n_refines,
                    const MeshMarkersGroup marker)
     :
     GeneratedMesh(n_refines, marker),
-    size(size)
+    size(size),
+    center(center)
 {
     create();
 }
@@ -23,6 +25,7 @@ CubeMesh::CubeMesh(double size,
 void CubeMesh::create_coarse_mesh()
 {
     GridGenerator::hyper_cube(tria, -size / 2, size / 2);
+    GridTools::shift(center, tria);
 }
 
 void CubeMesh::apply_manifold_ids()

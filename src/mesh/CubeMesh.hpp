@@ -8,14 +8,16 @@
 class CubeMesh: public GeneratedMesh
 {
 public:
-    CubeMesh(double size,
-                 unsigned int n_refines,
-                 const MeshMarkersGroup marker);
+    CubeMesh(const double size,
+             const dealii::Point<3> & center,
+             unsigned int n_refines,
+             const MeshMarkersGroup marker);
 protected:
     virtual void create_coarse_mesh() override;
     virtual void apply_manifold_ids() override;
 private:
-    double size;
+    const double size;
+    const dealii::Point<3> center;
 };
 
 #endif //SHELL_PROBLEM_CUBE_MESH_HPP

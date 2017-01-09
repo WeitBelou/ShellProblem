@@ -47,12 +47,14 @@ std::shared_ptr<MeshBase> MeshFactory::create_cube_mesh(const json geometry, con
 {
     const double size = geometry["size"].get<double>();
     const unsigned int n_refines = geometry["n_refines"].get<unsigned>();
-    return std::make_shared<CubeMesh>(size, n_refines, markers);
+    const dealii::Point<3> center = JsonUtil::get_point(geometry["center"]);
+    return std::make_shared<CubeMesh>(size, center, n_refines, markers);
 }
 
 std::shared_ptr<MeshBase> MeshFactory::create_simple_ice_island(const json geometry, const MeshMarkersGroup &markers)
 {
     const double size = geometry["size"].get<double>();
     const unsigned int n_refines = geometry["n_refines"].get<unsigned>();
-    return std::make_shared<CubeMesh>(size, n_refines, markers);
+    const dealii::Point<3> center = JsonUtil::get_point(geometry["center"]);
+    return std::make_shared<CubeMesh>(size, center, n_refines, markers);
 }

@@ -26,6 +26,11 @@
     "type": "simple_ice_island",
     "geometry": {
       "size": 10,
+      "center" : {
+        "x" : 0,
+        "y" : 0,
+        "z" : 0
+      },
       "n_refines": 6
     }
   },
