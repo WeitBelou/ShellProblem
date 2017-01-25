@@ -34,9 +34,9 @@
         "type": "plane_marker",
         "id": 1,
         "point_on_plane": {
-          "x": 0,
-          "y": 0,
-          "z": 1
+          "x": 5,
+          "y": 5,
+          "z": 13
         },
         "axis": 2
       },
@@ -44,8 +44,8 @@
         "type": "plane_marker",
         "id": 2,
         "point_on_plane": {
-          "x": 0,
-          "y": 0,
+          "x": 5,
+          "y": 5,
           "z": 0
         },
         "axis": 2
