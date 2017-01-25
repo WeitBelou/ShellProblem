@@ -11,8 +11,17 @@ find_package(Boost COMPONENTS
         program_options
         filesystem
         REQUIRED)
-
 include_directories(${Boost_INCLUDE_DIR})
+
+#Download and install GTest
+configure_file(CMakeLists.txt.in
+        googletest-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download)
+execute_process(COMMAND ${CMAKE_COMMAND} --build .
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download)
+add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
+        ${CMAKE_BINARY_DIR}/googletest-build)
 
 #Find and setup deal ii
 find_package(deal.II REQUIRED
