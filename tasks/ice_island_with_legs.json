@@ -18,7 +18,7 @@
       {
         "id": 1,
         "type": "constant",
-        "value": 5.0e+05
+        "value": 5.0e+06
       }
     ]
   },
@@ -56,7 +56,7 @@
   },
   "linear_solver": {
     "type": "GMRES",
-    "eps": 6.0e-10,
+    "eps": 3.0e-4,
     "n_steps": 1000,
     "additional_data": {
       "max_n_tmp_vectors": 60,
