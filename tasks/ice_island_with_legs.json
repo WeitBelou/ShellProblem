@@ -1,0 +1,68 @@
+{
+  "solver": {
+    "type": "simple_elasticity",
+    "material": {
+      "E": 5.0e+9,
+      "G": 1.97e+9
+    }
+  },
+  "boundaries": {
+    "dirichlet": [
+      {
+        "id": 2,
+        "type": "constant",
+        "value": 0
+      }
+    ],
+    "neumann": [
+      {
+        "id": 1,
+        "type": "constant",
+        "value": 5.0e+05
+      }
+    ]
+  },
+  "mesh": {
+    "type": "msh_file",
+    "geometry": {
+      "path": "meshes/ice_island_with_legs.msh"
+    }
+  },
+  "mesh_markers": {
+    "boundary": [
+      {
+        "type": "plane_marker",
+        "id": 1,
+        "point_on_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "axis": 2
+      },
+      {
+        "type": "plane_marker",
+        "id": 2,
+        "point_on_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "axis": 2
+      }
+    ],
+    "material": [
+    ]
+  },
+  "linear_solver": {
+    "type": "GMRES",
+    "eps": 6.0e-10,
+    "n_steps": 1000,
+    "additional_data": {
+      "max_n_tmp_vectors": 60,
+      "right_preconditioning": false,
+      "use_default_residual": true,
+      "force_re_orthogonalization": false
+    }
+  }
+}

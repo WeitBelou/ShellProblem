@@ -2,6 +2,7 @@
 
 #include "mesh/SimpleShellMesh.hpp"
 #include "mesh/CubeMesh.hpp"
+#include "MshMesh.hpp"
 
 std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,
                                                    const MeshMarkersGroup &markers)
@@ -17,6 +18,9 @@ std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,
     }
     else if (mesh_type == "simple_ice_island") {
         return create_simple_ice_island(geometry, markers);
+    }
+    else if (mesh_type == "msh_file") {
+        return create_mesh_from_msh_file(geometry, markers);
     }
     else {
         AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
@@ -56,4 +60,10 @@ std::shared_ptr<MeshBase> MeshFactory::create_simple_ice_island(const json geome
     const unsigned int n_refines = geometry["n_refines"].get<unsigned>();
     const dealii::Point<3> center = JsonUtil::get_point(geometry["center"]);
     return std::make_shared<CubeMesh>(size, center, n_refines, markers);
+}
+
+std::shared_ptr<MeshBase> MeshFactory::create_mesh_from_msh_file(const json &geometry, const MeshMarkersGroup &markers)
+{
+    const std::string path_to_file = geometry["path"].get<std::string>();
+    return std::make_shared<MshMesh>(path_to_file, markers);
 }
