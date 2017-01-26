@@ -39,3 +39,8 @@ $ python run_directory.py <executable> <dir_with_tasks> <output_dir>
 ```
 In this case output  files will be written in
 `<output_dir>/<name_of_task>`
+
+3) You can generate mesh for every .geo file in directory with
+```
+python generate_meshes.py <dir_with_geo_files>
+```
