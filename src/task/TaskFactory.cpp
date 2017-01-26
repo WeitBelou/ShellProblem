@@ -4,6 +4,8 @@
 #include "mesh/MeshFactory.hpp"
 #include "boundaries/BoundariesFactory.hpp"
 #include "linear_solver/LinearSolverFactory.hpp"
+#include "materials/MaterialFactory.hpp"
+#include "materials/MaterialsGroup.hpp"
 #include "solvers/SolverBuilder.hpp"
 
 std::shared_ptr<Task> TaskFactory::create_task_from_json(json task, const std::string &output_dir)
@@ -21,9 +23,15 @@ std::shared_ptr<Task> TaskFactory::create_task_from_json(json task, const std::s
     const json &boundaries_properties = task["boundaries"];
     BoundariesGroup boundaries = BoundariesFactory::create_boundaries(boundaries_properties);
 
+    const json &materials_properties = task["materials"];
+    MaterialsGroup materials = MaterialFactory::create_materials(materials_properties);
+
     const json &solver_properties = task["solver"];
-    std::shared_ptr<SolverBase> solver = SolverBuilder::create_solver(solver_properties, mesh,
-                                                                      linear_solver, boundaries);
+    std::shared_ptr<SolverBase> solver = SolverBuilder::create_solver(solver_properties,
+                                                                      mesh,
+                                                                      linear_solver,
+                                                                      boundaries,
+                                                                      materials);
 
     return std::make_shared<Task>(solver, output_dir);
 }

@@ -3,6 +3,7 @@
 #include "PlaneMarker.hpp"
 #include "SphereMarker.hpp"
 #include "HalfSphereMarker.hpp"
+#include "TwoPlanesMarker.hpp"
 
 const MeshMarkersGroup MeshMarkersFactory::create_mesh_markers(const json &mesh_markers_properties)
 {
@@ -37,13 +38,18 @@ void MeshMarkersFactory::create_boundary_markers(const json &mesh_markers_proper
     }
 }
 
-void MeshMarkersFactory::create_material_markers(const json &mesh_markers_properties, MeshMarkersGroup markers)
+void MeshMarkersFactory::create_material_markers(const json &mesh_markers_properties, MeshMarkersGroup &markers)
 {
     for (json marker: mesh_markers_properties) {
         const std::string type = marker["type"].get<std::string>();
 
-        AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
-            std::string("Material marker with type ") + type + " doesn\'t exist!"));
+        if (type == "two_planes") {
+            markers.add_marker(create_two_planes_marker(marker));
+        }
+        else {
+            AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
+                std::string("Material marker with type ") + type + " doesn\'t exist!"));
+        }
     }
 }
 
@@ -78,4 +84,14 @@ std::shared_ptr<const MeshMarkerBase> MeshMarkersFactory::create_half_sphere_mar
     const double radius = marker["radius"].get<double>();
     const dealii::Point<3> orientation = JsonUtil::get_point(marker["orientation"]);
     return std::make_shared<HalfSphereMarker>(id, center, radius, orientation);
+}
+
+std::shared_ptr<const MeshMarkerBase> MeshMarkersFactory::create_two_planes_marker(const json &marker)
+{
+    const dealii::types::boundary_id id = marker["id"].get<dealii::types::boundary_id>();
+    const dealii::Point<3> point_on_first_plane = JsonUtil::get_point(marker["point_on_first_plane"]);
+    const dealii::Point<3> point_on_second_plane = JsonUtil::get_point(marker["point_on_second_plane"]);
+    unsigned axis = marker["axis"].get<unsigned>();
+
+    return std::make_shared<const TwoPlanesMarker>(id, point_on_first_plane, point_on_second_plane, axis);
 }

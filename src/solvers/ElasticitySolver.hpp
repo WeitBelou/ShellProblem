@@ -10,6 +10,8 @@
 #include <deal.II/lac/sparsity_pattern.h>
 #include <deal.II/lac/constraint_matrix.h>
 #include <deal.II/lac/solver_gmres.h>
+#include <src/materials/Material.hpp>
+#include <src/materials/MaterialsGroup.hpp>
 
 #include "linear_solver/LinearSolverBase.hpp"
 #include "boundaries/BoundariesGroup.hpp"
@@ -20,18 +22,8 @@
 class ElasticitySolver: public SolverBase
 {
 public:
-    class Material
-    {
-    public:
-        Material(double E, double G);
-        dealii::SymmetricTensor<4, 3> get_stress_strain_tensor() const;
-    private:
-        const double E;
-        const double G;
-    };
-
     ElasticitySolver(std::shared_ptr<MeshBase> mesh,
-                     const Material &material,
+                     const MaterialsGroup &materials,
                      const BoundariesGroup boundaries,
                      std::shared_ptr<LinearSolverBase> linear_solver);
     ~ElasticitySolver();
@@ -44,6 +36,7 @@ protected:
 private:
     void compute_norm_of_stress();
     const BoundariesGroup boundaries;
+    const MaterialsGroup materials;
     std::shared_ptr<LinearSolverBase> linear_solver;
 
     dealii::DoFHandler<3> dof_handler;
@@ -56,13 +49,10 @@ private:
     const dealii::QGauss<2> face_quadrature;
 
     dealii::ConstraintMatrix constraints;
-    const dealii::SymmetricTensor<4, 3> stress_strain;
 
     dealii::SparsityPattern sparsity_pattern;
     dealii::SparseMatrix<double> system_matrix;
     dealii::Vector<double> system_rhs;
 
     dealii::Vector<double> displacement;
-
-    dealii::SolverGMRES<>::AdditionalData linear_solver_data;
 };

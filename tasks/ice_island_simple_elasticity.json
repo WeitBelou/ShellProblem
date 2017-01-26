@@ -1,11 +1,15 @@
 {
   "solver": {
-    "type": "simple_elasticity",
-    "material": {
-      "E": 5.0e+9,
-      "G": 1.97e+9
-    }
+    "type": "simple_elasticity"
   },
+  "materials": [
+    {
+      "id": 1,
+      "E": 1.0e+12,
+      "G": 4.7e+11,
+      "thermal_diffusivity": 9.0e-2
+    }
+  ],
   "boundaries": {
     "dirichlet": [
       {

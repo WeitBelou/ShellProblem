@@ -128,3 +128,24 @@ bool MeshUtilities::is_point_on_half_sphere(const Point<3> point,
 
     return true;
 }
+
+bool MeshUtilities::is_cell_between_two_planes(Triangulation<3, 3>::active_cell_iterator cell,
+                                               const Point<3> point_on_first_plane,
+                                               const Point<3> point_on_second_plane,
+                                               const unsigned int axis)
+{
+    for (unsigned v = 0; v < GeometryInfo<3>::vertices_per_cell; ++v) {
+        if (!is_point_between_two_planes(cell->vertex(v), point_on_first_plane, point_on_second_plane, axis)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool MeshUtilities::is_point_between_two_planes(const dealii::Point<3> point,
+                                                const dealii::Point<3> point_on_first_plane,
+                                                const dealii::Point<3> point_on_second_plane,
+                                                unsigned axis)
+{
+    return (point_on_first_plane(axis) <= point(axis)) && (point(axis) <= point_on_second_plane(axis));
+}

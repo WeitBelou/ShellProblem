@@ -11,6 +11,8 @@
 #include <deal.II/fe/fe_q.h>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/lac/constraint_matrix.h>
+#include <src/materials/Material.hpp>
+#include <src/materials/MaterialsGroup.hpp>
 
 #include "boundaries/BoundariesGroup.hpp"
 #include "linear_solver/LinearSolverBase.hpp"
@@ -19,16 +21,8 @@
 class HeatSolver: public SolverBase
 {
 public:
-    class Material
-    {
-    public:
-        Material(const double thermal_diffusivity);
-    public:
-        const double thermal_diffusivity;
-    };
-
     HeatSolver(std::shared_ptr<MeshBase> mesh,
-               const Material &material,
+               const MaterialsGroup &materials,
                const BoundariesGroup boundaries,
                const std::shared_ptr<LinearSolverBase> &linear_solver);
     ~HeatSolver();
@@ -42,7 +36,7 @@ protected:
     unsigned int get_n_dofs() override;
 
 private:
-    Material material;
+    MaterialsGroup materials;
 
     const BoundariesGroup boundaries;
 

@@ -11,14 +11,20 @@ BoundariesGroup BoundariesFactory::create_boundaries(const json &boundaries_prop
 
 void BoundariesFactory::create_dirichlet_boundaries(const json &drichlet_properties, BoundariesGroup &boundaries)
 {
-    for (const json & boundary: drichlet_properties) {
+    for (const json &boundary: drichlet_properties) {
         const dealii::types::boundary_id id = boundary["id"].get<dealii::types::boundary_id>();
         const std::string type = boundary["type"].get<std::string>();
         if (type == "sin_square") {
             boundaries.add_dirichlet(id, std::make_shared<SinSquare>(boundary["amplitude"].get<double>()));
         }
         else if (type == "constant") {
-            boundaries.add_dirichlet(id, std::make_shared<dealii::ConstantFunction<3>>(boundary["value"].get<double>()));
+            boundaries
+                .add_dirichlet(id, std::make_shared<dealii::ConstantFunction<3>>(boundary["value"].get<double>()));
+        }
+        else if (type == "constant_vector") {
+            dealii::Point<3> value = JsonUtil::get_point(boundary["value"]);
+            std::vector<double> vector_values{value(0), value(1), value(2)};
+            boundaries.add_dirichlet(id, std::make_shared<dealii::ConstantFunction<3>>(vector_values));
         }
         else {
             AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented())
@@ -28,7 +34,7 @@ void BoundariesFactory::create_dirichlet_boundaries(const json &drichlet_propert
 
 void BoundariesFactory::create_neumann_boundaries(const json &neumann_properties, BoundariesGroup &boundaries)
 {
-    for (const json & boundary: neumann_properties) {
+    for (const json &boundary: neumann_properties) {
         const dealii::types::boundary_id id = boundary["id"].get<dealii::types::boundary_id>();
         const std::string type = boundary["type"].get<std::string>();
         if (type == "sin_square") {

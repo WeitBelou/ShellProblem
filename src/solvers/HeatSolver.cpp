@@ -10,18 +10,19 @@
 
 #include <deal.II/lac/precondition.h>
 #include <deal.II/numerics/data_out.h>
+#include <src/materials/MaterialsGroup.hpp>
 
 #include "postprocessors/OutputWriter.hpp"
 
 using namespace dealii;
 
 HeatSolver::HeatSolver(std::shared_ptr<MeshBase> mesh,
-                       const Material &material,
+                       const MaterialsGroup &materials,
                        const BoundariesGroup boundaries,
                        const std::shared_ptr<LinearSolverBase> &linear_solver)
     :
     SolverBase(mesh),
-    material(material),
+    materials(materials),
     boundaries(boundaries),
     linear_solver(linear_solver),
     dof_handler(mesh->mesh()),
@@ -125,10 +126,4 @@ void HeatSolver::do_postprocessing(const std::string &output_dir)
 unsigned int HeatSolver::get_n_dofs()
 {
     return dof_handler.n_dofs();
-}
-
-HeatSolver::Material::Material(const double thermal_diffusivity)
-    : thermal_diffusivity(thermal_diffusivity)
-{
-
 }

@@ -1,10 +1,15 @@
 {
   "solver": {
-    "type": "simple_heat",
-    "material": {
+    "type": "simple_heat"
+  },
+  "materials": [
+    {
+      "id": 1,
+      "E": 1.0e+12,
+      "G": 4.7e+11,
       "thermal_diffusivity": 9.0e-2
     }
-  },
+  ],
   "boundaries": {
     "dirichlet": [
       {
@@ -46,6 +51,21 @@
       }
     ],
     "material": [
+      {
+        "type": "two_planes",
+        "id": 1,
+        "point_on_first_plane": {
+          "x": 0,
+          "y": 0,
+          "z": -15
+        },
+        "point_on_second_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 5.3
+        },
+        "axis": 2
+      }
     ]
   },
   "linear_solver": {

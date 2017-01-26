@@ -17,6 +17,7 @@
 #include <deal.II/lac/precondition.h>
 
 #include <deal.II/numerics/vector_tools.h>
+#include <src/materials/MaterialsGroup.hpp>
 #include "postprocessors/OutputWriter.hpp"
 
 #include "postprocessors/VectorOutputWriter.hpp"
@@ -24,20 +25,20 @@
 using namespace dealii;
 
 ElasticitySolver::ElasticitySolver(std::shared_ptr<MeshBase> mesh,
-                                   const Material &material,
+                                   const MaterialsGroup &materials,
                                    const BoundariesGroup boundaries,
                                    std::shared_ptr<LinearSolverBase> linear_solver)
     :
     SolverBase(mesh),
     boundaries(boundaries),
+    materials(materials),
     linear_solver(linear_solver),
     dof_handler(mesh->mesh()),
     norm_of_stress(mesh->mesh().n_active_cells()),
     fe(FE_Q<3>(1), 3),
     displacement_extractor(0),
     quadrature(2),
-    face_quadrature(2),
-    stress_strain(material.get_stress_strain_tensor())
+    face_quadrature(2)
 {
 
 }
@@ -52,7 +53,7 @@ void ElasticitySolver::setup_system()
     dof_handler.distribute_dofs(fe);
 
     constraints.clear();
-    for (auto &&it : boundaries.get_dirichlet()) {
+    for (const auto & it : boundaries.get_dirichlet()) {
         VectorTools::interpolate_boundary_values(dof_handler, it.first, *it.second,
                                                  constraints);
     }
@@ -95,6 +96,8 @@ void ElasticitySolver::assemble_system()
 
         fe_values.reinit(cell);
 
+        auto material = materials.get_material_by_id(cell->material_id());
+        auto stress_strain = material->get_stress_strain_tensor();
         //Assemble matrix
         for (unsigned int q = 0; q < n_q_points; ++q) {
             const double jxw = fe_values.JxW(q);
@@ -110,7 +113,7 @@ void ElasticitySolver::assemble_system()
 
         //Assemble rhs
         for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
-            for (auto &&it: boundaries.get_neumann()) {
+            for (const auto & it: boundaries.get_neumann()) {
                 if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == it.first) {
                     fe_face_values.reinit(cell, f);
 
@@ -156,6 +159,8 @@ void ElasticitySolver::compute_norm_of_stress()
     for (auto cell : dof_handler.active_cell_iterators()) {
         fe_values.reinit(cell);
 
+        auto stress_strain = materials.get_material_by_id(cell->material_id())->get_stress_strain_tensor();
+
         fe_values[displacement_extractor].get_function_symmetric_gradients(displacement, displacement_grads);
         SymmetricTensor<2, 3> stress;
         for (unsigned int q = 0; q < n_q_points; ++q) {
@@ -187,35 +192,4 @@ void ElasticitySolver::do_postprocessing(const std::string &output_dir)
 unsigned int ElasticitySolver::get_n_dofs()
 {
     return dof_handler.n_dofs();
-}
-
-ElasticitySolver::Material::Material(double E, double G)
-    :
-    E(E),
-    G(G)
-{
-
-}
-
-dealii::SymmetricTensor<4, 3> ElasticitySolver::Material::get_stress_strain_tensor() const
-{
-    const double lambda = G * (E - 2 * G) / (3 * G - E);
-    const double mu = G;
-
-    auto d = [](size_t i, size_t j)
-    { return (i == j) ? (1) : (0); };
-
-    dealii::SymmetricTensor<4, 3> tmp;
-
-    for (size_t i = 0; i < 3; ++i) {
-        for (size_t j = 0; j < 3; ++j) {
-            for (size_t k = 0; k < 3; ++k) {
-                for (size_t m = 0; m < 3; ++m) {
-                    tmp[i][j][k][m] = lambda * d(i, j) * d(k, m) + mu * (d(i, k) * d(j, m) + d(i, m) * d(j, k));
-                }
-            }
-        }
-    }
-
-    return tmp;
 }
