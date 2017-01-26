@@ -14,8 +14,12 @@
     "dirichlet": [
       {
         "id": 2,
-        "type": "constant",
-        "value": 0
+        "type": "constant_vector",
+        "value": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
       }
     ],
     "neumann": [
@@ -30,12 +34,12 @@
     "type": "simple_ice_island",
     "geometry": {
       "size": 10,
-      "center" : {
-        "x" : 0,
-        "y" : 0,
-        "z" : 0
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
       },
-      "n_refines": 6
+      "n_refines": 4
     }
   },
   "mesh_markers": {
@@ -96,6 +100,21 @@
       }
     ],
     "material": [
+      {
+        "id": 1,
+        "type": "two_planes",
+        "point_on_first_plane": {
+          "x": 0,
+          "y": 0,
+          "z": -5
+        },
+        "point_on_second_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 5
+        },
+        "axis": 2
+      }
     ]
   },
   "linear_solver": {

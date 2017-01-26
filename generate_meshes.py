@@ -14,7 +14,7 @@ class MeshGenerator:
     @staticmethod
     def generate(name: Path):
         command = ['gmsh',
-                   '-1 -2 -3',
+                   '-1', '-2', '-3',
                    '{0}'.format(name)]
         subprocess.run(command)
 
