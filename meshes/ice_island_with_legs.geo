@@ -4,14 +4,14 @@ R = 2;
 h = 3;
 
 ///Cube
-Point(1) = {0, 0, 0, 1.0};
-Point(2) = {a, 0, 0, 1.0};
-Point(3) = {0, a, 0, 1.0};
-Point(4) = {a, a, 0, 1.0};
-Point(5) = {a, a, a, 1.0};
-Point(6) = {a, 0, a, 1.0};
-Point(7) = {0, a, a, 1.0};
-Point(8) = {0, 0, a, 1.0};
+Point(1) = {0, 0, 0};
+Point(2) = {a, 0, 0};
+Point(3) = {0, a, 0};
+Point(4) = {a, a, 0};
+Point(5) = {a, a, a};
+Point(6) = {a, 0, a};
+Point(7) = {0, a, a};
+Point(8) = {0, 0, a};
 
 Line(5) = {1, 2};
 Line(6) = {2, 4};
@@ -47,11 +47,11 @@ Physical Volume("cube") = {30};
 
 ///Legs
 //First
-Point(90) = {a / 2 - R, a / 2, a, 1.0};
-Point(91) = {a / 2 - R - r, a / 2, a, 1.0};
-Point(92) = {a / 2 - R, a / 2 + r, a, 1.0};
-Point(93) = {a / 2 - R + r, a / 2, a,  1.0};
-Point(94) = {a / 2 - R, a / 2 - r, a, 1.0};
+Point(90) = {a / 2 - R, a / 2, a};
+Point(91) = {a / 2 - R - r, a / 2, a};
+Point(92) = {a / 2 - R, a / 2 + r, a};
+Point(93) = {a / 2 - R + r, a / 2, a};
+Point(94) = {a / 2 - R, a / 2 - r, a};
 
 Circle(35) = {91, 90, 92};
 Circle(36) = {92, 90, 93};
@@ -62,11 +62,11 @@ Line Loop(49) = {38, 35, 36, 37};
 Plane Surface(50) = {49};
 
 //Second
-Point(100) = {a / 2, a / 2 + R, a, 1.0};
-Point(101) = {a / 2 - r, a / 2 + R, a, 1.0};
-Point(102) = {a / 2, a / 2 + R + r, a, 1.0};
-Point(103) = {a / 2 + r, a / 2 + R, a, 1.0};
-Point(104) = {a / 2, a / 2 + R - r, a, 1.0};
+Point(100) = {a / 2, a / 2 + R, a};
+Point(101) = {a / 2 - r, a / 2 + R, a};
+Point(102) = {a / 2, a / 2 + R + r, a};
+Point(103) = {a / 2 + r, a / 2 + R, a};
+Point(104) = {a / 2, a / 2 + R - r, a};
 
 Circle(31) = {101, 100, 102};
 Circle(32) = {102, 100, 103};
@@ -77,11 +77,11 @@ Line Loop(47) = {31, 32, 33, 34};
 Plane Surface(48) = {47};
 
 //Third
-Point(110) = {a / 2 + R, a / 2 , a, 1.0};
-Point(111) = {a / 2 + R - r, a / 2 , a, 1.0};
-Point(112) = {a / 2 + R, a / 2 + r , a, 1.0};
-Point(113) = {a / 2 + R + r, a / 2, a, 1.0};
-Point(114) = {a / 2 + R, a / 2 - r, a, 1.0};
+Point(110) = {a / 2 + R, a / 2 , a};
+Point(111) = {a / 2 + R - r, a / 2, a};
+Point(112) = {a / 2 + R, a / 2 + r , a};
+Point(113) = {a / 2 + R + r, a / 2, a};
+Point(114) = {a / 2 + R, a / 2 - r, a};
 
 Circle(43) = {111, 110, 112};
 Circle(44) = {112, 110, 113};
@@ -92,11 +92,11 @@ Line Loop(53) = {46, 43, 44, 45};
 Plane Surface(54) = {53};
 
 //Fourth
-Point(120) = {a / 2, a / 2 - R, a, 1.0};
-Point(121) = {a / 2 - r, a / 2 - R, a, 1.0};
-Point(122) = {a / 2, a / 2 - R + r, a, 1.0};
-Point(123) = {a / 2 + r, a / 2 - R, a, 1.0};
-Point(124) = {a / 2, a / 2 - R - r, a, 1.0};
+Point(120) = {a / 2, a / 2 - R, a};
+Point(121) = {a / 2 - r, a / 2 - R, a};
+Point(122) = {a / 2, a / 2 - R + r, a};
+Point(123) = {a / 2 + r, a / 2 - R, a};
+Point(124) = {a / 2, a / 2 - R - r, a};
 
 Circle(39) = {121, 120, 122};
 Circle(40) = {122, 120, 123};
@@ -114,7 +114,7 @@ Extrude {0, 0, h} {
 Physical Surface("legs_sides") = {115, 89, 85, 97, 93, 48, 98, 119, 120, 111, 54, 107, 52, 141, 129, 142, 133, 137, 63, 50, 75, 67, 71, 76};
 Physical Volume("legs") = {32, 31, 33, 34};
 
-Transfinite Line "*" = 20 Using Bump 0.25;
+Transfinite Line "*" = 30 Using Bump 0.25;
 Transfinite Surface "*";
 Recombine Surface "*";
 Transfinite Volume "*";
