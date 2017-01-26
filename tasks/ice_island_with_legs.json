@@ -15,7 +15,7 @@
       "G": 0.8e+11,
       "thermal_diffusivity": 9.0e-2
     }
-  ]
+  ],
   "boundaries": {
     "dirichlet": [
       {
