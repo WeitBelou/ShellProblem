@@ -134,12 +134,13 @@ bool MeshUtilities::is_cell_between_two_planes(Triangulation<3, 3>::active_cell_
                                                const Point<3> point_on_second_plane,
                                                const unsigned int axis)
 {
+    unsigned n_internal_points = 0;
     for (unsigned v = 0; v < GeometryInfo<3>::vertices_per_cell; ++v) {
-        if (!is_point_between_two_planes(cell->vertex(v), point_on_first_plane, point_on_second_plane, axis)) {
-            return false;
+        if (is_point_between_two_planes(cell->vertex(v), point_on_first_plane, point_on_second_plane, axis)) {
+            n_internal_points++;
         }
     }
-    return true;
+    return (n_internal_points >= GeometryInfo<3>::vertices_per_cell / 2);
 }
 
 bool MeshUtilities::is_point_between_two_planes(const dealii::Point<3> point,
