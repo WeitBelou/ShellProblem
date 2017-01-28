@@ -20,8 +20,12 @@
     "dirichlet": [
       {
         "id": 2,
-        "type": "constant",
-        "value": 0
+        "type": "constant_vector",
+        "value": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
       }
     ],
     "neumann": [
