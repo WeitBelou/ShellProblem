@@ -17,6 +17,7 @@ MshMesh::MshMesh(const std::string &grid_file_name, const MeshMarkersGroup &mark
                 cell->face(f)->set_all_boundary_ids(0);
             }
         }
+        cell->set_material_id(0);
     }
 
     markers.apply_markers(tria);
