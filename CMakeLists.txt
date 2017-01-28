@@ -39,7 +39,9 @@ deal_ii_setup_target(shell)
 #Tests
 file(GLOB_RECURSE TESTS_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/tests/*.cpp")
 add_executable(test_runner ${TESTS_SOURCES})
-target_link_libraries(test_runner shell ${GTEST_LIBRARIES})
+target_link_libraries(test_runner gtest gtest_main)
+target_link_libraries(test_runner shell)
+deal_ii_setup_target(test_runner)
 
 #Runner
 set(MAIN_SOURCE "src/main.cpp")
