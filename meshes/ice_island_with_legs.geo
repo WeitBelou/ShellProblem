@@ -42,8 +42,6 @@ Surface Loop(29) = {22, 26, 18, 24, 28, 20};
 
 Volume(30) = {29};
 
-Physical Surface("cube_sides") = {24, 22, 18, 20, 26, 28};
-Physical Volume("cube") = {30};
 
 ///Legs
 //First
@@ -110,9 +108,6 @@ Plane Surface(52) = {51};
 Extrude {0, 0, h} {
   Surface{50, 48, 54, 52};
 }
-
-Physical Surface("legs_sides") = {115, 89, 85, 97, 93, 48, 98, 119, 120, 111, 54, 107, 52, 141, 129, 142, 133, 137, 63, 50, 75, 67, 71, 76};
-Physical Volume("legs") = {32, 31, 33, 34};
 
 Transfinite Line "*" = 20 Using Bump 0.25;
 Transfinite Surface "*";
