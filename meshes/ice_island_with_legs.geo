@@ -109,7 +109,7 @@ Extrude {0, 0, h} {
   Surface{50, 48, 54, 52};
 }
 
-Transfinite Line "*" = 20 Using Bump 0.25;
+Transfinite Line "*" = 20;
 Transfinite Surface "*";
 Recombine Surface "*";
 Transfinite Volume "*";
