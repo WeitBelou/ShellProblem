@@ -28,7 +28,20 @@ find_package(deal.II REQUIRED
         HINTS $ENV{DEAL_II_DIR})
 deal_ii_initialize_cached_variables()
 
-file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
-add_executable(${PROJECT_NAME} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
-deal_ii_setup_target(${PROJECT_NAME})
+#libshell
+file(GLOB_RECURSE HEADERS "${CMAKE_CURRENT_LIST_DIR}/src/*.hpp")
+file(GLOB_RECURSE SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/shell/*.cpp")
+
+add_library(shell ${HEADERS} ${SOURCES})
+target_link_libraries(shell ${Boost_LIBRARIES})
+deal_ii_setup_target(shell)
+
+#Tests
+file(GLOB_RECURSE TESTS_SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/tests/*.cpp")
+add_executable(test_runner ${TESTS_SOURCES})
+target_link_libraries(test_runner shell ${GTEST_LIBRARIES})
+
+#Runner
+set(MAIN_SOURCE "src/main.cpp")
+add_executable(${PROJECT_NAME} ${MAIN_SOURCE})
+target_link_libraries(${PROJECT_NAME} shell)

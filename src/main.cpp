@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "launcher/Launcher.hpp"
-#include "launcher/ParsedArgs.hpp"
+#include "src/shell/launcher/Launcher.hpp"
+#include "src/shell/launcher/ParsedArgs.hpp"
 
 using namespace TaskReader;
 
