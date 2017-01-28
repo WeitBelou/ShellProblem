@@ -114,7 +114,7 @@ Extrude {0, 0, h} {
 Physical Surface("legs_sides") = {115, 89, 85, 97, 93, 48, 98, 119, 120, 111, 54, 107, 52, 141, 129, 142, 133, 137, 63, 50, 75, 67, 71, 76};
 Physical Volume("legs") = {32, 31, 33, 34};
 
-Transfinite Line "*" = 30 Using Bump 0.25;
+Transfinite Line "*" = 20 Using Bump 0.25;
 Transfinite Surface "*";
 Recombine Surface "*";
 Transfinite Volume "*";

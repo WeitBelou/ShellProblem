@@ -11,13 +11,11 @@
 
 #include <deal.II/numerics/data_out.h>
 #include <deal.II/lac/solver_control.h>
-
 #include <deal.II/lac/solver_gmres.h>
 #include <deal.II/lac/precondition_block.h>
 #include <deal.II/lac/precondition.h>
 
 #include <deal.II/numerics/vector_tools.h>
-#include <src/materials/MaterialsGroup.hpp>
 #include "postprocessors/OutputWriter.hpp"
 
 #include "postprocessors/VectorOutputWriter.hpp"
@@ -53,10 +51,7 @@ void ElasticitySolver::setup_system()
     dof_handler.distribute_dofs(fe);
 
     constraints.clear();
-    for (const auto & it : boundaries.get_dirichlet()) {
-        VectorTools::interpolate_boundary_values(dof_handler, it.first, *it.second,
-                                                 constraints);
-    }
+    boundaries.apply_dirichlet(dof_handler, constraints);
     constraints.close();
 
     DynamicSparsityPattern dsp(dof_handler.n_dofs(), dof_handler.n_dofs());
@@ -113,7 +108,7 @@ void ElasticitySolver::assemble_system()
 
         //Assemble rhs
         for (unsigned int f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
-            for (const auto & it: boundaries.get_neumann()) {
+            for (const auto &it: boundaries.get_neumann()) {
                 if (cell->face(f)->at_boundary() && cell->face(f)->boundary_id() == it.first) {
                     fe_face_values.reinit(cell, f);
 

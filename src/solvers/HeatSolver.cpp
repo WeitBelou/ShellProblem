@@ -47,10 +47,7 @@ void HeatSolver::setup_system()
 
 
     constraints.clear();
-    for (auto &&it : boundaries.get_dirichlet()) {
-        VectorTools::interpolate_boundary_values(dof_handler, it.first, *it.second,
-                                                 constraints);
-    }
+    boundaries.apply_dirichlet(dof_handler, constraints);
     constraints.close();
 
     DynamicSparsityPattern dsp(dof_handler.n_dofs());
