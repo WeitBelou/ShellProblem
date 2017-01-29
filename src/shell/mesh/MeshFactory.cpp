@@ -23,9 +23,6 @@ std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,
     else if (mesh_type == "ice_island_with_leg") {
         return create_ice_island_with_leg(geometry, markers);
     }
-    else if (mesh_type == "msh_file") {
-        return create_mesh_from_msh_file(geometry, markers);
-    }
     else {
         AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
             std::string("Mesh type " + mesh_type + " doesn\'t exist.")
@@ -73,9 +70,4 @@ std::shared_ptr<MeshBase> MeshFactory::create_ice_island_with_leg(const json geo
     const unsigned int n_refines = geometry["n_refines"].get<unsigned>();
 
     return std::make_shared<IceIslandWithLegsMesh>(n_refines, markers, a, h);
-}
-std::shared_ptr<MeshBase> MeshFactory::create_mesh_from_msh_file(const json &geometry, const MeshMarkersGroup &markers)
-{
-    const std::string path_to_file = geometry["path"].get<std::string>();
-    return std::make_shared<MshMesh>(path_to_file, markers);
 }

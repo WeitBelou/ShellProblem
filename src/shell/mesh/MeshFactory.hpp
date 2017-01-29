@@ -16,6 +16,5 @@ private:
     static std::shared_ptr<MeshBase> create_cube_mesh(const json geometry, const MeshMarkersGroup &markers);
     static std::shared_ptr<MeshBase> create_simple_shell_mesh(const json geometry, const MeshMarkersGroup &markers);
     static std::shared_ptr<MeshBase> create_simple_ice_island(const json geometry, const MeshMarkersGroup &markers);
-    static std::shared_ptr<MeshBase> create_mesh_from_msh_file(const json &geometry, const MeshMarkersGroup &markers);
     static std::shared_ptr<MeshBase> create_ice_island_with_leg(const json geometry, const MeshMarkersGroup &markers);
 };
