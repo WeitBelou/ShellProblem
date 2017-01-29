@@ -1,0 +1,114 @@
+{
+  "solver": {
+    "type": "simple_elasticity"
+  },
+  "materials": [
+    {
+      "id": 1,
+      "E": 5.0e9,
+      "G": 1.87e9,
+      "thermal_diffusivity": 1
+    },
+    {
+      "id": 2,
+      "E": 2.1e11,
+      "G": 0.8e+11,
+      "thermal_diffusivity": 9.0e-2
+    }
+  ],
+  "boundaries": {
+    "dirichlet": [
+      {
+        "id": 2,
+        "type": "constant_vector",
+        "value": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      }
+    ],
+    "neumann": [
+      {
+        "id": 1,
+        "type": "constant",
+        "value": 5.0e+08
+      }
+    ]
+  },
+  "mesh": {
+    "type": "ice_island_with_leg",
+    "geometry": {
+      "a": 10,
+      "h": 3,
+      "n_refines": 4
+    }
+  },
+  "mesh_markers": {
+    "boundary": [
+      {
+        "type": "plane_marker",
+        "id": 1,
+        "point_on_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 13
+        },
+        "axis": 2
+      },
+      {
+        "type": "plane_marker",
+        "id": 2,
+        "point_on_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "axis": 2
+      }
+    ],
+    "material": [
+      {
+        "type": "two_planes",
+        "id": 1,
+        "point_on_first_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "point_on_second_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 10
+        },
+        "axis": 2
+      },
+      {
+        "type": "two_planes",
+        "id": 2,
+        "point_on_first_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 10
+        },
+        "point_on_second_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 13
+        },
+        "axis": 2
+      }
+    ]
+  },
+  "linear_solver": {
+    "type": "GMRES",
+    "eps": 1.0e-3,
+    "n_steps": 1000,
+    "additional_data": {
+      "max_n_tmp_vectors": 100,
+      "right_preconditioning": false,
+      "use_default_residual": true,
+      "force_re_orthogonalization": false
+    }
+  }
+}
