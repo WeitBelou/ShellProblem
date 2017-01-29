@@ -1,6 +1,6 @@
 {
   "solver": {
-    "type": "simple_elasticity"
+    "type": "simple_heat"
   },
   "materials": [
     {
@@ -20,20 +20,16 @@
     "dirichlet": [
       {
         "id": 2,
-        "type": "constant_vector",
-        "value": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        }
-      }
-    ],
-    "neumann": [
+        "type": "constant",
+        "value": 2000
+      },
       {
         "id": 1,
         "type": "constant",
-        "value": 5.0e+06
+        "value": 2000
       }
+    ],
+    "neumann": [
     ]
   },
   "mesh": {
@@ -99,14 +95,10 @@
     ]
   },
   "linear_solver": {
-    "type": "GMRES",
-    "eps": 1.0e-5,
+    "type": "CG",
+    "eps": 1,
     "n_steps": 1000,
     "additional_data": {
-      "max_n_tmp_vectors": 60,
-      "right_preconditioning": false,
-      "use_default_residual": true,
-      "force_re_orthogonalization": false
     }
   }
 }
