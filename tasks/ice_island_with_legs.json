@@ -32,14 +32,16 @@
       {
         "id": 1,
         "type": "constant",
-        "value": 5.0e+06
+        "value": 5.0e+08
       }
     ]
   },
   "mesh": {
-    "type": "msh_file",
+    "type": "ice_island_with_leg",
     "geometry": {
-      "path": "meshes/ice_island_with_legs.msh"
+      "a": 10,
+      "h": 3,
+      "n_refines": 2
     }
   },
   "mesh_markers": {
@@ -48,8 +50,8 @@
         "type": "plane_marker",
         "id": 1,
         "point_on_plane": {
-          "x": 5,
-          "y": 5,
+          "x": 0,
+          "y": 0,
           "z": 13
         },
         "axis": 2
@@ -58,8 +60,8 @@
         "type": "plane_marker",
         "id": 2,
         "point_on_plane": {
-          "x": 5,
-          "y": 5,
+          "x": 0,
+          "y": 0,
           "z": 0
         },
         "axis": 2
@@ -100,10 +102,10 @@
   },
   "linear_solver": {
     "type": "GMRES",
-    "eps": 1.0e-5,
+    "eps": 1.0e-4,
     "n_steps": 1000,
     "additional_data": {
-      "max_n_tmp_vectors": 60,
+      "max_n_tmp_vectors": 100,
       "right_preconditioning": false,
       "use_default_residual": true,
       "force_re_orthogonalization": false
