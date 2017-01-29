@@ -2,7 +2,6 @@
 
 #include "SimpleShellMesh.hpp"
 #include "CubeMesh.hpp"
-#include "MshMesh.hpp"
 #include "IceIslandWithLegsMesh.hpp"
 
 std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,

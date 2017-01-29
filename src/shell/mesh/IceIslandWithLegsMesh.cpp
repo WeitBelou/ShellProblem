@@ -48,7 +48,6 @@ void IceIslandWithLegsMesh::create_coarse_mesh()
 
 void IceIslandWithLegsMesh::apply_manifold_ids()
 {
-    const unsigned n = 11;
     const double c = a / 11.0;
 
     static const dealii::FlatManifold<3> flat_manifold;
