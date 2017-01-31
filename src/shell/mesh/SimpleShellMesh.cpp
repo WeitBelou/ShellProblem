@@ -24,22 +24,29 @@ SimpleShellMesh::SimpleShellMesh(double inner_radius,
 void SimpleShellMesh::create_coarse_mesh()
 {
     //Fairing
-    dealii::Triangulation<3> fairing;
-    const dealii::Point<3> fairing_center;
+    Triangulation<3> fairing;
+    const Point<3> fairing_center(0, 0, 0);
     GridGenerator::half_hyper_shell(fairing, fairing_center,
                                     inner_radius, outer_radius);
     GridTools::rotate(-numbers::PI_2, 1, fairing);
 
     //Shell cylinder
-    dealii::Triangulation<3> shell_cylinder;
+    Triangulation<3> shell_cylinder;
     GridGenerator::cylinder_shell(shell_cylinder, cylinder_length,
                                   inner_radius, outer_radius,
                                   4, 4);
     GridTools::rotate(numbers::PI, 1, shell_cylinder);
     GridTools::rotate(numbers::PI_4, 2, shell_cylinder);
 
-    //Merge
     GridGenerator::merge_triangulations(fairing, shell_cylinder, tria);
+
+    //Cap
+    Triangulation<3> cap;
+    const double a = outer_radius / sqrt(2);
+    GridGenerator::hyper_rectangle(cap, Point<3>(-a, -a, -(cylinder_length + thickness)),
+                                   Point<3>(a, a, -cylinder_length));
+
+    GridGenerator::merge_triangulations(tria, cap, tria);
 }
 void SimpleShellMesh::apply_manifold_ids()
 {
