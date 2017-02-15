@@ -2,7 +2,6 @@
 
 #include "SimpleShellMesh.hpp"
 #include "CubeMesh.hpp"
-#include "IceIslandWithLegsMesh.hpp"
 
 std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,
                                                    const MeshMarkersGroup &markers)
@@ -15,12 +14,6 @@ std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,
     }
     else if (mesh_type == "simple_shell") {
         return create_simple_shell_mesh(geometry, markers);
-    }
-    else if (mesh_type == "simple_ice_island") {
-        return create_simple_ice_island(geometry, markers);
-    }
-    else if (mesh_type == "ice_island_with_leg") {
-        return create_ice_island_with_leg(geometry, markers);
     }
     else {
         AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
@@ -52,21 +45,4 @@ std::shared_ptr<MeshBase> MeshFactory::create_cube_mesh(const json geometry, con
     const unsigned int n_refines = geometry["n_refines"].get<unsigned>();
     const dealii::Point<3> center = JsonUtil::get_point(geometry["center"]);
     return std::make_shared<CubeMesh>(size, center, n_refines, markers);
-}
-
-std::shared_ptr<MeshBase> MeshFactory::create_simple_ice_island(const json geometry, const MeshMarkersGroup &markers)
-{
-    const double size = geometry["size"].get<double>();
-    const unsigned int n_refines = geometry["n_refines"].get<unsigned>();
-    const dealii::Point<3> center = JsonUtil::get_point(geometry["center"]);
-    return std::make_shared<CubeMesh>(size, center, n_refines, markers);
-}
-
-std::shared_ptr<MeshBase> MeshFactory::create_ice_island_with_leg(const json geometry, const MeshMarkersGroup &markers)
-{
-    const double a = geometry["a"].get<double>();
-    const double h = geometry["h"].get<double>();
-    const unsigned int n_refines = geometry["n_refines"].get<unsigned>();
-
-    return std::make_shared<IceIslandWithLegsMesh>(n_refines, markers, a, h);
 }

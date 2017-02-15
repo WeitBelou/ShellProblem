@@ -56,12 +56,12 @@
         "point_on_first_plane": {
           "x": 0,
           "y": 0,
-          "z": -15
+          "z": -20
         },
         "point_on_second_plane": {
           "x": 0,
           "y": 0,
-          "z": 5.3
+          "z": 6
         },
         "axis": 2
       }
