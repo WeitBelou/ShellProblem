@@ -2,6 +2,7 @@
 
 #include "SimpleShellMesh.hpp"
 #include "CubeMesh.hpp"
+#include "CylinderMesh.hpp"
 
 std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,
                                                    const MeshMarkersGroup &markers)
@@ -14,6 +15,9 @@ std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,
     }
     else if (mesh_type == "simple_shell") {
         return create_simple_shell_mesh(geometry, markers);
+    }
+    else if (mesh_type == "cylinder") {
+        return create_cylinder_mesh(geometry, markers);
     }
     else {
         AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
@@ -45,4 +49,13 @@ std::shared_ptr<MeshBase> MeshFactory::create_cube_mesh(const json geometry, con
     const unsigned int n_refines = geometry["n_refines"].get<unsigned>();
     const dealii::Point<3> center = JsonUtil::get_point(geometry["center"]);
     return std::make_shared<CubeMesh>(size, center, n_refines, markers);
+}
+
+std::shared_ptr<MeshBase> MeshFactory::create_cylinder_mesh(const json &geometry, const MeshMarkersGroup &markers)
+{
+    const double radius = geometry["radius"].get<double>();
+    const double height = geometry["height"].get<double>();
+    const dealii::Point<3> center = JsonUtil::get_point(geometry["center"]);
+    const unsigned n_refines = geometry["n_refines"].get<unsigned>();
+    return std::make_shared<CylinderMesh>(radius, height, center, n_refines, markers);
 }

@@ -1,0 +1,90 @@
+{
+  "solver": {
+    "type": "simple_heat"
+  },
+  "materials": [
+    {
+      "id": 1,
+      "thermal_diffusivity": 9.0e-2,
+      "E": 1.0e+12,
+      "G": 4.7e+11
+    }
+  ],
+  "boundaries": {
+    "dirichlet": [
+      {
+        "id": 1,
+        "type": "constant",
+        "value": 2000
+      },
+      {
+        "id": 2,
+        "type": "constant",
+        "value": 0
+      }
+    ],
+    "neumann": [
+    ]
+  },
+  "mesh": {
+    "type": "cylinder",
+    "geometry": {
+      "radius": 5,
+      "height": 2,
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "n_refines": 2
+    }
+  },
+  "mesh_markers": {
+    "boundary": [
+      {
+        "type": "plane_marker",
+        "id": 1,
+        "point_on_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "axis": 2
+      },
+      {
+        "type": "plane_marker",
+        "id": 2,
+        "point_on_plane": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "axis": 2
+      }
+    ],
+    "material": [
+      {
+        "type": "two_planes",
+        "id": 1,
+        "point_on_first_plane": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "point_on_second_plane": {
+          "x": 0,
+          "y": 0,
+          "z": 1
+        },
+        "axis": 2
+      }
+    ]
+  },
+  "linear_solver": {
+    "type": "CG",
+    "eps": 1e-3,
+    "n_steps": 1000,
+    "additional_data": {
+    }
+  }
+}
