@@ -87,7 +87,7 @@
   },
   "linear_solver": {
     "type": "GMRES",
-    "eps": 1e-5,
+    "eps": 1e-6,
     "n_steps": 1000,
     "additional_data": {
       "max_n_tmp_vectors": 100,
