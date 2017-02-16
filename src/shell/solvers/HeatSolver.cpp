@@ -25,7 +25,7 @@ HeatSolver::HeatSolver(std::shared_ptr<MeshBase> mesh,
     materials(materials),
     boundaries(boundaries),
     linear_solver(linear_solver),
-    dof_handler(mesh->mesh()),
+    dof_handler(this->mesh->mesh()),
     fe(2),
     quadrature(2),
     face_quadrature(2)
