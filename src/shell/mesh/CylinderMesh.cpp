@@ -38,11 +38,10 @@ void CylinderMesh::apply_boundary_ids()
         for (unsigned f = 0; f < dealii::GeometryInfo<3>::faces_per_cell; ++f) {
             auto face = cell->face(f);
             if (face->at_boundary()) {
-                auto face_center_z = (face->center() - center)[2];
-                if (MeshUtilities::fuzzy_equal(face_center_z, height / 2)) {
+                if (MeshUtilities::is_face_on_plane(face, dealii::Point<3>(0, 0, height / 2) + center, 2)) {
                     face->set_all_boundary_ids(1);
                 }
-                else if (MeshUtilities::fuzzy_equal(face_center_z, -height / 2)) {
+                else if (MeshUtilities::is_face_on_plane(face, dealii::Point<3>(0, 0, -height / 2) + center, 2)) {
                     face->set_all_boundary_ids(2);
                 }
             }

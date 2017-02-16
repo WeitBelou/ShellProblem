@@ -39,11 +39,10 @@ void CubeMesh::apply_boundary_ids()
         for (unsigned f = 0; f < GeometryInfo<3>::faces_per_cell; ++f) {
             auto face = cell->face(f);
             if (face->at_boundary()) {
-                const double face_center_z = (face->center() - center)[2];
-                if (MeshUtilities::fuzzy_equal(face_center_z, size / 2)) {
+                if (MeshUtilities::is_face_on_plane(face, dealii::Point<3>(0, 0, size / 2) + center, 2)) {
                     face->set_all_boundary_ids(1);
                 }
-                else if (MeshUtilities::fuzzy_equal(face_center_z, -size / 2)) {
+                else if (dealii::Point<3>(0, 0, -size / 2) + center, 2) {
                     face->set_all_boundary_ids(2);
                 }
             }
