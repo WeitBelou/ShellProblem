@@ -7,14 +7,6 @@
 #include <deal.II/dofs/dof_tools.h>
 #include <deal.II/lac/dynamic_sparsity_pattern.h>
 
-#include <deal.II/lac/matrix_out.h>
-
-#include <deal.II/numerics/data_out.h>
-#include <deal.II/lac/solver_control.h>
-#include <deal.II/lac/solver_gmres.h>
-#include <deal.II/lac/precondition_block.h>
-#include <deal.II/lac/precondition.h>
-
 #include <deal.II/numerics/vector_tools.h>
 #include "src/shell/postprocessors/OutputWriter.hpp"
 
@@ -32,11 +24,17 @@ ElasticitySolver::ElasticitySolver(std::shared_ptr<MeshBase> mesh,
     materials(materials),
     linear_solver(linear_solver),
     dof_handler(mesh->mesh()),
-    norm_of_stress(mesh->mesh().n_active_cells()),
     fe(FE_Q<3>(1), 3),
     displacement_extractor(0),
     quadrature(2),
-    face_quadrature(2)
+    face_quadrature(2),
+    norm_of_stress(mesh->mesh().n_active_cells()),
+    s_xx(mesh->mesh().n_active_cells()),
+    s_xy(mesh->mesh().n_active_cells()),
+    s_xz(mesh->mesh().n_active_cells()),
+    s_yy(mesh->mesh().n_active_cells()),
+    s_yz(mesh->mesh().n_active_cells()),
+    s_zz(mesh->mesh().n_active_cells())
 {
 
 }
@@ -143,6 +141,34 @@ unsigned int ElasticitySolver::solve_linear_system()
     return res.control.last_step();
 }
 
+void ElasticitySolver::compute_stress_tensor()
+{
+    FEValues<3> fe_values(fe, quadrature,
+                          update_values | update_gradients);
+    std::vector<SymmetricTensor<2, 3>> displacement_grads(quadrature.size());
+
+    const size_t n_q_points = quadrature.size();
+
+    for (auto cell : dof_handler.active_cell_iterators()) {
+        fe_values.reinit(cell);
+
+        auto stress_strain = materials.get_material_by_id(cell->material_id())->get_stress_strain_tensor();
+
+        fe_values[displacement_extractor].get_function_symmetric_gradients(displacement, displacement_grads);
+        SymmetricTensor<2, 3> stress;
+        for (unsigned int q = 0; q < n_q_points; ++q) {
+            stress += stress_strain * displacement_grads[q];
+        }
+
+        s_xx(cell->active_cell_index()) = stress[0][0] / n_q_points;
+        s_xy(cell->active_cell_index()) = stress[0][1] / n_q_points;
+        s_xz(cell->active_cell_index()) = stress[0][2] / n_q_points;
+        s_yy(cell->active_cell_index()) = stress[1][1] / n_q_points;
+        s_yz(cell->active_cell_index()) = stress[1][2] / n_q_points;
+        s_zz(cell->active_cell_index()) = stress[2][2] / n_q_points;
+    }
+}
+
 void ElasticitySolver::compute_norm_of_stress()
 {
     FEValues<3> fe_values(fe, quadrature,
@@ -167,10 +193,42 @@ void ElasticitySolver::compute_norm_of_stress()
 
 void ElasticitySolver::do_postprocessing(const std::string &output_dir)
 {
-    deallog << "Output displacement..." << std::endl;
     {
+        deallog << "Output displacement..." << std::endl;
         VectorOutputWriter writer{output_dir, "displacement"};
         writer.do_postprocess(dof_handler, displacement);
+    }
+
+    {
+        deallog << "Compute stress tensor..." << std::endl;
+        {
+            compute_stress_tensor();
+        }
+        deallog << "Output stress tensor..." << std::endl;
+        {
+            OutputWriter writer{output_dir, "stress_xx"};
+            writer.do_postprocess(dof_handler, s_xx);
+        }
+        {
+            OutputWriter writer{output_dir, "stress_xy"};
+            writer.do_postprocess(dof_handler, s_xy);
+        }
+        {
+            OutputWriter writer{output_dir, "stress_xz"};
+            writer.do_postprocess(dof_handler, s_xz);
+        }
+        {
+            OutputWriter writer{output_dir, "stress_yy"};
+            writer.do_postprocess(dof_handler, s_yy);
+        }
+        {
+            OutputWriter writer{output_dir, "stress_yz"};
+            writer.do_postprocess(dof_handler, s_yz);
+        }
+        {
+            OutputWriter writer{output_dir, "stress_zz"};
+            writer.do_postprocess(dof_handler, s_zz);
+        }
     }
 
     {

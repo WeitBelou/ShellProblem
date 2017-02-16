@@ -34,14 +34,15 @@ protected:
     void do_postprocessing(const std::string &output_dir) override;
     unsigned int get_n_dofs() override;
 private:
+    void compute_stress_tensor();
     void compute_norm_of_stress();
+
     const BoundariesGroup boundaries;
     const MaterialsGroup materials;
     std::shared_ptr<LinearSolverBase> linear_solver;
 
     dealii::DoFHandler<3> dof_handler;
 
-    dealii::Vector<double> norm_of_stress;
     const dealii::FESystem<3> fe;
     const dealii::FEValuesExtractors::Vector displacement_extractor;
     const dealii::QGauss<3> quadrature;
@@ -55,4 +56,13 @@ private:
     dealii::Vector<double> system_rhs;
 
     dealii::Vector<double> displacement;
+
+    dealii::Vector<double> norm_of_stress;
+
+    dealii::Vector<double> s_xx;
+    dealii::Vector<double> s_xy;
+    dealii::Vector<double> s_xz;
+    dealii::Vector<double> s_yy;
+    dealii::Vector<double> s_yz;
+    dealii::Vector<double> s_zz;
 };
