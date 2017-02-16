@@ -10,7 +10,6 @@
 #include <deal.II/numerics/vector_tools.h>
 #include "src/shell/postprocessors/OutputWriter.hpp"
 
-#include "src/shell/postprocessors/VectorOutputWriter.hpp"
 
 using namespace dealii;
 
@@ -29,12 +28,7 @@ ElasticitySolver::ElasticitySolver(std::shared_ptr<MeshBase> mesh,
     quadrature(2),
     face_quadrature(2),
     norm_of_stress(mesh->mesh().n_active_cells()),
-    s_xx(mesh->mesh().n_active_cells()),
-    s_xy(mesh->mesh().n_active_cells()),
-    s_xz(mesh->mesh().n_active_cells()),
-    s_yy(mesh->mesh().n_active_cells()),
-    s_yz(mesh->mesh().n_active_cells()),
-    s_zz(mesh->mesh().n_active_cells())
+    s(3, std::vector<Vector<double>>(3, Vector<double>(mesh->mesh().n_active_cells())))
 {
 
 }
@@ -160,12 +154,11 @@ void ElasticitySolver::compute_stress_tensor()
             stress += stress_strain * displacement_grads[q];
         }
 
-        s_xx(cell->active_cell_index()) = stress[0][0] / n_q_points;
-        s_xy(cell->active_cell_index()) = stress[0][1] / n_q_points;
-        s_xz(cell->active_cell_index()) = stress[0][2] / n_q_points;
-        s_yy(cell->active_cell_index()) = stress[1][1] / n_q_points;
-        s_yz(cell->active_cell_index()) = stress[1][2] / n_q_points;
-        s_zz(cell->active_cell_index()) = stress[2][2] / n_q_points;
+        for (unsigned i = 0; i < 3; ++i) {
+            for (unsigned j = 0; j < 3; ++j) {
+                s[i][j](cell->active_cell_index()) = stress[i][j] / n_q_points;
+            }
+        }
     }
 }
 
@@ -193,53 +186,23 @@ void ElasticitySolver::compute_norm_of_stress()
 
 void ElasticitySolver::do_postprocessing(const std::string &output_dir)
 {
-    {
-        deallog << "Output displacement..." << std::endl;
-        VectorOutputWriter writer{output_dir, "displacement"};
-        writer.do_postprocess(dof_handler, displacement);
-    }
+    OutputWriter writer{dof_handler};
+    deallog << "Output displacement..." << std::endl;
+    writer.add_vector_data(displacement, "displacement");
 
-    {
-        deallog << "Compute stress tensor..." << std::endl;
-        {
-            compute_stress_tensor();
-        }
-        deallog << "Output stress tensor..." << std::endl;
-        {
-            OutputWriter writer{output_dir, "stress_xx"};
-            writer.do_postprocess(dof_handler, s_xx);
-        }
-        {
-            OutputWriter writer{output_dir, "stress_xy"};
-            writer.do_postprocess(dof_handler, s_xy);
-        }
-        {
-            OutputWriter writer{output_dir, "stress_xz"};
-            writer.do_postprocess(dof_handler, s_xz);
-        }
-        {
-            OutputWriter writer{output_dir, "stress_yy"};
-            writer.do_postprocess(dof_handler, s_yy);
-        }
-        {
-            OutputWriter writer{output_dir, "stress_yz"};
-            writer.do_postprocess(dof_handler, s_yz);
-        }
-        {
-            OutputWriter writer{output_dir, "stress_zz"};
-            writer.do_postprocess(dof_handler, s_zz);
-        }
-    }
+    deallog << "Compute stress tensor..." << std::endl;
+    compute_stress_tensor();
 
-    {
-        deallog << "Compute norm of stress..." << std::endl;
-        compute_norm_of_stress();
-    }
-    {
-        deallog << "Output norm of stress..." << std::endl;
-        OutputWriter writer(output_dir, "norm_of_stress");
-        writer.do_postprocess(dof_handler, norm_of_stress);
-    }
+    deallog << "Output stress tensor..." << std::endl;
+    writer.add_matrix_data(s, "s");
+
+    deallog << "Compute norm of stress..." << std::endl;
+    compute_norm_of_stress();
+
+    deallog << "Output norm of stress..." << std::endl;
+    writer.add_scalar_data(norm_of_stress, "norm_of_stress");
+
+    writer.write_results(output_dir, "results");
 }
 
 unsigned int ElasticitySolver::get_n_dofs()

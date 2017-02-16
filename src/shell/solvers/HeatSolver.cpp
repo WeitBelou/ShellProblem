@@ -116,8 +116,9 @@ unsigned int HeatSolver::solve_linear_system()
 void HeatSolver::do_postprocessing(const std::string &output_dir)
 {
     dealii::deallog << "Output temperature..." << std::endl;
-    OutputWriter writer{output_dir, "temperature"};
-    writer.do_postprocess(dof_handler, solution);
+    OutputWriter writer{dof_handler};
+    writer.add_scalar_data(solution, "T");
+    writer.write_results(output_dir, "results");
 }
 
 unsigned int HeatSolver::get_n_dofs()

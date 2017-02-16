@@ -59,10 +59,5 @@ private:
 
     dealii::Vector<double> norm_of_stress;
 
-    dealii::Vector<double> s_xx;
-    dealii::Vector<double> s_xy;
-    dealii::Vector<double> s_xz;
-    dealii::Vector<double> s_yy;
-    dealii::Vector<double> s_yz;
-    dealii::Vector<double> s_zz;
+    std::vector<std::vector<dealii::Vector<double>>> s;
 };
