@@ -15,4 +15,5 @@ private:
     static std::shared_ptr<MeshBase> create_simple_shell_mesh(const json geometry);
     static std::shared_ptr<MeshBase> create_cylinder_mesh(const json &geometry);
     static std::shared_ptr<MeshBase> create_simple_island_mesh(const json &geometry);
+    static std::shared_ptr<MeshBase> create_layered_island_mesh(const json &geometry);
 };
