@@ -34,8 +34,8 @@ protected:
     void do_postprocessing(const std::string &output_dir) override;
     unsigned int get_n_dofs() override;
 private:
-    void compute_stress_tensor();
-    void compute_norm_of_stress();
+    std::vector<std::vector<dealii::Vector<double>>> compute_stress_tensor();
+    dealii::Vector<double> compute_norm_of_stress();
 
     const BoundariesGroup boundaries;
     const MaterialsGroup materials;
@@ -56,8 +56,4 @@ private:
     dealii::Vector<double> system_rhs;
 
     dealii::Vector<double> displacement;
-
-    dealii::Vector<double> norm_of_stress;
-
-    std::vector<std::vector<dealii::Vector<double>>> s;
 };

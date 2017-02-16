@@ -22,13 +22,11 @@ ElasticitySolver::ElasticitySolver(std::shared_ptr<MeshBase> mesh,
     boundaries(boundaries),
     materials(materials),
     linear_solver(linear_solver),
-    dof_handler(mesh->mesh()),
+    dof_handler(this->mesh->mesh()),
     fe(FE_Q<3>(1), 3),
     displacement_extractor(0),
     quadrature(2),
-    face_quadrature(2),
-    norm_of_stress(mesh->mesh().n_active_cells()),
-    s(3, std::vector<Vector<double>>(3, Vector<double>(mesh->mesh().n_active_cells())))
+    face_quadrature(2)
 {
 
 }
@@ -135,8 +133,10 @@ unsigned int ElasticitySolver::solve_linear_system()
     return res.control.last_step();
 }
 
-void ElasticitySolver::compute_stress_tensor()
+std::vector<std::vector<dealii::Vector<double>>> ElasticitySolver::compute_stress_tensor()
 {
+    std::vector<std::vector<dealii::Vector<double>>>
+        s(3, std::vector<dealii::Vector<double>>(3, dealii::Vector<double>(mesh->mesh().n_active_cells())));
     FEValues<3> fe_values(fe, quadrature,
                           update_values | update_gradients);
     std::vector<SymmetricTensor<2, 3>> displacement_grads(quadrature.size());
@@ -156,14 +156,16 @@ void ElasticitySolver::compute_stress_tensor()
 
         for (unsigned i = 0; i < 3; ++i) {
             for (unsigned j = 0; j < 3; ++j) {
-                s[i][j](cell->active_cell_index()) = stress[i][j] / n_q_points;
+                s[i][j][cell->active_cell_index()] = stress[i][j] / n_q_points;
             }
         }
     }
+    return std::move(s);
 }
 
-void ElasticitySolver::compute_norm_of_stress()
+Vector<double> ElasticitySolver::compute_norm_of_stress()
 {
+    Vector<double> norm_of_stress(mesh->mesh().n_active_cells());
     FEValues<3> fe_values(fe, quadrature,
                           update_values | update_gradients);
     std::vector<SymmetricTensor<2, 3>> displacement_grads(quadrature.size());
@@ -182,6 +184,7 @@ void ElasticitySolver::compute_norm_of_stress()
         }
         norm_of_stress(cell->active_cell_index()) = stress.norm() / n_q_points;
     }
+    return norm_of_stress;
 }
 
 void ElasticitySolver::do_postprocessing(const std::string &output_dir)
@@ -191,13 +194,13 @@ void ElasticitySolver::do_postprocessing(const std::string &output_dir)
     writer.add_vector_data(displacement, "displacement");
 
     deallog << "Compute stress tensor..." << std::endl;
-    compute_stress_tensor();
+    auto s = compute_stress_tensor();
 
     deallog << "Output stress tensor..." << std::endl;
     writer.add_matrix_data(s, "s");
 
     deallog << "Compute norm of stress..." << std::endl;
-    compute_norm_of_stress();
+    auto norm_of_stress = compute_norm_of_stress();
 
     deallog << "Output norm of stress..." << std::endl;
     writer.add_scalar_data(norm_of_stress, "norm_of_stress");
