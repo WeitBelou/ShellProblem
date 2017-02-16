@@ -4,6 +4,7 @@
 #include <deal.II/grid/grid_tools.h>
 #include <deal.II/grid/manifold_lib.h>
 #include <src/shell/util/MeshUtilities.hpp>
+#include <deal.II/grid/tria_boundary_lib.h>
 CylinderMesh::CylinderMesh(const double radius,
                            const double height,
                            const dealii::Point<3> &center,
@@ -31,10 +32,10 @@ void CylinderMesh::create_coarse_mesh()
 
 void CylinderMesh::apply_manifold_ids()
 {
-    static const dealii::CylindricalManifold<3> cylindrical_manifold(dealii::Point<3>(0, 0, 1), center);
+    static const dealii::CylinderBoundary<3> cylindrical_boundary(radius, dealii::Point<3>(0, 0, 1), center);
     static const dealii::FlatManifold<3> flat_manifold;
     tria.set_manifold(0, flat_manifold);
-    tria.set_manifold(1, cylindrical_manifold);
+    tria.set_manifold(1, cylindrical_boundary);
 
     tria.set_all_manifold_ids(0);
     for (auto cell: tria.active_cell_iterators()) {
