@@ -1,0 +1,70 @@
+{
+  "solver": {
+    "type": "simple_elasticity"
+  },
+  "materials": [
+    {
+      "id": 1,
+      "thermal_diffusivity": 9.0e-2,
+      "E": 5.00e+9,
+      "G": 1.87e+8
+    },
+    {
+      "id": 2,
+      "thermal_diffusivity": 9.0e-2,
+      "E": 1.0e+12,
+      "G": 4.7e+11
+    }
+  ],
+  "boundaries": {
+    "dirichlet": [
+      {
+        "id": 2,
+        "type": "constant_vector",
+        "value": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      }
+    ],
+    "neumann": [
+      {
+        "id": 1,
+        "type": "constant",
+        "value": 1e+5
+      }
+    ]
+  },
+  "mesh": {
+    "type": "island_with_well",
+    "geometry": {
+      "well_radius": 1,
+      "well_position": {
+        "x": 0,
+        "y": 0,
+        "z": 5
+      },
+      "force_radius": 2.5,
+      "force_position": {
+        "x": 5,
+        "y": 5,
+        "z": 5
+      },
+      "height": 10,
+      "island_radius": 25,
+      "n_refines": 0
+    }
+  },
+  "linear_solver": {
+    "type": "GMRES",
+    "eps": 2e-4,
+    "n_steps": 1000,
+    "additional_data": {
+      "max_n_tmp_vectors": 300,
+      "right_preconditioning": false,
+      "use_default_residual": true,
+      "force_re_orthogonalization": false
+    }
+  }
+}

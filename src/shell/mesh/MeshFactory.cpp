@@ -5,6 +5,7 @@
 #include "CylinderMesh.hpp"
 #include "SimpleIsland.hpp"
 #include "LayeredIsland.hpp"
+#include "IslandWithWell.hpp"
 
 std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties)
 {
@@ -25,6 +26,9 @@ std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties)
     }
     else if (mesh_type == "layered_island") {
         return create_layered_island_mesh(geometry);
+    }
+    else if (mesh_type == "island_with_well") {
+        return create_island_with_well(geometry);
     }
     else {
         AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
@@ -93,4 +97,21 @@ std::shared_ptr<MeshBase> MeshFactory::create_layered_island_mesh(const json &ge
 
     return std::make_shared<LayeredIsland>(layer_height, force_position, island_radius,
                                            force_radius, height, n_refines);
+}
+std::shared_ptr<MeshBase> MeshFactory::create_island_with_well(const json &geometry)
+{
+    const dealii::Point<3> well_position = JsonUtil::get_point(geometry["well_position"]);
+    const double well_radius = geometry["well_radius"].get<double>();
+
+    const dealii::Point<3> force_position = JsonUtil::get_point(geometry["force_position"]);
+    const double force_radius = geometry["force_radius"].get<double>();
+
+    const double island_radius = geometry["island_radius"].get<double>();
+    const double height = geometry["height"].get<double>();
+
+    const unsigned n_refines = geometry["n_refines"].get<unsigned>();
+
+    return std::make_shared<IslandWithWell>(well_position, well_radius,
+                                            force_position, force_radius,
+                                            island_radius, height, n_refines);
 }
