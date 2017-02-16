@@ -4,6 +4,7 @@
 #include <deal.II/grid/grid_generator.h>
 #include <deal.II/grid/manifold.h>
 #include <deal.II/grid/manifold_lib.h>
+#include <src/shell/util/MeshUtilities.hpp>
 
 using namespace dealii;
 
@@ -75,7 +76,10 @@ void SimpleShellMesh::apply_boundary_ids()
         for (unsigned f = 0; f < dealii::GeometryInfo<3>::faces_per_cell; ++f) {
             auto face = cell->face(f);
             if (face->at_boundary()) {
-                face->set_all_boundary_ids(0);
+                if (MeshUtilities::is_face_on_half_sphere(face, dealii::Point<3>(0, 0, 0),
+                                                          outer_radius, dealii::Point<3>(0, 0, 1))) {
+                    face->set_all_boundary_ids(1);
+                }
             }
         }
     }
@@ -84,6 +88,6 @@ void SimpleShellMesh::apply_boundary_ids()
 void SimpleShellMesh::apply_material_ids()
 {
     for (auto cell: tria.active_cell_iterators()) {
-        cell->set_material_id(0);
+        cell->set_material_id(1);
     }
 }
