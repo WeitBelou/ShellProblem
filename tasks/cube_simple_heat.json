@@ -16,6 +16,11 @@
         "id": 1,
         "type": "constant",
         "value": 2000
+      },
+      {
+        "id": 2,
+        "type": "constant",
+        "value": 0
       }
     ],
     "neumann": [
@@ -32,37 +37,6 @@
       },
       "n_refines": 2
     }
-  },
-  "mesh_markers": {
-    "boundary": [
-      {
-        "type": "plane_marker",
-        "id": 1,
-        "point_on_plane": {
-          "x": 0,
-          "y": 0,
-          "z": 5
-        },
-        "axis": 2
-      }
-    ],
-    "material": [
-      {
-        "type": "two_planes",
-        "id": 1,
-        "point_on_first_plane": {
-          "x": 0,
-          "y": 0,
-          "z": -5
-        },
-        "point_on_second_plane": {
-          "x": 0,
-          "y": 0,
-          "z": 5
-        },
-        "axis": 2
-      }
-    ]
   },
   "linear_solver": {
     "type": "CG",

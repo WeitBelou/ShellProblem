@@ -1,6 +1,5 @@
 #include "TaskFactory.hpp"
 
-#include "src/shell/mesh_markers/MeshMarkersFactory.hpp"
 #include "src/shell/mesh/MeshFactory.hpp"
 #include "src/shell/boundaries/BoundariesFactory.hpp"
 #include "src/shell/linear_solver/LinearSolverFactory.hpp"
@@ -10,11 +9,8 @@
 
 std::shared_ptr<Task> TaskFactory::create_task_from_json(json task, const std::string &output_dir)
 {
-    const json &mesh_markers_properties = task["mesh_markers"];
-    const MeshMarkersGroup markers = MeshMarkersFactory::create_mesh_markers(mesh_markers_properties);
-
     const json &mesh_properties = task["mesh"];
-    std::shared_ptr<MeshBase> mesh = MeshFactory::create_mesh(mesh_properties, markers);
+    std::shared_ptr<MeshBase> mesh = MeshFactory::create_mesh(mesh_properties);
 
     const json &linear_solver_properties = task["linear_solver"];
     std::shared_ptr<LinearSolverBase>

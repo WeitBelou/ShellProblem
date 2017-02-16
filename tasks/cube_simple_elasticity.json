@@ -30,47 +30,6 @@
       }
     ]
   },
-  "mesh_markers": {
-    "boundary": [
-      {
-        "id": 1,
-        "type": "plane_marker",
-        "point_on_plane": {
-          "x": 0,
-          "y": 0,
-          "z": 5
-        },
-        "axis": 2
-      },
-      {
-        "id": 2,
-        "type": "plane_marker",
-        "point_on_plane": {
-          "x": 0,
-          "y": 0,
-          "z": -5
-        },
-        "axis": 2
-      }
-    ],
-    "material": [
-      {
-        "id": 1,
-        "type": "two_planes",
-        "point_on_first_plane": {
-          "x": 0,
-          "y": 0,
-          "z": -5
-        },
-        "point_on_second_plane": {
-          "x": 0,
-          "y": 0,
-          "z": 5
-        },
-        "axis": 2
-      }
-    ]
-  },
   "mesh": {
     "type": "cube",
     "geometry": {

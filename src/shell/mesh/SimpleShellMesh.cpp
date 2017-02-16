@@ -10,10 +10,9 @@ using namespace dealii;
 SimpleShellMesh::SimpleShellMesh(double inner_radius,
                                  double outer_radius,
                                  double cylinder_length,
-                                 unsigned int n_refines,
-                                 const MeshMarkersGroup marker)
+                                 unsigned int n_refines)
     :
-    GeneratedMesh(n_refines, marker),
+    GeneratedMesh(n_refines),
     inner_radius(inner_radius),
     outer_radius(outer_radius),
     thickness(outer_radius - inner_radius),
@@ -67,5 +66,24 @@ void SimpleShellMesh::apply_manifold_ids()
         else {
             cell->set_all_manifold_ids(2);
         }
+    }
+}
+
+void SimpleShellMesh::apply_boundary_ids()
+{
+    for (auto cell: tria.active_cell_iterators()) {
+        for (unsigned f = 0; f < dealii::GeometryInfo<3>::faces_per_cell; ++f) {
+            auto face = cell->face(f);
+            if (face->at_boundary()) {
+                face->set_all_boundary_ids(0);
+            }
+        }
+    }
+}
+
+void SimpleShellMesh::apply_material_ids()
+{
+    for (auto cell: tria.active_cell_iterators()) {
+        cell->set_material_id(0);
     }
 }

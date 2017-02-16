@@ -8,10 +8,9 @@
 CylinderMesh::CylinderMesh(const double radius,
                            const double height,
                            const dealii::Point<3> &center,
-                           unsigned int n_global_refinements,
-                           const MeshMarkersGroup &markers)
+                           unsigned int n_global_refinements)
     :
-    GeneratedMesh(n_global_refinements, markers),
+    GeneratedMesh(n_global_refinements),
     radius(radius),
     height(height),
     center(center)
@@ -45,6 +44,25 @@ void CylinderMesh::apply_manifold_ids()
                 face->set_all_manifold_ids(1);
             }
         }
+    }
+}
+
+void CylinderMesh::apply_boundary_ids()
+{
+    for (auto cell: tria.active_cell_iterators()) {
+        for (unsigned f = 0; f < dealii::GeometryInfo<3>::faces_per_cell; ++f) {
+            auto face = cell->face(f);
+            if (face->at_boundary()) {
+                face->set_all_boundary_ids(0);
+            }
+        }
+    }
+}
+
+void CylinderMesh::apply_material_ids()
+{
+    for (auto cell: tria.active_cell_iterators()) {
+        cell->set_material_id(0);
     }
 }
 

@@ -32,42 +32,6 @@
       "n_refines": 3
     }
   },
-  "mesh_markers": {
-    "boundary": [
-      {
-        "type": "half_sphere_marker",
-        "id": 1,
-        "center": {
-          "x": 0,
-          "y": 0,
-          "z": 0
-        },
-        "radius": 5.3,
-        "orientation": {
-          "x": 0,
-          "y": 0,
-          "z": 1
-        }
-      }
-    ],
-    "material": [
-      {
-        "type": "two_planes",
-        "id": 1,
-        "point_on_first_plane": {
-          "x": 0,
-          "y": 0,
-          "z": -15
-        },
-        "point_on_second_plane": {
-          "x": 0,
-          "y": 0,
-          "z": 5.3
-        },
-        "axis": 2
-      }
-    ]
-  },
   "linear_solver": {
     "type": "CG",
     "eps": 1,

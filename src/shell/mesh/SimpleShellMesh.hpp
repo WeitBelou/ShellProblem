@@ -7,11 +7,13 @@ public:
     SimpleShellMesh(double inner_radius,
                     double outer_radius,
                     double cylinder_length,
-                    unsigned int n_refines,
-                    const MeshMarkersGroup markers);
+                    unsigned int n_refines);
 protected:
-    virtual void create_coarse_mesh() override;
-    virtual void apply_manifold_ids() override;
+    void create_coarse_mesh() override final;
+    void apply_manifold_ids() override final;
+    void apply_boundary_ids() override final;
+    void apply_material_ids() override final;
+
 private:
     double inner_radius;
     double outer_radius;

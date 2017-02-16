@@ -4,20 +4,19 @@
 #include "CubeMesh.hpp"
 #include "CylinderMesh.hpp"
 
-std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,
-                                                   const MeshMarkersGroup &markers)
+std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties)
 {
     const std::string mesh_type = mesh_properties["type"].get<std::string>();
     const json geometry = mesh_properties["geometry"];
 
     if (mesh_type == "cube") {
-        return create_cube_mesh(geometry, markers);
+        return create_cube_mesh(geometry);
     }
     else if (mesh_type == "simple_shell") {
-        return create_simple_shell_mesh(geometry, markers);
+        return create_simple_shell_mesh(geometry);
     }
     else if (mesh_type == "cylinder") {
-        return create_cylinder_mesh(geometry, markers);
+        return create_cylinder_mesh(geometry);
     }
     else {
         AssertThrow(false, dealii::StandardExceptions::ExcNotImplemented(
@@ -27,7 +26,7 @@ std::shared_ptr<MeshBase> MeshFactory::create_mesh(const json &mesh_properties,
     };
 }
 
-std::shared_ptr<MeshBase> MeshFactory::create_simple_shell_mesh(const json geometry, const MeshMarkersGroup &markers)
+std::shared_ptr<MeshBase> MeshFactory::create_simple_shell_mesh(const json geometry)
 {
     const json sizes = geometry["sizes"];
 
@@ -38,24 +37,23 @@ std::shared_ptr<MeshBase> MeshFactory::create_simple_shell_mesh(const json geome
 
     return std::make_shared<SimpleShellMesh>(
         inner_radius, outer_radius,
-        cylinder_length, n_refines,
-        markers
+        cylinder_length, n_refines
     );
 }
 
-std::shared_ptr<MeshBase> MeshFactory::create_cube_mesh(const json geometry, const MeshMarkersGroup &markers)
+std::shared_ptr<MeshBase> MeshFactory::create_cube_mesh(const json geometry)
 {
     const double size = geometry["size"].get<double>();
     const unsigned int n_refines = geometry["n_refines"].get<unsigned>();
     const dealii::Point<3> center = JsonUtil::get_point(geometry["center"]);
-    return std::make_shared<CubeMesh>(size, center, n_refines, markers);
+    return std::make_shared<CubeMesh>(size, center, n_refines);
 }
 
-std::shared_ptr<MeshBase> MeshFactory::create_cylinder_mesh(const json &geometry, const MeshMarkersGroup &markers)
+std::shared_ptr<MeshBase> MeshFactory::create_cylinder_mesh(const json &geometry)
 {
     const double radius = geometry["radius"].get<double>();
     const double height = geometry["height"].get<double>();
     const dealii::Point<3> center = JsonUtil::get_point(geometry["center"]);
     const unsigned n_refines = geometry["n_refines"].get<unsigned>();
-    return std::make_shared<CylinderMesh>(radius, height, center, n_refines, markers);
+    return std::make_shared<CylinderMesh>(radius, height, center, n_refines);
 }
