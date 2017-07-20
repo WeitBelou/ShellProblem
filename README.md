@@ -1,10 +1,10 @@
-##Shell problem
+## Shell problem
 
-###Introduction
+### Introduction
 Shell problem is a simple program that solves both heat 
 conduction and elasticity problems using deal.II library.
 
-###How to build
+### How to build
 
 1) Download and install deal.II library from
 [site](https://dealii.org) or
@@ -24,7 +24,7 @@ $ cmake ..
 $ make
 ```
 
-###Usage
+### Usage
 CMake will create in ShellProblem directory `bin`.
 In this directory you will find `ShellProblem`
 executable.
